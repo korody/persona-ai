@@ -1,77 +1,179 @@
-"use client";
+// app/(auth)/login/page.tsx
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useActionState, useEffect, useState } from "react";
+'use client'
 
-import { AuthForm } from "@/components/auth-form";
-import { SubmitButton } from "@/components/submit-button";
-import { toast } from "@/components/toast";
-import { type LoginActionState, login } from "../actions";
+import { useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { AlertCircle, Loader2 } from 'lucide-react'
 
-export default function Page() {
-  const router = useRouter();
+export default function LoginPage() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect') || '/chat'
+  const supabase = createClient()
 
-  const [email, setEmail] = useState("");
-  const [isSuccessful, setIsSuccessful] = useState(false);
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
 
-  const [state, formAction] = useActionState<LoginActionState, FormData>(
-    login,
-    {
-      status: "idle",
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+    } else {
+      router.push(redirect)
+      router.refresh()
     }
-  );
+  }
 
-  const { update: updateSession } = useSession();
+  const handleMagicLink = async () => {
+    setLoading(true)
+    setError(null)
 
-  useEffect(() => {
-    if (state.status === "failed") {
-      toast({
-        type: "error",
-        description: "Invalid credentials!",
-      });
-    } else if (state.status === "invalid_data") {
-      toast({
-        type: "error",
-        description: "Failed validating your submission!",
-      });
-    } else if (state.status === "success") {
-      setIsSuccessful(true);
-      updateSession();
-      router.refresh();
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback?redirect=${redirect}`,
+      },
+    })
+
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+    } else {
+      setError('✅ Link mágico enviado! Verifique seu email.')
+      setLoading(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.status]);
-
-  const handleSubmit = (formData: FormData) => {
-    setEmail(formData.get("email") as string);
-    formAction(formData);
-  };
+  }
 
   return (
-    <div className="flex h-dvh w-screen items-start justify-center bg-background pt-12 md:items-center md:pt-0">
-      <div className="flex w-full max-w-md flex-col gap-12 overflow-hidden rounded-2xl">
-        <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
-          <h3 className="font-semibold text-xl dark:text-zinc-50">Sign In</h3>
-          <p className="text-gray-500 text-sm dark:text-zinc-400">
-            Use your email and password to sign in
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-slate-950 p-4">
+      <div className="w-full max-w-md">
+        <div className="rounded-2xl bg-white dark:bg-slate-900 p-8 shadow-xl border dark:border-slate-800">
+          {/* Logo */}
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-green-700">
+              <span className="text-3xl font-bold text-white">P</span>
+            </div>
+            <h1 className="text-2xl font-bold">Bem-vindo de volta</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Entre para conversar com o Mestre Ye
+            </p>
+          </div>
+
+          {/* Error Alert */}
+          {error && (
+            <div className={`mb-4 rounded-lg p-3 text-sm ${
+              error.includes('✅') 
+                ? 'bg-green-50 text-green-700' 
+                : 'bg-red-50 text-red-700'
+            }`}>
+              <div className="flex gap-2">
+                <AlertCircle className="h-5 w-5 shrink-0" />
+                <span>{error}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Login Form */}
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="seu@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </div>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Entrando...
+                </>
+              ) : (
+                'Entrar'
+              )}
+            </Button>
+          </form>
+
+          {/* Magic Link */}
+          <div className="mt-4">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={handleMagicLink}
+              disabled={loading || !email}
+            >
+              Enviar link mágico (sem senha)
+            </Button>
+          </div>
+
+          {/* Divider */}
+          <div className="my-6 flex items-center gap-4">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-xs text-muted-foreground">OU</span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          {/* Sign Up Link */}
+          <p className="text-center text-sm text-muted-foreground">
+            Não tem uma conta?{' '}
+            <Link
+              href="/signup"
+              className="font-semibold text-primary hover:underline"
+            >
+              Crie grátis
+            </Link>
           </p>
         </div>
-        <AuthForm action={handleSubmit} defaultEmail={email}>
-          <SubmitButton isSuccessful={isSuccessful}>Sign in</SubmitButton>
-          <p className="mt-4 text-center text-gray-600 text-sm dark:text-zinc-400">
-            {"Don't have an account? "}
-            <Link
-              className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
-              href="/register"
-            >
-              Sign up
-            </Link>
-            {" for free."}
-          </p>
-        </AuthForm>
+
+        {/* Footer */}
+        <p className="mt-8 text-center text-xs text-muted-foreground">
+          Ao entrar, você concorda com nossos{' '}
+          <a href="#" className="underline">
+            Termos de Uso
+          </a>{' '}
+          e{' '}
+          <a href="#" className="underline">
+            Política de Privacidade
+          </a>
+        </p>
       </div>
     </div>
-  );
+  )
 }

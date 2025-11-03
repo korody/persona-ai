@@ -1,116 +1,63 @@
-import type {
-  CoreAssistantMessage,
-  CoreToolMessage,
-  UIMessage,
-  UIMessagePart,
-} from 'ai';
-import { type ClassValue, clsx } from 'clsx';
-import { formatISO } from 'date-fns';
-import { twMerge } from 'tailwind-merge';
-import type { DBMessage, Document } from '@/lib/db/schema';
-import { ChatSDKError, type ErrorCode } from './errors';
-import type { ChatMessage, ChatTools, CustomUIDataTypes } from './types';
+// lib/utils.ts
+
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+  return twMerge(clsx(inputs))
 }
 
-export const fetcher = async (url: string) => {
-  const response = await fetch(url);
+export function formatDate(date: string | Date): string {
+  const d = new Date(date)
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(d)
+}
 
-  if (!response.ok) {
-    const { code, cause } = await response.json();
-    throw new ChatSDKError(code as ErrorCode, cause);
+export function formatCreditTransaction(type: string): string {
+  const labels: Record<string, string> = {
+    'signup_bonus': '🎁 Bônus de boas-vindas',
+    'monthly_reset': '🔄 Reset mensal',
+    'purchase': '💳 Compra de créditos',
+    'message_sent': '💬 Mensagem enviada',
+    'audio_generated': '🔊 Áudio gerado',
+    'quiz_bonus': '🎉 Bônus do Quiz MTC',
+    'referral_bonus': '👥 Indicação de amigo',
+    'admin_grant': '⭐ Crédito administrativo',
+    'subscription_activated': '✨ Assinatura ativada'
   }
+  return labels[type] || type
+}
 
-  return response.json();
-};
-
-export async function fetchWithErrorHandlers(
-  input: RequestInfo | URL,
-  init?: RequestInit,
-) {
-  try {
-    const response = await fetch(input, init);
-
-    if (!response.ok) {
-      const { code, cause } = await response.json();
-      throw new ChatSDKError(code as ErrorCode, cause);
-    }
-
-    return response;
-  } catch (error: unknown) {
-    if (typeof navigator !== 'undefined' && !navigator.onLine) {
-      throw new ChatSDKError('offline:chat');
-    }
-
-    throw error;
+export function getElementColor(element: string): string {
+  const colors: Record<string, string> = {
+    'Madeira': 'text-green-600 bg-green-50',
+    'Fogo': 'text-red-600 bg-red-50',
+    'Terra': 'text-yellow-600 bg-yellow-50',
+    'Metal': 'text-gray-600 bg-gray-50',
+    'Água': 'text-blue-600 bg-blue-50'
   }
+  return colors[element] || 'text-gray-600 bg-gray-50'
 }
 
-export function getLocalStorage(key: string) {
-  if (typeof window !== 'undefined') {
-    return JSON.parse(localStorage.getItem(key) || '[]');
+export function getPlanName(tier: string): string {
+  const plans: Record<string, string> = {
+    'free': 'Gratuito',
+    'discipulo': 'Discípulo',
+    'mestre': 'Mestre'
   }
-  return [];
+  return plans[tier] || tier
 }
 
-export function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
-type ResponseMessageWithoutId = CoreToolMessage | CoreAssistantMessage;
-type ResponseMessage = ResponseMessageWithoutId & { id: string };
-
-export function getMostRecentUserMessage(messages: UIMessage[]) {
-  const userMessages = messages.filter((message) => message.role === 'user');
-  return userMessages.at(-1);
-}
-
-export function getDocumentTimestampByIndex(
-  documents: Document[],
-  index: number,
-) {
-  if (!documents) { return new Date(); }
-  if (index > documents.length) { return new Date(); }
-
-  return documents[index].createdAt;
-}
-
-export function getTrailingMessageId({
-  messages,
-}: {
-  messages: ResponseMessage[];
-}): string | null {
-  const trailingMessage = messages.at(-1);
-
-  if (!trailingMessage) { return null; }
-
-  return trailingMessage.id;
-}
-
-export function sanitizeText(text: string) {
-  return text.replace('<has_function_call>', '');
-}
-
-export function convertToUIMessages(messages: DBMessage[]): ChatMessage[] {
-  return messages.map((message) => ({
-    id: message.id,
-    role: message.role as 'user' | 'assistant' | 'system',
-    parts: message.parts as UIMessagePart<CustomUIDataTypes, ChatTools>[],
-    metadata: {
-      createdAt: formatISO(message.createdAt),
-    },
-  }));
-}
-
-export function getTextFromMessage(message: ChatMessage | UIMessage): string {
-  return message.parts
-    .filter((part) => part.type === 'text')
-    .map((part) => (part as { type: 'text'; text: string}).text)
-    .join('');
+export function getPlanPrice(tier: string): string {
+  const prices: Record<string, string> = {
+    'free': 'R$ 0',
+    'discipulo': 'R$ 39,90/mês',
+    'mestre': 'R$ 79,90/mês'
+  }
+  return prices[tier] || 'N/A'
 }
