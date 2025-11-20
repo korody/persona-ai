@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug de Contexto da IA - Persona AI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      background: #0a0a0a;
+      color: #fff;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { margin-bottom: 2rem; color: #10b981; }
+    h2 { 
+      margin-top: 2rem; 
+      margin-bottom: 1rem; 
+      color: #3b82f6;
+      border-bottom: 2px solid #3b82f6;
+      padding-bottom: 0.5rem;
+    }
+    h3 { 
+      margin-top: 1.5rem; 
+      margin-bottom: 0.5rem;
+      color: #8b5cf6;
+    }
+    .input-section {
+      background: #1a1a1a;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border: 1px solid #333;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #999;
+      font-size: 0.9rem;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    textarea {
+      min-height: 100px;
+      font-family: inherit;
+    }
+    button {
+      background: #10b981;
+      color: #fff;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    button:hover { background: #059669; }
+    button:disabled {
+      background: #333;
+      cursor: not-allowed;
+    }
+    .result {
+      background: #1a1a1a;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      border: 1px solid #333;
+    }
+    .stat {
+      display: inline-block;
+      background: #0a0a0a;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      margin-right: 1rem;
+      margin-bottom: 0.5rem;
+      border: 1px solid #333;
+    }
+    .stat strong { color: #10b981; }
+    .knowledge-item, .example-item {
+      background: #0a0a0a;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      border-left: 3px solid #3b82f6;
+    }
+    .similarity {
+      display: inline-block;
+      background: #10b981;
+      color: #000;
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+    .badge-primary { background: #ef4444; color: #fff; }
+    .badge-secondary { background: #f59e0b; color: #000; }
+    .preview {
+      color: #999;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+    .prompt-box {
+      background: #0a0a0a;
+      padding: 1.5rem;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      max-height: 600px;
+      overflow-y: auto;
+      border: 1px solid #333;
+      line-height: 1.5;
+    }
+    .error {
+      background: #ef4444;
+      color: #fff;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+    }
+    .success {
+      background: #10b981;
+      color: #000;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 Debug de Contexto da IA</h1>
+    <p style="color: #999; margin-bottom: 2rem;">
+      Esta ferramenta mostra exatamente o que está sendo enviado para a IA: base de conhecimento, 
+      dados da anamnese e exemplos de conversa.
+    </p>
+
+    <div class="input-section">
+      <label for="token">🔑 Token de Autenticação <button onclick="autoFillToken()" style="background: #3b82f6; padding: 0.25rem 0.75rem; font-size: 0.85rem; margin-left: 1rem;">Auto-preencher</button></label>
+      <input 
+        type="text" 
+        id="token" 
+        placeholder="Clique em 'Auto-preencher' ou cole manualmente"
+        readonly
+      />
+      
+      <label for="message">💬 Mensagem de Teste</label>
+      <textarea 
+        id="message" 
+        placeholder="Ex: Quais alimentos são bons para o baço?"
+      >Quais alimentos são bons para o baço?</textarea>
+      
+      <label for="avatar">🤖 Avatar (slug)</label>
+      <input 
+        type="text" 
+        id="avatar" 
+        value="mestre-ye"
+      />
+      
+      <button onclick="testContext()">🔍 Testar Contexto</button>
+    </div>
+
+    <div id="results"></div>
+  </div>
+
+  <script>
+    // Auto-preencher token do localStorage
+    function autoFillToken() {
+      const keys = Object.keys(localStorage).filter(k => k.includes('sb-') && k.includes('auth-token'))
+      
+      if (keys.length === 0) {
+        alert('❌ Token não encontrado no localStorage.\n\nVocê precisa estar logado no sistema primeiro!\n\nAbra http://localhost:3000 em outra aba, faça login, e depois volte aqui.')
+        return
+      }
+      
+      const tokenKey = keys[0]
+      const tokenData = localStorage.getItem(tokenKey)
+      
+      if (!tokenData) {
+        alert('❌ Token vazio!')
+        return
+      }
+      
+      try {
+        const parsed = JSON.parse(tokenData)
+        const accessToken = parsed.access_token || parsed.accessToken
+        
+        if (accessToken) {
+          document.getElementById('token').value = accessToken
+          alert('✅ Token carregado com sucesso!')
+        } else {
+          alert('❌ Token não encontrado no formato esperado')
+        }
+      } catch (e) {
+        document.getElementById('token').value = tokenData
+        alert('✅ Token carregado!')
+      }
+    }
+    
+    // Tentar preencher automaticamente ao carregar a página
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const tokenInput = document.getElementById('token')
+        if (!tokenInput.value) {
+          autoFillToken()
+        }
+      }, 500)
+    })
+    
+    async function testContext() {
+      const token = document.getElementById('token').value.trim()
+      const message = document.getElementById('message').value.trim()
+      const avatar = document.getElementById('avatar').value.trim()
+      
+      if (!token) {
+        alert('Token é obrigatório!')
+        return
+      }
+      
+      if (!message) {
+        alert('Mensagem é obrigatória!')
+        return
+      }
+      
+      const resultsDiv = document.getElementById('results')
+      resultsDiv.innerHTML = '<div class="loading">⏳ Carregando contexto...</div>'
+      
+      try {
+        const response = await fetch('/api/debug/context', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            userMessage: message,
+            avatarSlug: avatar
+          })
+        })
+        
+        if (!response.ok) {
+          const error = await response.json()
+          throw new Error(error.error || 'Erro na requisição')
+        }
+        
+        const data = await response.json()
+        displayResults(data)
+        
+      } catch (error) {
+        resultsDiv.innerHTML = `
+          <div class="error">
+            <strong>❌ Erro:</strong> ${error.message}
+          </div>
+        `
+      }
+    }
+    
+    function displayResults(data) {
+      const resultsDiv = document.getElementById('results')
+      
+      let html = '<div class="success">✅ Contexto carregado com sucesso!</div>'
+      
+      // Anamnese
+      html += '<h2>🩺 Dados da Anamnese</h2>'
+      if (data.hasAnamnese && data.anamneseData) {
+        html += '<div class="result">'
+        html += `<div class="stat"><strong>Nome:</strong> ${data.anamneseData.nome}</div>`
+        html += `<div class="stat"><strong>Elemento:</strong> ${data.anamneseData.elementoPrincipal}</div>`
+        html += `<div class="stat"><strong>Intensidade:</strong> ${data.anamneseData.intensidade}</div>`
+        html += `<div class="stat"><strong>Data:</strong> ${new Date(data.anamneseData.createdAt).toLocaleDateString('pt-BR')}</div>`
+        html += '</div>'
+      } else {
+        html += '<div class="result" style="color: #999;">Nenhuma anamnese encontrada para este usuário.</div>'
+      }
+      
+      // Base de Conhecimento
+      html += '<h2>📚 Base de Conhecimento Encontrada</h2>'
+      html += '<div class="result">'
+      html += `<div class="stat"><strong>Total:</strong> ${data.knowledge.totalFound} documentos</div>`
+      html += `<div class="stat"><strong>Threshold:</strong> ${data.knowledge.threshold * 100}%</div>`
+      html += `<div class="stat"><strong>Máximo:</strong> ${data.knowledge.maxResults}</div>`
+      html += '</div>'
+      
+      if (data.knowledge.results.length > 0) {
+        html += '<h3>Documentos retornados:</h3>'
+        data.knowledge.results.forEach((item, i) => {
+          html += `
+            <div class="knowledge-item">
+              <div>
+                <strong>${i + 1}. ${item.title}</strong>
+                <span class="similarity">${item.similarity}</span>
+                ${item.isPrimary ? '<span class="badge badge-primary">Elemento Principal</span>' : ''}
+                ${item.isSecondary ? '<span class="badge badge-secondary">Elemento Secundário</span>' : ''}
+              </div>
+              <div style="color: #999; font-size: 0.85rem; margin-top: 0.25rem;">
+                Categoria: ${item.category || 'N/A'}
+              </div>
+              <div class="preview">${item.contentPreview}</div>
+            </div>
+          `
+        })
+      } else {
+        html += '<div style="color: #999; margin-top: 1rem;">Nenhum documento relevante encontrado.</div>'
+      }
+      
+      // Exemplos de Conversas
+      html += '<h2>💬 Exemplos de Conversas</h2>'
+      html += '<div class="result">'
+      html += `<div class="stat"><strong>Total:</strong> ${data.examples.totalFound} exemplos</div>`
+      html += '</div>'
+      
+      if (data.examples.results.length > 0) {
+        data.examples.results.forEach((item, i) => {
+          html += `
+            <div class="example-item">
+              <div>
+                <strong>${i + 1}. ${item.title}</strong>
+                <span class="similarity">${item.similarity}</span>
+              </div>
+              <div class="preview">${item.messagePreview}</div>
+            </div>
+          `
+        })
+      } else {
+        html += '<div style="color: #999; margin-top: 1rem;">Nenhum exemplo encontrado.</div>'
+      }
+      
+      // Estatísticas do Prompt Final
+      html += '<h2>📊 Estatísticas do Prompt Final</h2>'
+      html += '<div class="result">'
+      html += `<div class="stat"><strong>Caracteres:</strong> ${data.finalPrompt.characterCount.toLocaleString()}</div>`
+      html += `<div class="stat"><strong>Palavras:</strong> ${data.finalPrompt.wordCount.toLocaleString()}</div>`
+      html += `<div class="stat"><strong>Anamnese:</strong> ${data.finalPrompt.sections.hasAnamneseSection ? '✅' : '❌'}</div>`
+      html += `<div class="stat"><strong>Conhecimento:</strong> ${data.finalPrompt.sections.hasKnowledgeSection ? '✅' : '❌'}</div>`
+      html += `<div class="stat"><strong>Exemplos:</strong> ${data.finalPrompt.sections.hasExamplesSection ? '✅' : '❌'}</div>`
+      html += '</div>'
+      
+      // Prompt Completo
+      html += '<h2>📝 Prompt Completo Enviado para a IA</h2>'
+      html += `<div class="prompt-box">${escapeHtml(data.finalPrompt.fullText)}</div>`
+      
+      resultsDiv.innerHTML = html
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div')
+      div.textContent = text
+      return div.innerHTML
+    }
+  </script>
+</body>
+</html>

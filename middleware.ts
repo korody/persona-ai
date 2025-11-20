@@ -7,51 +7,21 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // ============================================
-  // PLAYWRIGHT TEST SUPPORT
+  // MODO DESENVOLVIMENTO: AUTH DESABILITADA (5G bloqueando HTTPS)
+  // TODO: Reabilitar quando voltar WiFi
   // ============================================
-  /*
-   * Playwright starts the dev server and requires a 200 status to
-   * begin the tests, so this ensures that the tests can start
-   */
-  if (pathname.startsWith('/ping')) {
-    return new Response('pong', { status: 200 })
+  const isDev5GMode = false
+  
+  if (isDev5GMode) {
+    return NextResponse.next()
   }
 
   // ============================================
-  // SUPABASE AUTH
+  // PLAYWRIGHT TEST SUPPORT
   // ============================================
-
-  let supabaseResponse = NextResponse.next({
-    request,
-  })
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          )
-          supabaseResponse = NextResponse.next({
-            request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
-        },
-      },
-    }
-  )
-
-  // Verificar se usuário está autenticado
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  if (pathname.startsWith('/ping')) {
+    return new Response('pong', { status: 200 })
+  }
 
   // ============================================
   // ROTAS PÚBLICAS (não precisam de auth)
@@ -69,7 +39,6 @@ export async function middleware(request: NextRequest) {
     pathname === route || pathname.startsWith(route + '/')
   )
 
-  // API routes públicas (auth callback, webhooks)
   const publicApiRoutes = [
     '/api/auth/callback',
     '/api/webhooks/stripe',
@@ -80,28 +49,79 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith(route)
   )
 
-  // ============================================
-  // LÓGICA DE REDIRECIONAMENTO
-  // ============================================
-
-  // Se não está logado e tenta acessar rota protegida → redireciona pro login
-  if (!user && !isPublicRoute && !isPublicApiRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    
-    // Salvar redirect URL (para voltar depois do login)
-    if (!pathname.startsWith('/api')) {
-      url.searchParams.set('redirect', pathname)
-    }
-    
-    return NextResponse.redirect(url)
+  // Se é rota pública, deixa passar sem verificação
+  if (isPublicRoute || isPublicApiRoute) {
+    return NextResponse.next()
   }
 
-  // Se está logado e tenta acessar login/signup → redireciona pro chat
-  if (user && (pathname === '/login' || pathname === '/signup')) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/chat'
-    return NextResponse.redirect(url)
+  // ============================================
+  // SUPABASE AUTH (apenas para rotas protegidas)
+  // ============================================
+  let supabaseResponse = NextResponse.next({
+    request,
+  })
+
+  try {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll()
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) =>
+              request.cookies.set(name, value)
+            )
+            supabaseResponse = NextResponse.next({
+              request,
+            })
+            cookiesToSet.forEach(({ name, value, options }) =>
+              supabaseResponse.cookies.set(name, value, options)
+            )
+          },
+        },
+      }
+    )
+
+    const {
+      data: { user },
+      error
+    } = await supabase.auth.getUser()
+
+    console.log('[Middleware]', pathname, 'user:', !!user, 'error:', error?.message)
+
+    // Se não está logado (sem usuário OU com erro) e não é rota pública → redireciona pro login
+    if (!user) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      
+      if (!pathname.startsWith('/api')) {
+        url.searchParams.set('redirect', pathname)
+      }
+      
+      console.log('[Middleware] Redirecting to login from', pathname)
+      return NextResponse.redirect(url)
+    }
+
+    // Se está logado e tenta acessar login/signup → redireciona pro chat
+    if (user && (pathname === '/login' || pathname === '/signup')) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/chat'
+      console.log('[Middleware] Redirecting to chat from', pathname)
+      return NextResponse.redirect(url)
+    }
+  } catch (error) {
+    console.error('[Middleware] Supabase error:', error)
+    
+    // Em caso de erro, redireciona para login (mas não quebra a app)
+    if (!isPublicRoute && !isPublicApiRoute && !pathname.startsWith('/api')) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      url.searchParams.set('redirect', pathname)
+      return NextResponse.redirect(url)
+    }
   }
 
   return supabaseResponse
@@ -112,17 +132,12 @@ export const config = {
     '/',
     '/chat/:path*',
     '/settings/:path*',
+    '/admin/:path*',
     '/pricing',
     '/login',
     '/signup',
     '/api/:path*',
     '/ping',
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
-     */
     '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
   ],
 }

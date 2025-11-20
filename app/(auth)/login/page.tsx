@@ -3,7 +3,6 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -20,45 +19,41 @@ export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') || '/chat'
-  const supabase = createClient()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
 
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else {
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || 'Erro ao fazer login')
+        setLoading(false)
+        return
+      }
+
       router.push(redirect)
       router.refresh()
+    } catch (err) {
+      console.error('Login error:', err)
+      setError('Erro de conexão com servidor')
+      setLoading(false)
     }
   }
 
   const handleMagicLink = async () => {
-    setLoading(true)
-    setError(null)
-
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?redirect=${redirect}`,
-      },
-    })
-
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else {
-      setError('✅ Link mágico enviado! Verifique seu email.')
-      setLoading(false)
-    }
+    setError('Magic link temporariamente desabilitado devido a problemas de conexão')
+    return
   }
 
   return (

@@ -121,7 +121,7 @@ export const ELEMENTS = {
 } as const
 
 export const APP_CONFIG = {
-  name: 'Persona AI',
+  name: 'Mestre Ye Digital',
   tagline: 'Mestre Ye, sempre com você',
   description: 'Converse com o Mestre Ye 24/7 sobre Medicina Tradicional Chinesa',
   defaultAvatar: 'mestre-ye',

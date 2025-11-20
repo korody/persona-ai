@@ -1,11 +1,10 @@
 "use client";
 
-import { ChevronUp } from "lucide-react";
+import { ChevronUp, GraduationCap, Settings, CreditCard, LogOut } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import type { User } from "next-auth";
-import { signOut, useSession } from "next-auth/react";
-import { useTheme } from "next-themes";
+import { useUser } from "@/hooks/use-user";
+import { createClient } from "@/lib/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,28 +17,43 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { guestRegex } from "@/lib/constants";
 import { LoaderIcon } from "./icons";
-import { toast } from "./toast";
 
-export function SidebarUserNav({ user }: { user: User }) {
+const ADMIN_EMAILS = ['marko@persona.cx', 'admin@persona.cx'];
+
+export function SidebarUserNav() {
   const router = useRouter();
-  const { data, status } = useSession();
-  const { setTheme, resolvedTheme } = useTheme();
+  const { user, isLoading } = useUser();
+  const supabase = createClient();
 
-  const isGuest = guestRegex.test(data?.user?.email ?? "");
+  const userEmail = user?.email?.toLowerCase() ?? "";
+  const isAdmin = ADMIN_EMAILS.includes(userEmail);
+
+  // Debug - sempre que renderizar
+  console.log('[SidebarUserNav] Render:', {
+    userEmail,
+    isAdmin,
+    ADMIN_EMAILS,
+    isLoading
+  });
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  };
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            {status === "loading" ? (
+            {isLoading ? (
               <SidebarMenuButton className="h-10 justify-between bg-background data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
                 <div className="flex flex-row gap-2">
                   <div className="size-6 animate-pulse rounded-full bg-zinc-500/30" />
                   <span className="animate-pulse rounded-md bg-zinc-500/30 text-transparent">
-                    Loading auth status
+                    Carregando...
                   </span>
                 </div>
                 <div className="animate-spin text-zinc-500">
@@ -52,14 +66,14 @@ export function SidebarUserNav({ user }: { user: User }) {
                 data-testid="user-nav-button"
               >
                 <Image
-                  alt={user.email ?? "User Avatar"}
+                  alt={user?.email ?? "User Avatar"}
                   className="rounded-full"
                   height={24}
-                  src={`https://avatar.vercel.sh/${user.email}`}
+                  src={`https://avatar.vercel.sh/${user?.email}`}
                   width={24}
                 />
                 <span className="truncate" data-testid="user-email">
-                  {isGuest ? "Guest" : user?.email}
+                  {user?.email || 'Usuário'}
                 </span>
                 <ChevronUp className="ml-auto" />
               </SidebarMenuButton>
@@ -72,40 +86,40 @@ export function SidebarUserNav({ user }: { user: User }) {
           >
             <DropdownMenuItem
               className="cursor-pointer"
-              data-testid="user-nav-item-theme"
-              onSelect={() =>
-                setTheme(resolvedTheme === "dark" ? "light" : "dark")
-              }
+              onSelect={() => router.push('/settings')}
             >
-              {`Toggle ${resolvedTheme === "light" ? "dark" : "light"} mode`}
+              <Settings className="mr-2 h-4 w-4" />
+              Configurações
             </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onSelect={() => router.push('/pricing')}
+            >
+              <CreditCard className="mr-2 h-4 w-4" />
+              Meus Créditos
+            </DropdownMenuItem>
+            
+            {isAdmin && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="cursor-pointer bg-green-500/10 text-green-600 dark:text-green-400"
+                  onSelect={() => router.push('/admin/avatars/mestre-ye/train')}
+                >
+                  <GraduationCap className="mr-2 h-4 w-4" />
+                  🔧 Painel de Treinamento
+                </DropdownMenuItem>
+
+              </>
+            )}
+            
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild data-testid="user-nav-item-auth">
-              <button
-                className="w-full cursor-pointer"
-                onClick={() => {
-                  if (status === "loading") {
-                    toast({
-                      type: "error",
-                      description:
-                        "Checking authentication status, please try again!",
-                    });
-
-                    return;
-                  }
-
-                  if (isGuest) {
-                    router.push("/login");
-                  } else {
-                    signOut({
-                      redirectTo: "/",
-                    });
-                  }
-                }}
-                type="button"
-              >
-                {isGuest ? "Login to your account" : "Sign out"}
-              </button>
+            <DropdownMenuItem
+              className="cursor-pointer text-red-600"
+              onSelect={handleSignOut}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

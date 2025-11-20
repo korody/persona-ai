@@ -31,5 +31,5 @@ export function useUser() {
     }
   }, [])
 
-  return { user, loading }
+  return { user, isLoading: loading }
 }

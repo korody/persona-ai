@@ -3,6 +3,17 @@
 import { anthropic } from '@ai-sdk/anthropic'
 import { streamText, convertToCoreMessages } from 'ai'
 import { createAdminClient } from '@/lib/supabase/server'
+import { 
+  searchKnowledge, 
+  searchKnowledgeWithAnamnese,
+  searchKnowledgeGeneric,
+  formatKnowledgeContext,
+  formatKnowledgeContextWithAnamnese,
+  searchExamples,
+  formatExamples
+} from '@/lib/rag'
+import { buildAnamneseContext, buildNoAnamneseContext } from '@/lib/helpers/anamnese-helpers'
+import type { QuizLead } from '@/lib/types/anamnese'
 
 export const runtime = 'edge'
 export const maxDuration = 60
@@ -64,24 +75,23 @@ export async function POST(req: Request) {
 
     // 3. BUSCAR DADOS DO QUIZ PARA PERSONALIZAÇÃO
     let quizContext = ''
-    const { data: quizLead } = await supabase
+    let hasQuiz = false
+    let quizLead: QuizLead | null = null
+    
+    const { data: quizData } = await supabase
       .from('quiz_leads')
-      .select('elemento_principal, diagnostico_resumo, nome_perfil, arquetipo, nome')
+      .select('*')
       .eq('email', user.email)
       .order('created_at', { ascending: false })
       .limit(1)
       .single()
 
-    if (quizLead) {
-      quizContext = `
-
-CONTEXTO DO USUÁRIO (do Quiz MTC):
-- Nome: ${quizLead.nome}
-- Elemento Principal: ${quizLead.elemento_principal}
-- Perfil: ${quizLead.nome_perfil} (${quizLead.arquetipo})
-- Diagnóstico: ${quizLead.diagnostico_resumo}
-
-Use essas informações naturalmente na conversa, sem perguntar o que já sabe.`
+    if (quizData) {
+      hasQuiz = true
+      quizLead = quizData as QuizLead
+      quizContext = buildAnamneseContext(quizLead)
+    } else {
+      quizContext = buildNoAnamneseContext()
     }
 
     // 4. DEBITAR CRÉDITO ANTES DE CHAMAR IA
@@ -143,9 +153,84 @@ Use essas informações naturalmente na conversa, sem perguntar o que já sabe.`
       credits_used: 1
     })
 
-    // 7. CHAMAR CLAUDE API COM STREAMING
-    console.log('Calling Claude API with Anthropic...')
-    const systemPrompt = avatar.system_prompt + quizContext
+    // 7. BUSCAR CONHECIMENTO RELEVANTE (RAG) + EXEMPLOS (FEW-SHOT)
+    console.log('🔍 Searching knowledge base and examples...')
+    
+    // Buscar conhecimento usando anamnese quando disponível
+    let knowledgeContext = ''
+    
+    if (hasQuiz && quizLead) {
+      // BUSCA FILTRADA POR ELEMENTO + INTENSIDADE
+      console.log(`🎯 Anamnese-aware search for elemento: ${quizLead.elemento_principal} (intensidade: ${quizLead.intensidade_calculada})`)
+      
+      const relevantKnowledge = await searchKnowledgeWithAnamnese(
+        userContent, 
+        avatar.id, 
+        quizLead,
+        {
+          matchThreshold: 0.4,
+          matchCount: 5
+        }
+      )
+      
+      knowledgeContext = formatKnowledgeContextWithAnamnese(relevantKnowledge)
+      
+      console.log(`✅ Found ${relevantKnowledge.length} knowledge items with anamnese filtering`)
+      console.log(`   Primary elemento matches: ${relevantKnowledge.filter(k => k.is_primary).length}`)
+      console.log(`   Secondary elemento matches: ${relevantKnowledge.filter(k => k.is_secondary).length}`)
+      console.log(`   Similarities: ${relevantKnowledge.map(k => `${(k.similarity * 100).toFixed(1)}%`).join(', ')}`)
+    } else {
+      // BUSCA GENÉRICA (sem filtros)
+      console.log('🔍 Generic search (no anamnese data)')
+      
+      const relevantKnowledge = await searchKnowledgeGeneric(
+        userContent,
+        avatar.id,
+        {
+          matchThreshold: 0.4,
+          matchCount: 5
+        }
+      )
+      
+      knowledgeContext = formatKnowledgeContext(relevantKnowledge)
+      
+      console.log(`✅ Found ${relevantKnowledge.length} knowledge items (generic search)`)
+      console.log(`   Similarities: ${relevantKnowledge.map(k => `${(k.similarity * 100).toFixed(1)}%`).join(', ')}`)
+    }
+    
+    // Buscar exemplos de conversas similares (não filtrado por elemento)
+    const relevantExamples = await searchExamples(userContent, avatar.id, 3)
+    const examplesContext = formatExamples(relevantExamples)
+    
+    console.log(`✅ Found ${relevantExamples.length} conversation examples`)
+
+    // 8. CHAMAR CLAUDE API COM STREAMING
+    console.log('🤖 Calling Claude API with enhanced context...')
+    
+    // Montar prompt do sistema com TUDO
+    const systemPrompt = `${avatar.system_prompt}${quizContext}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📚 BASE DE CONHECIMENTO DISPONÍVEL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${knowledgeContext}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💬 EXEMPLOS DE COMO RESPONDER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${examplesContext}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+INSTRUÇÕES IMPORTANTES:
+1. Use o conhecimento acima quando relevante para a pergunta
+2. Cite as fontes numeradas quando usar informações específicas
+3. Mantenha o tom e estilo dos exemplos de conversa
+4. Se não houver conhecimento relevante, use seu conhecimento geral mas mencione isso
+5. Seja sempre empático, educativo e prático
+`
 
     // Converter mensagens do formato UI para formato do modelo
     const coreMessages = convertToCoreMessages(messages)
@@ -154,7 +239,6 @@ Use essas informações naturalmente na conversa, sem perguntar o que já sabe.`
       model: anthropic('claude-sonnet-4-20250514'),
       system: systemPrompt,
       messages: coreMessages,
-      maxTokens: 1000,
       temperature: 0.7,
       onFinish: async ({ text }) => {
         console.log('Claude response finished, saving to DB...')

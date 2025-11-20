@@ -87,8 +87,7 @@ export function ChatInput({ onSend, isLoading, disabled }: ChatInputProps) {
         <div className="mt-2 text-xs text-muted-foreground text-center">
           {credits && (
             <span>
-              {credits.total} {credits.total === 1 ? 'crédito' : 'créditos'}{' '}
-              disponível • 1 crédito por interação
+              {credits.total} {credits.total === 1 ? 'crédito disponível' : 'créditos disponíveis'} • 1 crédito por interação
             </span>
           )}
         </div>

@@ -19,12 +19,14 @@ interface ConversationsSidebarProps {
   onNewConversation?: () => void
   onSelectConversation?: (conversationId: string) => void
   currentConversationId?: string | null
+  onToggleSidebar?: () => void
 }
 
 export function ConversationsSidebar({ 
   onNewConversation, 
   onSelectConversation,
-  currentConversationId 
+  currentConversationId,
+  onToggleSidebar
 }: ConversationsSidebarProps) {
   const { conversations, isLoading, mutate } = useConversations()
   const supabase = createClient()
@@ -93,8 +95,17 @@ export function ConversationsSidebar({
 
   return (
     <div className="w-64 border-r bg-muted/10 flex flex-col">
-      {/* Header */}
-      <div className="p-4 border-b">
+      {/* Header with Toggle and New Conversation */}
+      <div className="p-4 border-b space-y-3">
+        <Button 
+          variant="outline"
+          size="sm"
+          onClick={onToggleSidebar} 
+          className="w-full"
+        >
+          <MessageSquare className="mr-2 h-4 w-4" />
+          Ocultar Histórico
+        </Button>
         <Button 
           onClick={onNewConversation} 
           className="w-full"

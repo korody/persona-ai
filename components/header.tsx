@@ -14,14 +14,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
-import { User, Settings, CreditCard, LogOut, Menu } from 'lucide-react'
+import { User, Settings, CreditCard, LogOut, Menu, GraduationCap, BookOpen } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+
+const ADMIN_EMAILS = ['marko@persona.cx', 'admin@persona.cx'];
 
 export function Header() {
   const { user, loading } = useUser()
   const router = useRouter()
   const supabase = createClient()
+
+  const isAdmin = ADMIN_EMAILS.includes(user?.email?.toLowerCase() ?? "");
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -30,16 +34,16 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between pl-4">
         {/* Logo */}
         <Link href="/chat" className="flex items-center gap-2">
           <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">P</span>
+            <span className="text-white font-bold text-lg">M</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-lg">Persona AI</span>
+            <span className="font-bold text-lg">Mestre Ye Digital</span>
             <span className="text-xs text-muted-foreground -mt-1">
-              Mestre Ye
+              Seu Terapeuta Digital 24/7
             </span>
           </div>
         </Link>
@@ -82,6 +86,20 @@ export function Header() {
                       Meus Créditos
                     </Link>
                   </DropdownMenuItem>
+                  
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin/avatars/mestre-ye/train" className="cursor-pointer bg-green-500/10 text-green-600 dark:text-green-400">
+                          <GraduationCap className="mr-2 h-4 w-4" />
+                          🔧 Painel de Treinamento
+                        </Link>
+                      </DropdownMenuItem>
+
+                    </>
+                  )}
+                  
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={handleSignOut}

@@ -14,7 +14,7 @@ export default function HomePage() {
             <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">P</span>
             </div>
-            <span className="font-bold text-lg">Persona AI</span>
+            <span className="font-bold text-lg">Mestre Ye Digital</span>
           </div>
           
           <div className="flex items-center gap-4">
@@ -79,7 +79,7 @@ export default function HomePage() {
       <section className="py-24 bg-background">
         <div className="container">
           <h2 className="text-3xl font-bold text-center mb-12">
-            Por que escolher o Persona AI?
+            Por que escolher o Mestre Ye Digital?
           </h2>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -146,7 +146,7 @@ export default function HomePage() {
                 <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-lg">P</span>
                 </div>
-                <span className="font-bold">Persona AI</span>
+                <span className="font-bold">Mestre Ye Digital</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Medicina Tradicional Chinesa acessível para todos.
@@ -179,7 +179,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-            <p>© 2025 Persona AI - Qigong Brasil. Todos os direitos reservados.</p>
+            <p>© 2025 Mestre Ye Digital - Qigong Brasil. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

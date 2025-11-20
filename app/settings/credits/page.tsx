@@ -58,8 +58,8 @@ export default function CreditsPage() {
       <Header />
       
       <div className="flex-1 overflow-y-auto bg-muted/10">
-        <div className="container max-w-4xl py-8">
-          <div className="mb-8">
+        <div className="container max-w-4xl mx-auto py-8 px-4">
+          <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold">Meus Créditos</h1>
             <p className="text-muted-foreground mt-2">
               Acompanhe seu saldo e histórico de transações
