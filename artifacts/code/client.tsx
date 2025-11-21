@@ -14,7 +14,7 @@ import {
   RedoIcon,
   UndoIcon,
 } from "@/components/icons";
-import { generateUUID } from "@/lib/utils";
+import { nanoid } from "nanoid";
 
 const OUTPUT_HANDLERS = {
   matplotlib: `
@@ -117,7 +117,7 @@ export const codeArtifact = new Artifact<"code", Metadata>({
       label: "Run",
       description: "Execute code",
       onClick: async ({ content, setMetadata }) => {
-        const runId = generateUUID();
+        const runId = nanoid();
         const outputContent: ConsoleOutputContent[] = [];
 
         setMetadata((metadata) => ({

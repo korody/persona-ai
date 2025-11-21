@@ -83,7 +83,6 @@ export function Chat({
     generateId: generateUUID,
     transport: new DefaultChatTransport({
       api: "/api/chat",
-      fetch: fetchWithErrorHandlers,
       prepareSendMessagesRequest(request) {
         return {
           body: {
@@ -97,9 +96,9 @@ export function Chat({
       },
     }),
     onData: (dataPart) => {
-      setDataStream((ds) => (ds ? [...ds, dataPart] : []));
+      setDataStream((ds) => (ds ? [...ds, dataPart as any] : []));
       if (dataPart.type === "data-usage") {
-        setUsage(dataPart.data);
+        setUsage(dataPart.data as AppUsage);
       }
     },
     onFinish: () => {

@@ -20,9 +20,9 @@ import { PlaygroundTab } from '@/components/training/playground-tab'
 import { MemberkitSyncTab } from '@/components/admin/memberkit-sync-tab'
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

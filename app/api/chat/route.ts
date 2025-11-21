@@ -254,7 +254,7 @@ export async function POST(req: Request) {
       exercises = await searchExercisesByAnamnese(quizLead, { matchCount: 3 })
     }
     
-    const exercisesContext = formatExercisesContext(exercises, quizLead)
+    const exercisesContext = formatExercisesContext(exercises, quizLead || undefined)
     
     if (exercises.length > 0) {
       console.log(`✅ Found ${exercises.length} relevant exercises to recommend`)

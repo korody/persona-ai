@@ -5,11 +5,12 @@ import { NextResponse } from 'next/server'
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient()
-    const conversationId = params.id
+    const { id } = await params
+    const conversationId = id
 
     // Pegar usuário autenticado
     const { data: { user }, error: authError } = await supabase.auth.getUser()

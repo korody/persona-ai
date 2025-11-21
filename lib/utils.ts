@@ -61,3 +61,47 @@ export function getPlanPrice(tier: string): string {
   }
   return prices[tier] || 'N/A'
 }
+
+export const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+export async function fetchWithErrorHandlers<T>(
+  url: string,
+  options?: RequestInit
+): Promise<T> {
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(error || response.statusText);
+  }
+  return response.json();
+}
+
+export function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+export function getTextFromMessage(message: any): string {
+  if (typeof message.content === 'string') {
+    return message.content;
+  }
+  if (Array.isArray(message.content)) {
+    return message.content
+      .map((part: any) => (part.type === 'text' ? part.text : ''))
+      .filter(Boolean)
+      .join('\n');
+  }
+  return '';
+}
+
+export function sanitizeText(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}

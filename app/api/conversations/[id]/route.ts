@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server'
 // ATUALIZAR conversa (renomear)
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = req.headers.get('authorization')
@@ -28,11 +28,13 @@ export async function PATCH(
       return NextResponse.json({ error: 'Title is required' }, { status: 400 })
     }
 
+    const { id } = await params
+
     // Atualizar apenas se a conversa pertence ao usuário
     const { data, error } = await supabase
       .from('conversations')
       .update({ title: title.trim() })
-      .eq('id', params.id)
+      .eq('id', id)
       .eq('user_id', user.id)
       .select()
       .single()
@@ -57,7 +59,7 @@ export async function PATCH(
 // DELETAR conversa
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = req.headers.get('authorization')
@@ -73,11 +75,13 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
+
     // Deletar apenas se a conversa pertence ao usuário
     const { error } = await supabase
       .from('conversations')
       .delete()
-      .eq('id', params.id)
+      .eq('id', id)
       .eq('user_id', user.id)
 
     if (error) {

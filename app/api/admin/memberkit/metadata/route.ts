@@ -53,7 +53,8 @@ export async function POST(request: NextRequest) {
     // Generate embedding automatically if metadata is complete
     if (updatedExercise && duration_minutes && level && element) {
       try {
-        const embedding = await generateEmbedding(updatedExercise)
+        const searchableText = `${updatedExercise.title} ${updatedExercise.description || ''} ${(updatedExercise.benefits || []).join(' ')} ${(updatedExercise.indications || []).join(' ')} ${updatedExercise.element || ''} ${(updatedExercise.organs || []).join(' ')}`
+        const embedding = await generateEmbedding(searchableText)
         
         if (embedding) {
           await supabase

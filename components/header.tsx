@@ -21,7 +21,7 @@ import { useRouter } from 'next/navigation'
 const ADMIN_EMAILS = ['marko@persona.cx', 'admin@persona.cx'];
 
 export function Header() {
-  const { user, loading } = useUser()
+  const { user, isLoading } = useUser()
   const router = useRouter()
   const supabase = createClient()
 
@@ -50,7 +50,7 @@ export function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-4">
-          {user && !loading && (
+          {user && !isLoading && (
             <>
               {/* Credit Badge */}
               <CreditBadge />
@@ -113,7 +113,7 @@ export function Header() {
             </>
           )}
 
-          {!user && !loading && (
+          {!user && !isLoading && (
             <div className="flex items-center gap-2">
               <Button variant="ghost" asChild>
                 <Link href="/login">Entrar</Link>
