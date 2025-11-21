@@ -24,6 +24,26 @@ export const entitlementsByUserType: Record<UserType, Entitlements> = {
   },
 
   /*
-   * TODO: For users with an account and a paid membership
+   * Free tier
    */
+  free: {
+    maxMessagesPerDay: 50,
+    availableChatModelIds: ["chat-model"],
+  },
+
+  /*
+   * Discipulo tier
+   */
+  discipulo: {
+    maxMessagesPerDay: 200,
+    availableChatModelIds: ["chat-model", "chat-model-reasoning"],
+  },
+
+  /*
+   * Mestre tier
+   */
+  mestre: {
+    maxMessagesPerDay: 999999,
+    availableChatModelIds: ["chat-model", "chat-model-reasoning"],
+  },
 };

@@ -105,3 +105,13 @@ export function sanitizeText(text: string): string {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+export function getDocumentTimestampByIndex(
+  documents: any[],
+  index: number
+): Date {
+  if (!documents || index < 0 || index >= documents.length) {
+    return new Date();
+  }
+  return new Date(documents[index].createdAt || new Date());
+}

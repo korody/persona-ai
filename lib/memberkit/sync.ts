@@ -9,6 +9,7 @@ import type {
   ExercisesMetadataMap,
   ExerciseInsert,
   MemberkitLesson,
+  MemberkitCourse,
 } from './types'
 
 // ============================================
