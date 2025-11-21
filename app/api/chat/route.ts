@@ -25,7 +25,7 @@ import {
 import type { QuizLead } from '@/lib/types/anamnese'
 import type { Exercise } from '@/lib/memberkit/types'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 export const maxDuration = 60
 
 export async function POST(req: Request) {

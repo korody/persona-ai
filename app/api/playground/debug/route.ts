@@ -4,6 +4,9 @@
  * Espelho da lógica do chat normal
  */
 
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { 
@@ -22,7 +25,6 @@ import {
 import type { QuizLead } from '@/lib/types/anamnese'
 import type { Exercise } from '@/lib/memberkit/types'
 
-export const runtime = 'edge'
 export const maxDuration = 30
 
 interface Message {
