@@ -22,6 +22,7 @@ interface QuizLead {
 export function QuizStatusBadge() {
   const [quizData, setQuizData] = useState<QuizLead | null>(null)
   const [loading, setLoading] = useState(true)
+  const [visible, setVisible] = useState(true)
 
   useEffect(() => {
     async function loadQuizStatus() {
@@ -48,7 +49,16 @@ export function QuizStatusBadge() {
     loadQuizStatus()
   }, [])
 
-  if (loading) return null
+  // Auto-hide após 30 segundos
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVisible(false)
+    }, 30000) // 30 segundos
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (loading || !visible) return null
 
   // COM QUIZ
   if (quizData) {

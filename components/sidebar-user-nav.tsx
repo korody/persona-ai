@@ -107,7 +107,7 @@ export function SidebarUserNav() {
                   onSelect={() => router.push('/admin/avatars/mestre-ye/train')}
                 >
                   <GraduationCap className="mr-2 h-4 w-4" />
-                  🔧 Painel de Treinamento
+                  Painel de Treinamento
                 </DropdownMenuItem>
 
               </>

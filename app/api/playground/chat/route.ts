@@ -2,16 +2,32 @@
  * API Route: Playground Chat (sem debitar créditos)
  * POST /api/playground/chat
  * 
- * Para testes do avatar sem consumir créditos ou criar conversas
+ * ESPELHO DO CHAT NORMAL - para testes sem consumir créditos
  */
 
 import { anthropic } from '@ai-sdk/anthropic'
 import { streamText } from 'ai'
 import { createAdminClient } from '@/lib/supabase/server'
 import { 
+  searchKnowledgeWithAnamnese,
   searchKnowledgeGeneric,
-  formatKnowledgeContext
+  formatKnowledgeContext,
+  formatKnowledgeContextWithAnamnese,
+  searchExamples,
+  formatExamples
 } from '@/lib/rag'
+import { buildAnamneseContext, buildNoAnamneseContext } from '@/lib/helpers/anamnese-helpers'
+import { 
+  searchExercisesByAnamnese, 
+  searchExercisesBySymptoms,
+  extractSymptomsFromMessage,
+  formatExercisesContext,
+  isGenericExerciseRequest,
+  searchIntroductoryExercises,
+  searchExercisesBySemantic
+} from '@/lib/helpers/exercise-recommendations'
+import type { QuizLead } from '@/lib/types/anamnese'
+import type { Exercise } from '@/lib/memberkit/types'
 
 export const runtime = 'edge'
 export const maxDuration = 60
@@ -22,11 +38,8 @@ export async function POST(req: Request) {
     const { messages, avatarSlug = 'mestre-ye' } = body
 
     console.log('📥 Playground API received:', {
-      hasMessages: !!messages,
-      isArray: Array.isArray(messages),
       messagesLength: messages?.length || 0,
-      avatarSlug,
-      bodyKeys: Object.keys(body)
+      avatarSlug
     })
 
     // Validar mensagens
@@ -63,66 +76,124 @@ export async function POST(req: Request) {
       return new Response('Avatar not found', { status: 404 })
     }
 
+    // BUSCAR DADOS DO QUIZ PARA PERSONALIZAÇÃO (igual ao chat normal)
+    let quizContext = ''
+    let hasQuiz = false
+    let quizLead: QuizLead | null = null
+    
+    const { data: quizData } = await supabase
+      .from('quiz_leads')
+      .select('*')
+      .eq('email', user.email)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (quizData) {
+      hasQuiz = true
+      quizLead = quizData as QuizLead
+      quizContext = buildAnamneseContext(quizLead)
+      console.log(`🎯 Anamnese: ${quizLead.elemento_principal}`)
+    } else {
+      quizContext = buildNoAnamneseContext()
+      console.log('ℹ️  No anamnese')
+    }
+
     // Pegar última mensagem do usuário
     const lastUserMessage = messages.filter((m: any) => m.role === 'user').pop()
     const userQuery = lastUserMessage?.content || ''
 
-    // Buscar conhecimento relevante (RAG)
+    // BUSCAR CONHECIMENTO RELEVANTE (igual ao chat normal)
+    console.log('🔍 Searching knowledge...')
+    
     let knowledgeContext = ''
-    if (userQuery) {
+    
+    if (hasQuiz && quizLead) {
+      const relevantKnowledge = await searchKnowledgeWithAnamnese(
+        userQuery, avatar.id, quizLead,
+        { matchThreshold: 0.4, matchCount: 5 }
+      )
+      knowledgeContext = formatKnowledgeContextWithAnamnese(relevantKnowledge)
+      console.log(`✅ ${relevantKnowledge.length} knowledge items (with anamnese)`)
+    } else {
+      const relevantKnowledge = await searchKnowledgeGeneric(
+        userQuery, avatar.id,
+        { matchThreshold: 0.4, matchCount: 5 }
+      )
+      knowledgeContext = formatKnowledgeContext(relevantKnowledge)
+      console.log(`✅ ${relevantKnowledge.length} knowledge items (generic)`)
+    }
+    
+    // Buscar exemplos
+    const relevantExamples = await searchExamples(userQuery, avatar.id, 3)
+    const examplesContext = formatExamples(relevantExamples)
+    console.log(`✅ ${relevantExamples.length} examples`)
+
+    // BUSCAR EXERCÍCIOS (igual ao chat normal)
+    console.log('🧘 Searching exercises...')
+    
+    let exercises: Exercise[] = []
+    
+    const symptoms = extractSymptomsFromMessage(userQuery)
+    if (symptoms.length > 0) {
+      console.log(`🎯 Symptoms: ${symptoms.join(', ')}`)
+      exercises = await searchExercisesBySymptoms(symptoms, { matchCount: 3 })
+    }
+    
+    if (exercises.length === 0 && isGenericExerciseRequest(userQuery)) {
+      console.log('📚 Generic request')
+      exercises = await searchIntroductoryExercises({ matchCount: 3 })
+    }
+    
+    if (exercises.length === 0) {
+      console.log('🧠 Semantic search...')
       try {
-        const knowledgeDocs = await searchKnowledgeGeneric(userQuery, avatar.id, { 
-          matchCount: 5,
-          matchThreshold: 0.4
+        exercises = await searchExercisesBySemantic(userQuery, { 
+          matchCount: 3,
+          matchThreshold: 0.5
         })
-        
-        console.log('📚 Knowledge search results:', {
-          query: userQuery.substring(0, 50),
-          resultsCount: knowledgeDocs?.length || 0,
-          isArray: Array.isArray(knowledgeDocs)
-        })
-        
-        if (knowledgeDocs && Array.isArray(knowledgeDocs) && knowledgeDocs.length > 0) {
-          knowledgeContext = formatKnowledgeContext(knowledgeDocs)
+        if (exercises.length > 0) {
+          console.log(`✅ Found ${exercises.length} exercises`)
         }
       } catch (error) {
-        console.error('Error searching knowledge:', error)
-        console.error('Error details:', {
-          message: error instanceof Error ? error.message : 'Unknown',
-          stack: error instanceof Error ? error.stack : undefined
-        })
+        console.error('Semantic search failed:', error)
       }
     }
+    
+    if (exercises.length === 0 && hasQuiz && quizLead) {
+      console.log(`🌳 By element: ${quizLead.elemento_principal}`)
+      exercises = await searchExercisesByAnamnese(quizLead, { matchCount: 3 })
+    }
+    
+    const exercisesContext = formatExercisesContext(exercises, quizLead || undefined)
+    console.log(`✅ ${exercises.length} exercises`)
 
-    // Montar prompt do sistema com conhecimento
-    const systemPrompt = `${avatar.system_prompt || 'Você é um assistente útil.'}
+    // MONTAR PROMPT DO SISTEMA (igual ao chat normal)
+    const systemPrompt = `${avatar.system_prompt}${quizContext}
 
-${knowledgeContext ? `\n## Base de Conhecimento Relevante:\n${knowledgeContext}\n` : ''}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📚 BASE DE CONHECIMENTO DISPONÍVEL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
----
-**IMPORTANTE:** Use APENAS as informações da Base de Conhecimento acima para responder. Se não houver informação relevante, seja honesto sobre isso.`
+${knowledgeContext}
 
-    console.log('🤖 Preparing to stream:', {
-      hasSystemPrompt: !!systemPrompt,
-      messagesCount: messages.length,
-      messagesStructure: messages.map((m: any) => ({ 
-        role: m.role, 
-        hasContent: !!m.content,
-        contentType: typeof m.content,
-        contentPreview: m.content?.substring(0, 50)
-      })),
-      rawMessages: JSON.stringify(messages)
-    })
+${exercisesContext}
 
-    // Garantir que messages está no formato correto
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💬 EXEMPLOS DE COMO RESPONDER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${examplesContext}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`
+
+    // Formatar mensagens
     const formattedMessages = messages.map((m: any) => ({
       role: m.role,
       content: String(m.content || '')
     }))
 
-    console.log('📨 Formatted messages:', JSON.stringify(formattedMessages))
-
-    // Stream com AI (usando mensagens diretamente sem conversão)
+    // Stream
     const result = streamText({
       model: anthropic('claude-sonnet-4-20250514'),
       system: systemPrompt,
@@ -133,7 +204,7 @@ ${knowledgeContext ? `\n## Base de Conhecimento Relevante:\n${knowledgeContext}\
     return result.toTextStreamResponse()
 
   } catch (error) {
-    console.error('Playground chat error:', error)
+    console.error('Playground error:', error)
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error',

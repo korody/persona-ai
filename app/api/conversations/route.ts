@@ -5,11 +5,6 @@ import { NextResponse } from 'next/server'
 
 export async function GET(req: Request) {
   try {
-    // ⚠️  AUTH TEMPORARIAMENTE DESABILITADA devido a bloqueio de rede
-    // Retornar array vazio para permitir uso da aplicação
-    return NextResponse.json({ conversations: [] })
-
-    /* CÓDIGO ORIGINAL - REATIVAR QUANDO RESOLVER PROBLEMA DE REDE
     const authHeader = req.headers.get('authorization')
     if (!authHeader) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -44,7 +39,6 @@ export async function GET(req: Request) {
     }
 
     return NextResponse.json({ conversations })
-    */
 
   } catch (error) {
     console.error('Conversations API Error:', error)

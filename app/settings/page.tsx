@@ -98,7 +98,7 @@ export default function SettingsPage() {
       <Header />
       
       <div className="flex-1 overflow-y-auto bg-muted/10">
-        <div className="container max-w-4xl py-8">
+        <div className="container max-w-2xl mx-auto py-8 px-4">
           <div className="mb-8">
             <h1 className="text-3xl font-bold">Configurações</h1>
             <p className="text-muted-foreground mt-2">

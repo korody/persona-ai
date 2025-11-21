@@ -1,0 +1,3147 @@
+{
+  "version": "6.0.0",
+  "lastSync": null,
+  "description": "Metadados curados - 187 exercícios (Protocolos Lombar + Zumbido 100% + Dose Semanal 30%)",
+  "total_curated": 187,
+  "exercicios": {
+    "3938440": {
+      "duration_minutes": 20,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": [
+        "TODOS"
+      ],
+      "benefits": [
+        "Prática completa guiada",
+        "Todos elementos",
+        "Explicações detalhadas"
+      ],
+      "indications": [
+        "prática_diária",
+        "iniciantes",
+        "aprendizado",
+        "rotina_completa"
+      ],
+      "contraindications": []
+    },
+    "3938442": {
+      "duration_minutes": 15,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": [
+        "FÍGADO"
+      ],
+      "benefits": [
+        "Fundamentos Yi Jin Jing",
+        "Transformação tendões",
+        "Preparação"
+      ],
+      "indications": [
+        "praticantes",
+        "aprendizado_intermediário",
+        "desenvolvimento"
+      ],
+      "contraindications": []
+    },
+    "3973835": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": [
+        "CORAÇÃO"
+      ],
+      "benefits": [
+        "Acalma coração",
+        "Reduz ansiedade",
+        "Equilibra emoções",
+        "Melhora sono"
+      ],
+      "indications": [
+        "ansiedade",
+        "palpitação",
+        "agitação",
+        "insônia",
+        "nervosismo"
+      ],
+      "contraindications": []
+    },
+    "3973836": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": [
+        "BAÇO",
+        "ESTÔMAGO"
+      ],
+      "benefits": [
+        "Fortalece digestão",
+        "Elimina preocupação",
+        "Tonifica baço",
+        "Reduz pensamento excessivo"
+      ],
+      "indications": [
+        "digestão",
+        "preocupação",
+        "pensamento_excessivo",
+        "inchaço",
+        "má_digestão"
+      ],
+      "contraindications": []
+    },
+    "3973900": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": [
+        "PULMÃO"
+      ],
+      "benefits": [
+        "Fortalece pulmões",
+        "Libera tristeza",
+        "Melhora respiração",
+        "Aumenta imunidade"
+      ],
+      "indications": [
+        "tristeza",
+        "melancolia",
+        "respiração_fraca",
+        "pulmão_fraco",
+        "luto"
+      ],
+      "contraindications": []
+    },
+    "3973902": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM"
+      ],
+      "benefits": [
+        "Tonifica rins",
+        "Libera medo",
+        "Aumenta energia vital",
+        "Fortalece ossos"
+      ],
+      "indications": [
+        "medo",
+        "fadiga",
+        "fraqueza",
+        "zumbido",
+        "ossos_fracos"
+      ],
+      "contraindications": []
+    },
+    "3973910": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": [
+        "TRIPLO_AQUECEDOR"
+      ],
+      "benefits": [
+        "Equilibra temperatura corporal",
+        "Harmoniza todos órgãos",
+        "Regula metabolismo"
+      ],
+      "indications": [
+        "desequilíbrio_térmico",
+        "fadiga",
+        "má_circulação",
+        "metabolismo_lento"
+      ],
+      "contraindications": []
+    },
+    "4562936": {
+      "duration_minutes": 3,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": [
+        "CORAÇÃO"
+      ],
+      "benefits": [
+        "Acalma coração e mente",
+        "Reduz ansiedade",
+        "Melhora sono"
+      ],
+      "indications": [
+        "ansiedade",
+        "insônia",
+        "palpitação",
+        "agitação",
+        "nervosismo"
+      ],
+      "contraindications": []
+    },
+    "4562948": {
+      "duration_minutes": 3,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": [
+        "INTESTINO_GROSSO"
+      ],
+      "benefits": [
+        "Alivia dor em geral",
+        "Fortalece imunidade",
+        "Libera tensão",
+        "Elimina calor"
+      ],
+      "indications": [
+        "dor_cabeça",
+        "dor_geral",
+        "tensão",
+        "constipação",
+        "resfriado"
+      ],
+      "contraindications": [
+        "Gravidez"
+      ]
+    },
+    "4562950": {
+      "duration_minutes": 3,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM"
+      ],
+      "benefits": [
+        "Tonifica rins",
+        "Fortalece lombar",
+        "Aumenta energia vital",
+        "Melhora audição"
+      ],
+      "indications": [
+        "fadiga",
+        "dor_lombar",
+        "fraqueza",
+        "zumbido",
+        "libido_baixa"
+      ],
+      "contraindications": []
+    },
+    "4562957": {
+      "duration_minutes": 3,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": [
+        "ESTÔMAGO"
+      ],
+      "benefits": [
+        "Tonifica energia geral",
+        "Fortalece digestão",
+        "Aumenta imunidade",
+        "Longevidade"
+      ],
+      "indications": [
+        "fadiga",
+        "digestão",
+        "imunidade_baixa",
+        "fraqueza_geral",
+        "prevenção"
+      ],
+      "contraindications": []
+    },
+    "4562961": {
+      "duration_minutes": 3,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": [
+        "CÉREBRO"
+      ],
+      "benefits": [
+        "Acalma mente profundamente",
+        "Melhora sono",
+        "Reduz ansiedade",
+        "Medita"
+      ],
+      "indications": [
+        "insônia",
+        "ansiedade",
+        "agitação_mental",
+        "meditação",
+        "estresse"
+      ],
+      "contraindications": []
+    },
+    "4739363": {
+      "duration_minutes": 15,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": [
+        "TODOS"
+      ],
+      "benefits": [
+        "Fundamentos Ba Duan Jin",
+        "Teoria e prática",
+        "Base sólida"
+      ],
+      "indications": [
+        "iniciantes",
+        "aprendizado",
+        "fundamentos"
+      ],
+      "contraindications": []
+    },
+    "4739367": {
+      "duration_minutes": 3,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": [
+        "BAÇO",
+        "ESTÔMAGO"
+      ],
+      "benefits": [
+        "Alonga coluna vertebral",
+        "Regula Triplo Aquecedor",
+        "Melhora digestão",
+        "Aumenta energia geral"
+      ],
+      "indications": [
+        "digestão",
+        "fadiga",
+        "tensão_ombros",
+        "má_digestão",
+        "falta_energia"
+      ],
+      "contraindications": [
+        "Lesões agudas nos ombros"
+      ]
+    },
+    "4739371": {
+      "duration_minutes": 3,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": [
+        "PULMÃO"
+      ],
+      "benefits": [
+        "Fortalece pulmões",
+        "Expande tórax",
+        "Melhora respiração",
+        "Aumenta imunidade"
+      ],
+      "indications": [
+        "respiração_curta",
+        "asma",
+        "bronquite",
+        "imunidade_baixa",
+        "tosse"
+      ],
+      "contraindications": [
+        "Lesões agudas no ombro"
+      ]
+    },
+    "4739375": {
+      "duration_minutes": 3,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": [
+        "BAÇO",
+        "ESTÔMAGO"
+      ],
+      "benefits": [
+        "Regula digestão",
+        "Fortalece baço",
+        "Melhora apetite",
+        "Tonifica qi"
+      ],
+      "indications": [
+        "digestão",
+        "má_digestão",
+        "inchaço",
+        "falta_apetite",
+        "gases"
+      ],
+      "contraindications": []
+    },
+    "4739397": {
+      "duration_minutes": 3,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": [
+        "CORAÇÃO"
+      ],
+      "benefits": [
+        "Alivia cansaço",
+        "Reduz estresse",
+        "Relaxa pescoço",
+        "Melhora visão"
+      ],
+      "indications": [
+        "fadiga",
+        "estresse",
+        "tensão_pescoço",
+        "cansaço_mental",
+        "vista_cansada"
+      ],
+      "contraindications": [
+        "Problemas cervicais graves"
+      ]
+    },
+    "4739399": {
+      "duration_minutes": 3,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": [
+        "CORAÇÃO"
+      ],
+      "benefits": [
+        "Acalma mente",
+        "Reduz ansiedade",
+        "Equilibra fogo do coração",
+        "Relaxa quadril"
+      ],
+      "indications": [
+        "ansiedade",
+        "agitação",
+        "insônia",
+        "palpitação",
+        "nervosismo"
+      ],
+      "contraindications": [
+        "Problemas graves na coluna lombar"
+      ]
+    },
+    "4739401": {
+      "duration_minutes": 3,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM",
+        "BEXIGA"
+      ],
+      "benefits": [
+        "Fortalece rins",
+        "Alonga lombar",
+        "Aumenta energia vital",
+        "Nutre essência"
+      ],
+      "indications": [
+        "dor_lombar",
+        "fadiga",
+        "fraqueza_pernas",
+        "zumbido",
+        "libido_baixa"
+      ],
+      "contraindications": [
+        "Hérnia de disco aguda",
+        "Pressão alta severa"
+      ]
+    },
+    "4739403": {
+      "duration_minutes": 3,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": [
+        "FÍGADO"
+      ],
+      "benefits": [
+        "Aumenta força física",
+        "Tonifica fígado",
+        "Melhora determinação",
+        "Fortalece visão"
+      ],
+      "indications": [
+        "fraqueza_muscular",
+        "falta_vontade",
+        "fadiga",
+        "visão_fraca"
+      ],
+      "contraindications": [
+        "Pressão alta não controlada"
+      ]
+    },
+    "4739404": {
+      "duration_minutes": 3,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM"
+      ],
+      "benefits": [
+        "Estimula todos meridianos",
+        "Previne doenças",
+        "Fortalece tornozelos",
+        "Harmoniza energia"
+      ],
+      "indications": [
+        "circulação_ruim",
+        "pés_frios",
+        "fadiga",
+        "prevenção",
+        "desequilíbrio"
+      ],
+      "contraindications": [
+        "Problemas graves nos tornozelos"
+      ]
+    },
+    "4887829": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "MADEIRA",
+      "organs": [
+        "FÍGADO"
+      ],
+      "benefits": [
+        "Tonifica fígado",
+        "Libera raiva",
+        "Desintoxica fígado",
+        "Melhora visão"
+      ],
+      "indications": [
+        "raiva",
+        "irritação",
+        "olhos_vermelhos",
+        "tensão_muscular",
+        "fígado_congestionado"
+      ],
+      "contraindications": []
+    },
+    "5013080": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM"
+      ],
+      "benefits": [
+        "Tonifica rins",
+        "Melhora audição",
+        "Equilibra corpo todo",
+        "Previne zumbido"
+      ],
+      "indications": [
+        "zumbido",
+        "audição_fraca",
+        "fadiga",
+        "desequilíbrio"
+      ],
+      "contraindications": [
+        "Infecções ativas no ouvido"
+      ]
+    },
+    "5013084": {
+      "duration_minutes": 15,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM"
+      ],
+      "benefits": [
+        "Relaxa corpo",
+        "Tonifica rins",
+        "Melhora sono",
+        "Aquece corpo"
+      ],
+      "indications": [
+        "insônia",
+        "pés_frios",
+        "fadiga",
+        "ansiedade",
+        "hipertensão"
+      ],
+      "contraindications": [
+        "Feridas nos pés",
+        "Diabetes avançado"
+      ]
+    },
+    "5013116": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": [
+        "CORAÇÃO"
+      ],
+      "benefits": [
+        "Regula ritmo cardíaco",
+        "Acalma coração",
+        "Reduz ansiedade",
+        "Aumenta foco"
+      ],
+      "indications": [
+        "ansiedade",
+        "palpitação",
+        "agitação",
+        "estresse",
+        "falta_concentração"
+      ],
+      "contraindications": []
+    },
+    "5013127": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": [
+        "PULMÃO"
+      ],
+      "benefits": [
+        "Fortalece pulmões",
+        "Melhora capacidade respiratória",
+        "Desintoxica"
+      ],
+      "indications": [
+        "ansiedade",
+        "estresse",
+        "respiração_curta",
+        "asma_leve"
+      ],
+      "contraindications": []
+    },
+    "5013427": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM"
+      ],
+      "benefits": [
+        "Fortalece região lombar",
+        "Nutre rins",
+        "Aumenta flexibilidade",
+        "Tonifica energia vital"
+      ],
+      "indications": [
+        "dor_lombar",
+        "fadiga",
+        "fraqueza_pernas",
+        "rigidez_coluna"
+      ],
+      "contraindications": [
+        "Hérnia de disco aguda",
+        "Pressão alta descontrolada"
+      ]
+    },
+    "5024853": {
+      "duration_minutes": 60,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM"
+      ],
+      "benefits": [
+        "Protocolo completo zumbido",
+        "Técnicas específicas",
+        "Compreensão profunda MTC"
+      ],
+      "indications": [
+        "zumbido",
+        "labirintite",
+        "tontura",
+        "vertigem",
+        "audição"
+      ],
+      "contraindications": []
+    },
+    "3937654": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Orientação inicial",
+        "Estrutura de aprendizado",
+        "Planejamento de prática"
+      ],
+      "indications": [
+        "iniciantes",
+        "orientação",
+        "planejamento"
+      ],
+      "contraindications": []
+    },
+    "3937668": {
+      "duration_minutes": 30,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Fundamentos MTC",
+        "Base teórica",
+        "Compreensão energética"
+      ],
+      "indications": [
+        "aprendizado",
+        "teoria",
+        "fundamentos"
+      ],
+      "contraindications": []
+    },
+    "3937674": {
+      "duration_minutes": 15,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": [
+        "Compreensão Jing",
+        "Essência vital",
+        "Energia ancestral"
+      ],
+      "indications": [
+        "aprendizado",
+        "fundamentos",
+        "teoria_energética"
+      ],
+      "contraindications": []
+    },
+    "3937675": {
+      "duration_minutes": 20,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Ciclos energéticos",
+        "Horários órgãos",
+        "Otimização prática"
+      ],
+      "indications": [
+        "aprendizado",
+        "teoria",
+        "planejamento_prática"
+      ],
+      "contraindications": []
+    },
+    "3937677": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "MADEIRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Prepara corpo",
+        "Ativa circulação",
+        "Previne lesões"
+      ],
+      "indications": [
+        "prática_diária",
+        "preparação",
+        "aquecimento"
+      ],
+      "contraindications": []
+    },
+    "3937683": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["TRIPLO_AQUECEDOR"],
+      "benefits": [
+        "Regula três aquecedores",
+        "Harmoniza órgãos",
+        "Circulação energia"
+      ],
+      "indications": [
+        "prática_diária",
+        "regulação_energética",
+        "harmonização"
+      ],
+      "contraindications": []
+    },
+    "3937827": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "Fortalece pulmões",
+        "Expande capacidade",
+        "Libera tristeza"
+      ],
+      "indications": [
+        "respiração",
+        "pulmão_fraco",
+        "tristeza",
+        "tosse"
+      ],
+      "contraindications": []
+    },
+    "3937829": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": [
+        "Regula digestão",
+        "Fortalece baço",
+        "Harmoniza estômago"
+      ],
+      "indications": [
+        "digestão",
+        "má_digestão",
+        "inchaço",
+        "preocupação"
+      ],
+      "contraindications": []
+    },
+    "3937942": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": [
+        "Recupera energia",
+        "Elimina fadiga",
+        "Fortalece rins"
+      ],
+      "indications": [
+        "fadiga",
+        "cansaço",
+        "esgotamento",
+        "dor_lombar"
+      ],
+      "contraindications": []
+    },
+    "3938427": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CORAÇÃO"],
+      "benefits": [
+        "Acalma coração",
+        "Dispersa fogo",
+        "Reduz ansiedade"
+      ],
+      "indications": [
+        "ansiedade",
+        "agitação",
+        "palpitação",
+        "insônia"
+      ],
+      "contraindications": []
+    },
+    "3938429": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": [
+        "Fortalece rins",
+        "Tonifica lombar",
+        "Aumenta vitalidade"
+      ],
+      "indications": [
+        "dor_lombar",
+        "rim_fraco",
+        "fadiga",
+        "joelho_fraco"
+      ],
+      "contraindications": []
+    },
+    "3938438": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO"],
+      "benefits": [
+        "Aumenta força",
+        "Libera raiva",
+        "Tonifica músculos"
+      ],
+      "indications": [
+        "fraqueza",
+        "raiva",
+        "irritação",
+        "tensão_muscular"
+      ],
+      "contraindications": []
+    },
+    "3938439": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Harmoniza todos órgãos",
+        "Previne doenças",
+        "Equilibra energia"
+      ],
+      "indications": [
+        "prática_diária",
+        "prevenção",
+        "harmonização",
+        "finalização"
+      ],
+      "contraindications": []
+    },
+    "3938441": {
+      "duration_minutes": 50,
+      "level": "INTERMEDIÁRIO",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Prática autônoma",
+        "Sequência completa",
+        "Todos benefícios"
+      ],
+      "indications": [
+        "prática_avançada",
+        "praticantes",
+        "autonomia"
+      ],
+      "contraindications": []
+    },
+    "3938523": {
+      "duration_minutes": 50,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Prática guiada completa",
+        "Todos benefícios Ba Duan Jin",
+        "Explicações detalhadas"
+      ],
+      "indications": [
+        "prática_diária",
+        "iniciantes",
+        "aprendizado",
+        "rotina_completa"
+      ],
+      "contraindications": []
+    },
+    "3938443": {
+      "duration_minutes": 8,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "TENDÕES"],
+      "benefits": [
+        "Fortalece tendões",
+        "Aumenta flexibilidade",
+        "Base Yi Jin Jing"
+      ],
+      "indications": [
+        "tendões_fracos",
+        "rigidez",
+        "desenvolvimento_força"
+      ],
+      "contraindications": ["lesão_tendões"]
+    },
+    "3938444": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": [
+        "Fortalece coluna",
+        "Aumenta flexibilidade",
+        "Tonifica rins"
+      ],
+      "indications": [
+        "dor_coluna",
+        "rigidez_lombar",
+        "rim_fraco"
+      ],
+      "contraindications": ["lesão_coluna_aguda"]
+    },
+    "3938445": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["TENDÕES", "MÚSCULOS"],
+      "benefits": [
+        "Força extrema",
+        "Tendões de aço",
+        "Resistência"
+      ],
+      "indications": [
+        "desenvolvimento_força",
+        "condicionamento",
+        "atletas"
+      ],
+      "contraindications": ["lesão_tendões", "hipertensão"]
+    },
+    "3938446": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "Expande tórax",
+        "Fortalece pulmões",
+        "Aumenta capacidade"
+      ],
+      "indications": [
+        "respiração_curta",
+        "pulmão_fraco",
+        "asma_leve"
+      ],
+      "contraindications": ["asma_grave"]
+    },
+    "3938448": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "TENDÕES"],
+      "benefits": [
+        "Força rotacional",
+        "Flexibilidade coluna",
+        "Desbloqueio fígado"
+      ],
+      "indications": [
+        "rigidez_coluna",
+        "tensão_lateral",
+        "estagnação_fígado"
+      ],
+      "contraindications": ["hérnia_disco"]
+    },
+    "3938449": {
+      "duration_minutes": 6,
+      "level": "AVANÇADO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "JOELHOS"],
+      "benefits": [
+        "Força extrema pernas",
+        "Fortalece joelhos",
+        "Tonifica rins profundo"
+      ],
+      "indications": [
+        "condicionamento_avançado",
+        "força_pernas",
+        "atletas"
+      ],
+      "contraindications": ["lesão_joelho", "varizes_graves"]
+    },
+    "3938450": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "TENDÕES"],
+      "benefits": [
+        "Coordenação",
+        "Flexibilidade",
+        "Desbloqueio energético"
+      ],
+      "indications": [
+        "rigidez",
+        "coordenação",
+        "desenvolvimento"
+      ],
+      "contraindications": []
+    },
+    "3938451": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": [
+        "Força lombar",
+        "Flexibilidade coluna",
+        "Vitalidade"
+      ],
+      "indications": [
+        "dor_lombar",
+        "rigidez_coluna",
+        "fadiga"
+      ],
+      "contraindications": ["lesão_lombar_aguda"]
+    },
+    "3938452": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "TERRA",
+      "organs": ["BAÇO", "COLUNA"],
+      "benefits": [
+        "Flexibilidade coluna",
+        "Humildade",
+        "Alongamento profundo"
+      ],
+      "indications": [
+        "rigidez_coluna",
+        "orgulho",
+        "tensão_costas"
+      ],
+      "contraindications": ["lesão_coluna"]
+    },
+    "3938453": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "QUADRIL"],
+      "benefits": [
+        "Flexibilidade quadril",
+        "Fortalece lombar",
+        "Libera tensão"
+      ],
+      "indications": [
+        "rigidez_quadril",
+        "tensão_lombar",
+        "dor_quadril"
+      ],
+      "contraindications": []
+    },
+    "3938454": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Integração aprendizado",
+        "Reflexão",
+        "Consolidação"
+      ],
+      "indications": [
+        "finalização",
+        "consolidação",
+        "reflexão"
+      ],
+      "contraindications": []
+    },
+    "3938472": {
+      "duration_minutes": 40,
+      "level": "INTERMEDIÁRIO",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Sequência completa 5 animais",
+        "Imitação animal",
+        "Todos elementos"
+      ],
+      "indications": [
+        "prática_avançada",
+        "desenvolvimento_completo",
+        "todos_órgãos"
+      ],
+      "contraindications": []
+    },
+    "3938473": {
+      "duration_minutes": 40,
+      "level": "AVANÇADO",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Prática autônoma 5 animais",
+        "Domínio técnico",
+        "Fluência"
+      ],
+      "indications": [
+        "praticantes_avançados",
+        "autonomia",
+        "maestria"
+      ],
+      "contraindications": []
+    },
+    "3938476": {
+      "duration_minutes": 25,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Fundamentos 5 elementos",
+        "Aplicação prática",
+        "Saúde integral"
+      ],
+      "indications": [
+        "aprendizado",
+        "fundamentos",
+        "teoria_aplicada"
+      ],
+      "contraindications": []
+    },
+    "3938477": {
+      "duration_minutes": 20,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Equilíbrio corpo-mente",
+        "Integração física-mental",
+        "Saúde holística"
+      ],
+      "indications": [
+        "aprendizado",
+        "equilíbrio",
+        "integração"
+      ],
+      "contraindications": []
+    },
+    "3938478": {
+      "duration_minutes": 20,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Metodologia prática",
+        "4 passos saúde",
+        "Aplicação sistemática"
+      ],
+      "indications": [
+        "aprendizado",
+        "metodologia",
+        "iniciantes"
+      ],
+      "contraindications": []
+    },
+    "3938482": {
+      "duration_minutes": 15,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Fundamentos Yin Yang",
+        "Níveis prática",
+        "Progressão"
+      ],
+      "indications": [
+        "aprendizado",
+        "fundamentos",
+        "filosofia"
+      ],
+      "contraindications": []
+    },
+    "3938483": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CORAÇÃO"],
+      "benefits": [
+        "Desenvolve foco",
+        "Concentração mental",
+        "Presença"
+      ],
+      "indications": [
+        "dispersão",
+        "falta_foco",
+        "mente_agitada"
+      ],
+      "contraindications": []
+    },
+    "3938484": {
+      "duration_minutes": 12,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Compreensão movimento",
+        "Yin Yang dinâmico",
+        "Fluidez"
+      ],
+      "indications": [
+        "aprendizado",
+        "movimento",
+        "fluidez"
+      ],
+      "contraindications": []
+    },
+    "3938485": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Processo aprendizado",
+        "Ciclo natural",
+        "Paciência"
+      ],
+      "indications": [
+        "aprendizado",
+        "paciência",
+        "desenvolvimento"
+      ],
+      "contraindications": []
+    },
+    "3938486": {
+      "duration_minutes": 12,
+      "level": "INTERMEDIÁRIO",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Compreensão vazio",
+        "Espaço interno",
+        "Não-ação"
+      ],
+      "indications": [
+        "aprendizado_avançado",
+        "filosofia",
+        "meditação"
+      ],
+      "contraindications": []
+    },
+    "3938488": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": [
+        "Cultiva paciência",
+        "Sabedoria tempo",
+        "Perseverança"
+      ],
+      "indications": [
+        "ansiedade",
+        "pressa",
+        "impaciência"
+      ],
+      "contraindications": []
+    },
+    "3938490": {
+      "duration_minutes": 15,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": [
+        "Alivia dor lombar",
+        "Fortalece rins",
+        "Relaxa músculos"
+      ],
+      "indications": [
+        "dor_lombar",
+        "rim_fraco",
+        "tensão_lombar"
+      ],
+      "contraindications": ["lesão_aguda"]
+    },
+    "3938491": {
+      "duration_minutes": 12,
+      "level": "INICIANTE",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA"],
+      "benefits": [
+        "Alivia dor costas superior",
+        "Relaxa ombros",
+        "Libera tensão"
+      ],
+      "indications": [
+        "dor_costas",
+        "tensão_ombros",
+        "rigidez_superior"
+      ],
+      "contraindications": []
+    },
+    "3938492": {
+      "duration_minutes": 12,
+      "level": "INICIANTE",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO"],
+      "benefits": [
+        "Alivia dor costas",
+        "Flexibilidade",
+        "Desbloqueio"
+      ],
+      "indications": [
+        "dor_costas",
+        "rigidez",
+        "tensão_muscular"
+      ],
+      "contraindications": []
+    },
+    "3938495": {
+      "duration_minutes": 12,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "Alivia dor mãos/braços",
+        "Circulação",
+        "Flexibilidade"
+      ],
+      "indications": [
+        "dor_mãos",
+        "dor_braços",
+        "túnel_carpo",
+        "tendinite"
+      ],
+      "contraindications": ["lesão_aguda"]
+    },
+    "3938496": {
+      "duration_minutes": 12,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "Fortalece punhos",
+        "Circulação mãos",
+        "Prevenção lesões"
+      ],
+      "indications": [
+        "dor_punhos",
+        "fraqueza_mãos",
+        "artrite_leve"
+      ],
+      "contraindications": []
+    },
+    "3938497": {
+      "duration_minutes": 12,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CORAÇÃO"],
+      "benefits": [
+        "Reduz ansiedade",
+        "Acalma mente",
+        "Relaxamento profundo"
+      ],
+      "indications": [
+        "ansiedade",
+        "estresse",
+        "nervosismo",
+        "palpitação"
+      ],
+      "contraindications": []
+    },
+    "3938498": {
+      "duration_minutes": 15,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CORAÇÃO"],
+      "benefits": [
+        "Acalma coração",
+        "Respiração profunda",
+        "Paz interior"
+      ],
+      "indications": [
+        "ansiedade",
+        "estresse",
+        "agitação",
+        "insônia"
+      ],
+      "contraindications": []
+    },
+    "3938499": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "CORAÇÃO"],
+      "benefits": [
+        "Melhora sono",
+        "Acalma mente",
+        "Relaxamento noturno"
+      ],
+      "indications": [
+        "insônia",
+        "dificuldade_dormir",
+        "sono_leve"
+      ],
+      "contraindications": []
+    },
+    "3938500": {
+      "duration_minutes": 12,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "CORAÇÃO"],
+      "benefits": [
+        "Sono profundo",
+        "Aquieta mente",
+        "Relaxamento total"
+      ],
+      "indications": [
+        "insônia",
+        "sono_interrompido",
+        "despertar_noturno"
+      ],
+      "contraindications": []
+    },
+    "3938501": {
+      "duration_minutes": 15,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": [
+        "Restaura sono",
+        "Tonifica rins",
+        "Recuperação noturna"
+      ],
+      "indications": [
+        "insônia_crônica",
+        "fadiga",
+        "sono_não_reparador"
+      ],
+      "contraindications": []
+    },
+    "3938502": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO"],
+      "benefits": [
+        "Aumenta energia",
+        "Ativa circulação",
+        "Vitalidade matinal"
+      ],
+      "indications": [
+        "fadiga",
+        "cansaço",
+        "energia_baixa"
+      ],
+      "contraindications": []
+    },
+    "3938503": {
+      "duration_minutes": 12,
+      "level": "INICIANTE",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "BAÇO"],
+      "benefits": [
+        "Energia sustentada",
+        "Vitalidade",
+        "Tonificação"
+      ],
+      "indications": [
+        "fadiga_crônica",
+        "esgotamento",
+        "energia_baixa"
+      ],
+      "contraindications": []
+    },
+    "3938504": {
+      "duration_minutes": 15,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": [
+        "Energia profunda",
+        "Vitalidade máxima",
+        "Reserva energética"
+      ],
+      "indications": [
+        "esgotamento_profundo",
+        "fadiga_extrema",
+        "recuperação"
+      ],
+      "contraindications": ["hipertensão"]
+    },
+    "3973830": {
+      "duration_minutes": 20,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Fundamentos mantras",
+        "Base teórica sons",
+        "Compreensão energética"
+      ],
+      "indications": [
+        "aprendizado",
+        "teoria",
+        "fundamentos"
+      ],
+      "contraindications": []
+    },
+    "3973831": {
+      "duration_minutes": 15,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "Aprende respiração correta",
+        "Base respiratória",
+        "Fundamentos Qi Gong"
+      ],
+      "indications": [
+        "aprendizado",
+        "respiração",
+        "iniciantes"
+      ],
+      "contraindications": []
+    },
+    "3973832": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Prática estática mantras",
+        "Sons curativos",
+        "6 órgãos"
+      ],
+      "indications": [
+        "iniciantes",
+        "mantras",
+        "sons_curativos"
+      ],
+      "contraindications": []
+    },
+    "3973833": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Postura inicial",
+        "Preparo mantras",
+        "Centragem"
+      ],
+      "indications": [
+        "preparação",
+        "postura",
+        "centragem"
+      ],
+      "contraindications": []
+    },
+    "3973834": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO"],
+      "benefits": [
+        "Desintoxica fígado",
+        "Libera raiva",
+        "Limpa energia estagnada"
+      ],
+      "indications": [
+        "raiva",
+        "irritação",
+        "fígado",
+        "desintoxicação",
+        "estagnação"
+      ],
+      "contraindications": []
+    },
+    "3973835": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CORAÇÃO"],
+      "benefits": [
+        "Acalma coração",
+        "Dispersa calor",
+        "Equilibra emoções"
+      ],
+      "indications": [
+        "ansiedade",
+        "palpitação",
+        "agitação",
+        "insônia",
+        "calor_excessivo"
+      ],
+      "contraindications": []
+    },
+    "3973836": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": [
+        "Fortalece digestão",
+        "Elimina preocupação",
+        "Tonifica baço"
+      ],
+      "indications": [
+        "digestão",
+        "preocupação",
+        "pensamento_excessivo",
+        "inchaço",
+        "má_digestão"
+      ],
+      "contraindications": []
+    },
+    "3973900": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "Fortalece pulmões",
+        "Libera tristeza",
+        "Melhora respiração"
+      ],
+      "indications": [
+        "tristeza",
+        "respiração",
+        "pulmão_fraco",
+        "melancolia",
+        "tosse"
+      ],
+      "contraindications": []
+    },
+    "3973902": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": [
+        "Tonifica rins",
+        "Fortalece vitalidade",
+        "Elimina medo"
+      ],
+      "indications": [
+        "medo",
+        "rim_fraco",
+        "fadiga",
+        "dor_lombar",
+        "vitalidade"
+      ],
+      "contraindications": []
+    },
+    "3973910": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["TRIPLO_AQUECEDOR"],
+      "benefits": [
+        "Regula três aquecedores",
+        "Harmoniza temperatura",
+        "Equilibra energia"
+      ],
+      "indications": [
+        "desequilíbrio_térmico",
+        "regulação_energética",
+        "harmonização"
+      ],
+      "contraindications": []
+    },
+    "3973912": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Fecha prática",
+        "Integra energia",
+        "Finalização"
+      ],
+      "indications": [
+        "finalização",
+        "integração",
+        "fechamento"
+      ],
+      "contraindications": []
+    },
+    "3973922": {
+      "duration_minutes": 60,
+      "level": "INTERMEDIÁRIO",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Sequência completa 6 mantras",
+        "Todos órgãos",
+        "Prática profunda"
+      ],
+      "indications": [
+        "prática_completa",
+        "mantras",
+        "todos_órgãos",
+        "avançado"
+      ],
+      "contraindications": []
+    },
+    "3973923": {
+      "duration_minutes": 25,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "Teoria respiração",
+        "Aplicação prática",
+        "Saúde respiratória"
+      ],
+      "indications": [
+        "aprendizado",
+        "respiração",
+        "teoria"
+      ],
+      "contraindications": []
+    },
+    "3973924": {
+      "duration_minutes": 30,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "4 respirações básicas",
+        "Saúde física e mental",
+        "Técnicas respiratórias"
+      ],
+      "indications": [
+        "respiração",
+        "saúde_geral",
+        "técnicas"
+      ],
+      "contraindications": []
+    },
+    "3973925": {
+      "duration_minutes": 35,
+      "level": "AVANÇADO",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "Respirações avançadas",
+        "Técnicas profundas",
+        "Maestria respiratória"
+      ],
+      "indications": [
+        "praticantes_avançados",
+        "respiração_avançada",
+        "desenvolvimento"
+      ],
+      "contraindications": []
+    },
+    "3973971": {
+      "duration_minutes": 90,
+      "level": "INTERMEDIÁRIO",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Live tira-dúvidas",
+        "Aprofundamento",
+        "Correções técnicas"
+      ],
+      "indications": [
+        "aprendizado",
+        "dúvidas",
+        "aprofundamento"
+      ],
+      "contraindications": []
+    },
+    "4904390": {
+      "duration_minutes": 12,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "Respiração abdominal",
+        "Relaxamento profundo",
+        "Acalma mente",
+        "Melhora sono"
+      ],
+      "indications": [
+        "ansiedade",
+        "insônia",
+        "estresse",
+        "relaxamento",
+        "iniciantes"
+      ],
+      "contraindications": []
+    },
+    "4904392": {
+      "duration_minutes": 15,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "Respiração com movimento",
+        "Potencializa diafragma",
+        "Aumenta capacidade"
+      ],
+      "indications": [
+        "respiração",
+        "desenvolvimento",
+        "capacidade_pulmonar"
+      ],
+      "contraindications": []
+    },
+    "4904393": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "Limpeza interna La Sal",
+        "Fortalece pulmões",
+        "Desintoxicação"
+      ],
+      "indications": [
+        "desintoxicação",
+        "pulmão_fraco",
+        "tosse",
+        "respiração"
+      ],
+      "contraindications": []
+    },
+    "5051540": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Orientações curso",
+        "Como usar conteúdos",
+        "Estrutura aprendizado"
+      ],
+      "indications": [
+        "iniciantes",
+        "orientação",
+        "aprendizado"
+      ],
+      "contraindications": []
+    },
+    "4562935": {
+      "duration_minutes": 15,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Introdução acupressão",
+        "Base teórica pontos",
+        "Orientação inicial"
+      ],
+      "indications": [
+        "aprendizado",
+        "acupressão",
+        "iniciantes"
+      ],
+      "contraindications": []
+    },
+    "4562936": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CORAÇÃO"],
+      "benefits": [
+        "Acalma coração (C7)",
+        "Reduz ansiedade",
+        "Melhora sono",
+        "Equilibra emoções"
+      ],
+      "indications": [
+        "ansiedade",
+        "insônia",
+        "palpitação",
+        "nervosismo",
+        "agitação"
+      ],
+      "contraindications": []
+    },
+    "4562939": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["PERICÁRDIO"],
+      "benefits": [
+        "Acalma coração (PC6)",
+        "Alivia náusea",
+        "Reduz ansiedade",
+        "Melhora circulação"
+      ],
+      "indications": [
+        "ansiedade",
+        "náusea",
+        "enjoo",
+        "palpitação",
+        "insônia"
+      ],
+      "contraindications": []
+    },
+    "4562946": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": [
+        "Fortalece pulmões (P9)",
+        "Melhora respiração",
+        "Alivia tosse",
+        "Tonifica Qi"
+      ],
+      "indications": [
+        "respiração",
+        "tosse",
+        "pulmão_fraco",
+        "fadiga",
+        "imunidade"
+      ],
+      "contraindications": []
+    },
+    "4562948": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["INTESTINO_GROSSO"],
+      "benefits": [
+        "Ponto mestre dor (IG4)",
+        "Alivia cefaleia",
+        "Fortalece imunidade",
+        "Reduz inflamação"
+      ],
+      "indications": [
+        "dor_cabeça",
+        "dor_facial",
+        "sinusite",
+        "imunidade",
+        "constipação"
+      ],
+      "contraindications": ["gravidez"]
+    },
+    "4562950": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": [
+        "Tonifica rins (R3)",
+        "Fortalece lombar",
+        "Aumenta vitalidade",
+        "Melhora audição"
+      ],
+      "indications": [
+        "dor_lombar",
+        "fadiga",
+        "rim_fraco",
+        "zumbido",
+        "tontura"
+      ],
+      "contraindications": []
+    },
+    "4562952": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO"],
+      "benefits": [
+        "Fortalece baço (BP6)",
+        "Regula menstruação",
+        "Melhora digestão",
+        "Alivia insônia"
+      ],
+      "indications": [
+        "digestão",
+        "insônia",
+        "menstruação",
+        "inchaço",
+        "fadiga"
+      ],
+      "contraindications": ["gravidez"]
+    },
+    "4562954": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO"],
+      "benefits": [
+        "Desobstrui fígado (F3)",
+        "Alivia estresse",
+        "Reduz raiva",
+        "Regula pressão"
+      ],
+      "indications": [
+        "estresse",
+        "raiva",
+        "irritação",
+        "dor_cabeça",
+        "pressão_alta"
+      ],
+      "contraindications": []
+    },
+    "4562956": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": [
+        "Fortalece rins (B23)",
+        "Alivia dor lombar",
+        "Tonifica Yang",
+        "Aumenta vitalidade"
+      ],
+      "indications": [
+        "dor_lombar",
+        "fadiga",
+        "rim_fraco",
+        "dor_joelho",
+        "frieza"
+      ],
+      "contraindications": []
+    },
+    "4562957": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["ESTÔMAGO"],
+      "benefits": [
+        "Tonifica Qi geral (E36)",
+        "Fortalece imunidade",
+        "Aumenta energia",
+        "Melhora digestão"
+      ],
+      "indications": [
+        "fadiga",
+        "digestão",
+        "imunidade",
+        "energia_baixa",
+        "pós_doença"
+      ],
+      "contraindications": []
+    },
+    "4562958": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CÉREBRO"],
+      "benefits": [
+        "Eleva Yang (VG20)",
+        "Clareia mente",
+        "Melhora memória",
+        "Alivia cefaleia"
+      ],
+      "indications": [
+        "dor_cabeça",
+        "tontura",
+        "falta_foco",
+        "memória_fraca",
+        "depressão"
+      ],
+      "contraindications": ["hipertensão_grave"]
+    },
+    "4562959": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CÉREBRO"],
+      "benefits": [
+        "Revive consciência (VG26)",
+        "Emergência",
+        "Clareia mente",
+        "Alivia choque"
+      ],
+      "indications": [
+        "emergência",
+        "desmaio",
+        "choque",
+        "dor_costas"
+      ],
+      "contraindications": []
+    },
+    "4562960": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CORAÇÃO"],
+      "benefits": [
+        "Acalma coração (C9)",
+        "Reduz ansiedade extrema",
+        "Clareia mente",
+        "Melhora fala"
+      ],
+      "indications": [
+        "ansiedade_extrema",
+        "pânico",
+        "palpitação_forte",
+        "insônia_grave"
+      ],
+      "contraindications": []
+    },
+    "4562961": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CÉREBRO"],
+      "benefits": [
+        "Terceiro olho (Yin Tang)",
+        "Acalma mente",
+        "Melhora sono",
+        "Alivia sinusite"
+      ],
+      "indications": [
+        "insônia",
+        "ansiedade",
+        "sinusite",
+        "dor_cabeça",
+        "estresse"
+      ],
+      "contraindications": []
+    },
+    "4562964": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "TERRA",
+      "organs": ["TODOS"],
+      "benefits": [
+        "Combinação poderosa",
+        "Yin Tang + PC6 + C7",
+        "Acalma profundo"
+      ],
+      "indications": [
+        "ansiedade_grave",
+        "insônia_crônica",
+        "estresse_extremo"
+      ],
+      "contraindications": []
+    },
+    "4562966": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BAÇO"],
+      "benefits": [
+        "Tonifica Yin",
+        "BP6 + R3",
+        "Fertilidade"
+      ],
+      "indications": [
+        "fadiga",
+        "menstruação",
+        "menopausa",
+        "insônia"
+      ],
+      "contraindications": ["gravidez"]
+    },
+    "4562968": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["CORAÇÃO", "RIM"],
+      "benefits": [
+        "Coração-Rim conexão",
+        "C7 + R3",
+        "Ansiedade e vitalidade"
+      ],
+      "indications": [
+        "ansiedade",
+        "fadiga",
+        "insônia",
+        "palpitação"
+      ],
+      "contraindications": []
+    },
+    "4562973": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["ESTÔMAGO", "RIM"],
+      "benefits": [
+        "Tonificação máxima",
+        "E36 + R3",
+        "Energia e vitalidade"
+      ],
+      "indications": [
+        "fadiga_extrema",
+        "pós_doença",
+        "convalescença",
+        "imunidade"
+      ],
+      "contraindications": []
+    },
+    "4562979": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["PERICÁRDIO", "RIM"],
+      "benefits": [
+        "Acalma e tonifica",
+        "PC6 + R3",
+        "Ansiedade com fadiga"
+      ],
+      "indications": [
+        "ansiedade",
+        "fadiga",
+        "náusea",
+        "insônia"
+      ],
+      "contraindications": []
+    },
+    "4562980": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": [
+        "Rins máximo",
+        "R3 + B23",
+        "Dor lombar e vitalidade"
+      ],
+      "indications": [
+        "dor_lombar",
+        "fadiga_crônica",
+        "rim_fraco",
+        "frieza"
+      ],
+      "contraindications": []
+    },
+    "4667939": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM",
+        "BEXIGA"
+      ],
+      "benefits": [
+        "Fortalece os rins",
+        "Flexibilidade da lombar",
+        "Alonga posterior das pernas",
+        "Nutre energia vital"
+      ],
+      "indications": [
+        "dor_lombar",
+        "fadiga",
+        "fraqueza_pernas",
+        "rim_fraco"
+      ],
+      "contraindications": [
+        "Hérnia de disco aguda",
+        "Lesões graves na coluna"
+      ]
+    },
+    "4667941": {
+      "duration_minutes": 8,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM"
+      ],
+      "benefits": [
+        "Fortalece região lombar",
+        "Tonifica os rins",
+        "Aumenta força das pernas",
+        "Melhora equilíbrio"
+      ],
+      "indications": [
+        "dor_lombar",
+        "fadiga",
+        "fraqueza_pernas",
+        "zumbido"
+      ],
+      "contraindications": [
+        "Lesões graves nos joelhos",
+        "Problemas de equilíbrio severos"
+      ]
+    },
+    "4667944": {
+      "duration_minutes": 8,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM"
+      ],
+      "benefits": [
+        "Fortalece lombar e ombros",
+        "Nutre os rins",
+        "Melhora flexibilidade da coluna",
+        "Libera tensão dos ombros"
+      ],
+      "indications": [
+        "dor_lombar",
+        "dor_ombro",
+        "fadiga",
+        "tensão_muscular"
+      ],
+      "contraindications": [
+        "Lesões agudas nos ombros",
+        "Hérnia de disco grave"
+      ]
+    },
+    "4667950": {
+      "duration_minutes": 8,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM"
+      ],
+      "benefits": [
+        "Fortalece região lombar profundamente",
+        "Nutre os rins",
+        "Aumenta flexibilidade da coluna",
+        "Tonifica músculos das costas"
+      ],
+      "indications": [
+        "dor_lombar",
+        "fadiga",
+        "fraqueza_pernas",
+        "dor_coluna"
+      ],
+      "contraindications": [
+        "Hérnia de disco aguda",
+        "Lesões graves na coluna",
+        "Pressão alta não controlada"
+      ]
+    },
+    "5013434": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": [
+        "FÍGADO",
+        "VESÍCULA_BILIAR"
+      ],
+      "benefits": [
+        "Alivia zumbido",
+        "Melhora circulação da cabeça",
+        "Libera tensão cervical",
+        "Fortalece pescoço e ombros"
+      ],
+      "indications": [
+        "zumbido",
+        "labirintite",
+        "dor_pescoço",
+        "tensão_ombros",
+        "tontura"
+      ],
+      "contraindications": [
+        "Lesões cervicais graves",
+        "Labirintite aguda em crise"
+      ]
+    },
+    "5013440": {
+      "duration_minutes": 5,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": [
+        "RIM",
+        "BEXIGA"
+      ],
+      "benefits": [
+        "Alivia zumbido",
+        "Fortalece lombar",
+        "Melhora audição",
+        "Tonifica os rins"
+      ],
+      "indications": [
+        "zumbido",
+        "labirintite",
+        "dor_lombar",
+        "audição_fraca",
+        "fadiga"
+      ],
+      "contraindications": [
+        "Hérnia de disco aguda"
+      ]
+    },
+    "4378201": {
+      "duration_minutes": 60,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": [
+        "Movimentos dos 5 animais completos",
+        "Técnicas avançadas de respiração",
+        "Fortalece tendões e músculos",
+        "Melhora flexibilidade e coordenação"
+      ],
+      "indications": [
+        "estresse",
+        "tensão_muscular",
+        "rigidez_articular",
+        "falta_flexibilidade"
+      ],
+      "contraindications": [
+        "Lesões agudas recentes"
+      ]
+    },
+    "4416887": {
+      "duration_minutes": 45,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR", "INTESTINOS"],
+      "benefits": [
+        "Desintoxica o corpo",
+        "Estimula circulação linfática",
+        "Melhora função intestinal",
+        "Elimina toxinas"
+      ],
+      "indications": [
+        "fadiga",
+        "inchaço",
+        "digestão_lenta",
+        "intoxicação",
+        "pele_opaca"
+      ],
+      "contraindications": [
+        "Febre alta",
+        "Processos infecciosos agudos"
+      ]
+    },
+    "4430184": {
+      "duration_minutes": 55,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": [
+        "Revisão completa dos 12 exercícios",
+        "Fortalece rins e lombar",
+        "Aumenta flexibilidade da coluna",
+        "Melhora postura"
+      ],
+      "indications": [
+        "dor_lombar",
+        "fadiga_crônica",
+        "fraqueza_pernas",
+        "má_postura"
+      ],
+      "contraindications": [
+        "Hérnia de disco aguda",
+        "Cirurgia recente na coluna"
+      ]
+    },
+    "4457508": {
+      "duration_minutes": 65,
+      "level": "INTERMEDIÁRIO",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO", "RIM", "BEXIGA"],
+      "benefits": [
+        "Prática combinada de Ba Duan Jin e Yi Jin Jing",
+        "Fortalece sistema digestivo e lombar",
+        "Aumenta energia vital",
+        "Melhora resistência física"
+      ],
+      "indications": [
+        "fadiga",
+        "digestão_fraca",
+        "dor_lombar",
+        "baixa_energia"
+      ],
+      "contraindications": [
+        "Hérnia de disco aguda",
+        "Problemas cardíacos graves"
+      ]
+    },
+    "4475272": {
+      "duration_minutes": 40,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "FÍGADO"],
+      "benefits": [
+        "Fortalece joelhos e pernas",
+        "Melhora circulação nas pernas",
+        "Aumenta flexibilidade dos joelhos",
+        "Previne desgaste articular"
+      ],
+      "indications": [
+        "dor_joelhos",
+        "artrite",
+        "fraqueza_pernas",
+        "má_circulação"
+      ],
+      "contraindications": [
+        "Lesão aguda no joelho",
+        "Inflamação articular severa"
+      ]
+    },
+    "4499437": {
+      "duration_minutes": 50,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": [
+        "Fortalece toda a coluna vertebral",
+        "Melhora postura",
+        "Aumenta flexibilidade das costas",
+        "Previne dores lombares"
+      ],
+      "indications": [
+        "dor_coluna",
+        "dor_lombar",
+        "má_postura",
+        "rigidez_costas",
+        "hérnia_disco_preventivo"
+      ],
+      "contraindications": [
+        "Hérnia de disco aguda",
+        "Cirurgia recente na coluna",
+        "Dor aguda intensa"
+      ]
+    },
+    "4901542": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["Orientações iniciais", "Como usar o protocolo", "Estrutura do programa"],
+      "indications": ["dor_lombar", "dor_coluna"],
+      "contraindications": []
+    },
+    "4893386": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Relaxa tensão cervical", "Melhora mobilidade do pescoço", "Previne dores de cabeça"],
+      "indications": ["dor_cervical", "tensão_pescoço", "dor_cabeça"],
+      "contraindications": ["Hérnia cervical aguda"]
+    },
+    "4949044": {
+      "duration_minutes": 60,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["Esclarecimento de dúvidas", "Ajustes de prática", "Orientações personalizadas"],
+      "indications": ["dor_lombar", "dor_coluna"],
+      "contraindications": []
+    },
+    "5029155": {
+      "duration_minutes": 15,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["Orientações pós-protocolo", "Manutenção dos resultados", "Próximos passos"],
+      "indications": ["dor_lombar", "dor_coluna"],
+      "contraindications": []
+    },
+    "4901685": {
+      "duration_minutes": 12,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO", "INTESTINO_GROSSO"],
+      "benefits": ["Acalma a mente", "Melhora qualidade do sono", "Reduz ansiedade"],
+      "indications": ["insônia", "ansiedade", "estresse"],
+      "contraindications": []
+    },
+    "4900604": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Fortalece lombar", "Aumenta flexibilidade da cintura", "Melhora circulação"],
+      "indications": ["dor_lombar", "rigidez_lombar"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "4900634": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": ["Fortalece pulmões", "Expande caixa torácica", "Melhora respiração"],
+      "indications": ["problemas_respiratórios", "ansiedade"],
+      "contraindications": []
+    },
+    "4900700": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Fortalece joelhos", "Melhora equilíbrio", "Previne quedas"],
+      "indications": ["fraqueza_pernas", "dor_joelhos"],
+      "contraindications": ["Lesão aguda no joelho"]
+    },
+    "4914385": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["Introdução à MTC", "Conceitos básicos", "Fundamentos teóricos"],
+      "indications": ["dor_lombar", "dor_coluna"],
+      "contraindications": []
+    },
+    "4901142": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Sustentar céu", "Regula Triplo Aquecedor", "Alonga coluna"],
+      "indications": ["dor_coluna", "má_postura"],
+      "contraindications": []
+    },
+    "4897396": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Movimento do urso", "Fortalece lombar", "Melhora flexibilidade"],
+      "indications": ["dor_lombar", "rigidez_costas"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "4901696": {
+      "duration_minutes": 8,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Movimento do dragão", "Alonga coluna", "Aumenta mobilidade"],
+      "indications": ["dor_coluna", "rigidez_costas"],
+      "contraindications": []
+    },
+    "4901687": {
+      "duration_minutes": 8,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["As três reverências", "Fortalece rins", "Flexibilidade lombar"],
+      "indications": ["dor_lombar", "fadiga"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "4897398": {
+      "duration_minutes": 8,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Movimento do leque", "Alonga lateral do corpo", "Melhora respiração"],
+      "indications": ["dor_lateral_costas", "tensão_muscular"],
+      "contraindications": []
+    },
+    "4893387": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Sustentar o céu", "Alonga coluna", "Melhora postura"],
+      "indications": ["dor_coluna", "má_postura"],
+      "contraindications": []
+    },
+    "4900638": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": ["Movimento do pássaro", "Fortalece ombros", "Melhora mobilidade escapular"],
+      "indications": ["dor_ombros", "tensão_cervical"],
+      "contraindications": []
+    },
+    "4900609": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["Movimento do espiral", "Massageia órgãos internos", "Melhora digestão"],
+      "indications": ["digestão_fraca", "dor_lombar"],
+      "contraindications": []
+    },
+    "4893389": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Empurrar a montanha", "Fortalece braços", "Melhora postura"],
+      "indications": ["fraqueza_braços", "má_postura"],
+      "contraindications": []
+    },
+    "4901694": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": ["Movimento da borboleta", "Abre peito", "Melhora respiração"],
+      "indications": ["ansiedade", "problemas_respiratórios"],
+      "contraindications": []
+    },
+    "4900612": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": ["Perfurar o céu", "Alonga lateral", "Fortalece oblíquos"],
+      "indications": ["dor_lateral_costas", "tensão_muscular"],
+      "contraindications": []
+    },
+    "4900657": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": ["Movimento do tigre", "Fortalece coluna", "Aumenta flexibilidade"],
+      "indications": ["dor_coluna", "rigidez_costas"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "4897407": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Rodar quadril", "Mobiliza articulação", "Fortalece lombar"],
+      "indications": ["dor_quadril", "dor_lombar"],
+      "contraindications": ["Artrose severa no quadril"]
+    },
+    "4900614": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Movimento do dragão", "Alonga coluna", "Aumenta mobilidade"],
+      "indications": ["dor_coluna", "rigidez_costas"],
+      "contraindications": []
+    },
+    "4897409": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Esfregar as pernas", "Fortalece rins", "Melhora circulação"],
+      "indications": ["fadiga", "má_circulação", "dor_lombar"],
+      "contraindications": []
+    },
+    "4893390": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": ["Movimento do voo", "Fortalece costas", "Melhora postura"],
+      "indications": ["má_postura", "dor_costas"],
+      "contraindications": []
+    },
+    "4900642": {
+      "duration_minutes": 12,
+      "level": "AVANÇADO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Dragão olha cauda", "Torção profunda da coluna", "Massageia órgãos"],
+      "indications": ["dor_coluna", "digestão_fraca"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "4893391": {
+      "duration_minutes": 10,
+      "level": "AVANÇADO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Tsunami", "Fortalece lombar intensamente", "Aumenta flexibilidade"],
+      "indications": ["dor_lombar", "rigidez_lombar"],
+      "contraindications": ["Hérnia de disco aguda", "Lesão lombar aguda"]
+    },
+    "4900659": {
+      "duration_minutes": 10,
+      "level": "AVANÇADO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Bêbado puxar espada", "Fortalece lombar", "Torção profunda"],
+      "indications": ["dor_lombar", "tensão_muscular"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "4900616": {
+      "duration_minutes": 10,
+      "level": "AVANÇADO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Olhar para quadril", "Torção da coluna", "Massageia órgãos"],
+      "indications": ["dor_coluna", "digestão_fraca"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "4897410": {
+      "duration_minutes": 12,
+      "level": "AVANÇADO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Roda gigante", "Mobiliza toda a coluna", "Fortalece núcleo"],
+      "indications": ["dor_coluna", "rigidez_costas"],
+      "contraindications": ["Hérnia de disco aguda", "Vertigem"]
+    },
+    "4893392": {
+      "duration_minutes": 10,
+      "level": "AVANÇADO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Movimento do tatu", "Fortalece lombar", "Alonga posterior"],
+      "indications": ["dor_lombar", "rigidez_lombar"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "4900664": {
+      "duration_minutes": 10,
+      "level": "AVANÇADO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["As três reverências", "Fortalece rins", "Flexibilidade lombar"],
+      "indications": ["dor_lombar", "fadiga"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "4900628": {
+      "duration_minutes": 30,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["Automassagem Tui Na", "Relaxa tensões", "Estimula circulação"],
+      "indications": ["dor_muscular", "tensão_muscular", "estresse"],
+      "contraindications": []
+    },
+    "4897451": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Carregar o céu", "Alonga coluna", "Melhora postura"],
+      "indications": ["dor_coluna", "má_postura"],
+      "contraindications": []
+    },
+    "4900629": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Movimento urso", "Fortalece lombar", "Melhora mobilidade"],
+      "indications": ["dor_lombar", "rigidez_costas"],
+      "contraindications": []
+    },
+    "4893396": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Movimento dragão", "Alonga coluna", "Aumenta mobilidade"],
+      "indications": ["dor_coluna", "rigidez_costas"],
+      "contraindications": []
+    },
+    "4897460": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["As três reverências", "Fortalece rins", "Flexibilidade lombar"],
+      "indications": ["dor_lombar", "fadiga"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "4900665": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": ["Movimento do leque", "Alonga lateral", "Melhora respiração"],
+      "indications": ["dor_lateral_costas", "tensão_muscular"],
+      "contraindications": []
+    },
+    "4900600": {
+      "duration_minutes": 12,
+      "level": "INTERMEDIÁRIO",
+      "element": "METAL",
+      "organs": ["PULMÃO", "INTESTINO_GROSSO"],
+      "benefits": ["Respiração com movimento", "Aumenta capacidade pulmonar", "Acalma mente"],
+      "indications": ["ansiedade", "estresse", "problemas_respiratórios"],
+      "contraindications": []
+    },
+    "4900634": {
+      "duration_minutes": 15,
+      "level": "INTERMEDIÁRIO",
+      "element": "METAL",
+      "organs": ["PULMÃO", "INTESTINO_GROSSO"],
+      "benefits": ["Respiração La Sal", "Limpeza interna", "Fortalece pulmões"],
+      "indications": ["problemas_respiratórios", "intoxicação"],
+      "contraindications": []
+    },
+    "5022766": {
+      "duration_minutes": 15,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["Orientações finais", "Manutenção dos resultados", "Próximos passos"],
+      "indications": ["zumbido", "labirintite"],
+      "contraindications": []
+    },
+    "5013444": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CORAÇÃO", "INTESTINO_DELGADO"],
+      "benefits": ["Chás medicinais", "Fortalece audição", "Acalma mente"],
+      "indications": ["zumbido", "labirintite", "ansiedade"],
+      "contraindications": ["Alergia aos ingredientes"]
+    },
+    "5021559": {
+      "duration_minutes": 30,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["E-book complementar", "Teoria detalhada", "Guia completo"],
+      "indications": ["zumbido", "labirintite"],
+      "contraindications": []
+    },
+    "5013075": {
+      "duration_minutes": 15,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Técnica 5,4,3,2,1", "Acupressão para audição", "Estimula pontos específicos"],
+      "indications": ["zumbido", "labirintite", "audição_fraca"],
+      "contraindications": []
+    },
+    "5013089": {
+      "duration_minutes": 45,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Teoria MTC", "Compreensão do zumbido", "Abordagem holística"],
+      "indications": ["zumbido", "labirintite"],
+      "contraindications": []
+    },
+    "5013113": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["Introdução ao protocolo", "Orientações iniciais", "Como usar"],
+      "indications": ["zumbido", "labirintite"],
+      "contraindications": []
+    },
+    "5013447": {
+      "duration_minutes": 20,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Técnica dedos em V", "Massagem cervical", "Melhora circulação"],
+      "indications": ["zumbido", "labirintite", "tensão_cervical"],
+      "contraindications": []
+    },
+    "5013137": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO", "INTESTINO_GROSSO"],
+      "benefits": ["Introdução respiração", "Técnicas básicas", "Fundamentos"],
+      "indications": ["zumbido", "labirintite", "ansiedade"],
+      "contraindications": []
+    },
+    "5036646": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Introdução Qi Gong", "Movimentos básicos", "Fundamentos"],
+      "indications": ["zumbido", "labirintite"],
+      "contraindications": []
+    },
+    "5013078": {
+      "duration_minutes": 20,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Sequência completa massagem", "Acupressão integrada", "Rotina completa"],
+      "indications": ["zumbido", "labirintite"],
+      "contraindications": []
+    },
+    "5051472": {
+      "duration_minutes": 15,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Massagem auricular", "Estimula pontos da orelha", "Melhora audição"],
+      "indications": ["zumbido", "labirintite", "audição_fraca"],
+      "contraindications": ["Infecção no ouvido"]
+    },
+    "5013144": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Alongamento pescoço", "Respiração profunda", "Relaxa tensão cervical"],
+      "indications": ["zumbido", "labirintite", "tensão_cervical"],
+      "contraindications": ["Hérnia cervical aguda"]
+    },
+    "5013124": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["Ba Duan Jin - Carregar céu", "Alonga coluna", "Melhora postura"],
+      "indications": ["zumbido", "má_postura"],
+      "contraindications": []
+    },
+    "5069127": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["Ba Duan Jin - Erguer braço", "Regula baço e estômago", "Melhora digestão"],
+      "indications": ["zumbido", "digestão_fraca"],
+      "contraindications": []
+    },
+    "5013422": {
+      "duration_minutes": 8,
+      "level": "INICIANTE",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Ba Duan Jin - Esfregar pernas", "Fortalece rins", "Melhora circulação"],
+      "indications": ["zumbido", "fadiga", "má_circulação"],
+      "contraindications": []
+    },
+    "5013352": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Yi Jin Jing - Dragão", "Fortalece pescoço", "Melhora audição"],
+      "indications": ["zumbido", "labirintite", "tensão_cervical"],
+      "contraindications": []
+    },
+    "5031371": {
+      "duration_minutes": 10,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Yi Jin Jing - Bêbado espada", "Fortalece lombar", "Alonga posterior"],
+      "indications": ["zumbido", "dor_lombar"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "5013403": {
+      "duration_minutes": 20,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Sequência completa Qi Gong", "Protocolo integrado", "Prática completa"],
+      "indications": ["zumbido", "labirintite"],
+      "contraindications": []
+    },
+    "5022612": {
+      "duration_minutes": 60,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["Live tira-dúvidas 1", "Esclarecimentos", "Ajustes de prática"],
+      "indications": ["zumbido", "labirintite"],
+      "contraindications": []
+    },
+    "5032578": {
+      "duration_minutes": 60,
+      "level": "INICIANTE",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO"],
+      "benefits": ["Live prática", "Aula ao vivo", "Correção de movimentos"],
+      "indications": ["zumbido", "labirintite"],
+      "contraindications": []
+    },
+    "5110850": {
+      "duration_minutes": 50,
+      "level": "INTERMEDIÁRIO",
+      "element": "TERRA",
+      "organs": ["BAÇO", "ESTÔMAGO", "RIM"],
+      "benefits": ["Exercícios Black November 2025", "Prática especial", "Fortalece energia vital"],
+      "indications": ["fadiga", "baixa_energia"],
+      "contraindications": []
+    },
+    "5095975": {
+      "duration_minutes": 60,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": ["Ba Duan Jin + Wu Qin Xi completo", "Sequências avançadas", "Prática integrada"],
+      "indications": ["estresse", "tensão_muscular", "fadiga"],
+      "contraindications": []
+    },
+    "5081409": {
+      "duration_minutes": 40,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": ["Alivia tensão ombro e pescoço", "Reduz dor de cabeça", "Relaxa cervical"],
+      "indications": ["dor_ombros", "tensão_pescoço", "dor_cabeça"],
+      "contraindications": []
+    },
+    "5051535": {
+      "duration_minutes": 45,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": ["Reduz tensão e estresse", "Alongamento profundo", "Relaxamento interno"],
+      "indications": ["estresse", "ansiedade", "tensão_muscular"],
+      "contraindications": []
+    },
+    "5036192": {
+      "duration_minutes": 40,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA"],
+      "benefits": ["Destrava coluna", "Melhora mobilidade", "Aumenta flexibilidade"],
+      "indications": ["dor_coluna", "rigidez_costas"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "5036188": {
+      "duration_minutes": 40,
+      "level": "INTERMEDIÁRIO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": ["Alivia dores pescoço e escápula", "Relaxa ombros", "Melhora postura"],
+      "indications": ["dor_pescoço", "dor_ombros", "tensão_escapular"],
+      "contraindications": []
+    },
+    "5010649": {
+      "duration_minutes": 45,
+      "level": "INTERMEDIÁRIO",
+      "element": "FOGO",
+      "organs": ["CORAÇÃO", "INTESTINO_DELGADO", "FÍGADO", "RIM"],
+      "benefits": ["Reduz ansiedade e estresse", "Acalma coração", "Equilibra emoções"],
+      "indications": ["ansiedade", "estresse", "insônia"],
+      "contraindications": []
+    },
+    "5000600": {
+      "duration_minutes": 50,
+      "level": "AVANÇADO",
+      "element": "MADEIRA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR"],
+      "benefits": ["Da Wu - grande dança", "Melhora sono", "Relaxamento profundo"],
+      "indications": ["insônia", "ansiedade", "estresse"],
+      "contraindications": []
+    },
+    "4982881": {
+      "duration_minutes": 40,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["FÍGADO", "VESÍCULA_BILIAR", "RIM", "BEXIGA"],
+      "benefits": ["Fortalece fígado e rins", "Desintoxica", "Aumenta energia vital"],
+      "indications": ["fadiga", "intoxicação", "baixa_energia"],
+      "contraindications": []
+    },
+    "4972889": {
+      "duration_minutes": 40,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM", "BEXIGA", "BAÇO"],
+      "benefits": ["Estimula circulação", "Elimina líquido acumulado", "Reduz inchaço"],
+      "indications": ["má_circulação", "inchaço", "retenção_líquidos"],
+      "contraindications": []
+    }
+  }
+}

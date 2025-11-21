@@ -13,7 +13,17 @@ import {
   formatExamples
 } from '@/lib/rag'
 import { buildAnamneseContext, buildNoAnamneseContext } from '@/lib/helpers/anamnese-helpers'
+import { 
+  searchExercisesByAnamnese, 
+  searchExercisesBySymptoms,
+  extractSymptomsFromMessage,
+  formatExercisesContext,
+  isGenericExerciseRequest,
+  searchIntroductoryExercises,
+  searchExercisesBySemantic
+} from '@/lib/helpers/exercise-recommendations'
 import type { QuizLead } from '@/lib/types/anamnese'
+import type { Exercise } from '@/lib/memberkit/types'
 
 export const runtime = 'edge'
 export const maxDuration = 60
@@ -204,7 +214,55 @@ export async function POST(req: Request) {
     
     console.log(`✅ Found ${relevantExamples.length} conversation examples`)
 
-    // 8. CHAMAR CLAUDE API COM STREAMING
+    // 8. BUSCAR EXERCÍCIOS RELEVANTES
+    console.log('🧘 Searching for relevant exercises...')
+    
+    let exercises: Exercise[] = []
+    
+    // Primeiro, tentar buscar por sintomas mencionados na mensagem
+    const symptoms = extractSymptomsFromMessage(userContent)
+    if (symptoms.length > 0) {
+      console.log(`🎯 Found symptoms in message: ${symptoms.join(', ')}`)
+      exercises = await searchExercisesBySymptoms(symptoms, { matchCount: 3 })
+    }
+    
+    // Se não encontrou por sintomas, verificar se é pedido genérico de exercícios
+    if (exercises.length === 0 && isGenericExerciseRequest(userContent)) {
+      console.log('📚 Generic exercise request detected, showing introductory exercises')
+      exercises = await searchIntroductoryExercises({ matchCount: 3 })
+    }
+    
+    // Se ainda não encontrou, tentar busca semântica (OpenAI embeddings)
+    if (exercises.length === 0) {
+      console.log('🧠 Trying semantic search with OpenAI embeddings...')
+      try {
+        exercises = await searchExercisesBySemantic(userContent, { 
+          matchCount: 3,
+          matchThreshold: 0.5  // Threshold reduzido para aceitar mais resultados
+        })
+        if (exercises.length > 0) {
+          console.log(`✅ Semantic search found ${exercises.length} relevant exercises`)
+        }
+      } catch (error) {
+        console.error('❌ Semantic search failed:', error)
+      }
+    }
+    
+    // Se ainda não encontrou e tem anamnese, buscar por elemento
+    if (exercises.length === 0 && hasQuiz && quizLead) {
+      console.log(`🌳 Searching exercises by element: ${quizLead.elemento_principal}`)
+      exercises = await searchExercisesByAnamnese(quizLead, { matchCount: 3 })
+    }
+    
+    const exercisesContext = formatExercisesContext(exercises, quizLead)
+    
+    if (exercises.length > 0) {
+      console.log(`✅ Found ${exercises.length} relevant exercises to recommend`)
+    } else {
+      console.log('ℹ️  No exercises found for this context')
+    }
+
+    // 9. CHAMAR CLAUDE API COM STREAMING
     console.log('🤖 Calling Claude API with enhanced context...')
     
     // Montar prompt do sistema com TUDO
@@ -215,6 +273,8 @@ export async function POST(req: Request) {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ${knowledgeContext}
+
+${exercisesContext}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 💬 EXEMPLOS DE COMO RESPONDER
@@ -228,8 +288,10 @@ INSTRUÇÕES IMPORTANTES:
 1. Use o conhecimento acima quando relevante para a pergunta
 2. Cite as fontes numeradas quando usar informações específicas
 3. Mantenha o tom e estilo dos exemplos de conversa
-4. Se não houver conhecimento relevante, use seu conhecimento geral mas mencione isso
-5. Seja sempre empático, educativo e prático
+4. Se houver exercícios recomendados, mencione-os naturalmente na resposta
+5. Sempre inclua os links dos exercícios quando mencioná-los
+6. Se não houver conhecimento relevante, use seu conhecimento geral mas mencione isso
+7. Seja sempre empático, educativo e prático
 `
 
     // Converter mensagens do formato UI para formato do modelo

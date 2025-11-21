@@ -93,7 +93,7 @@ export function Header() {
                       <DropdownMenuItem asChild>
                         <Link href="/admin/avatars/mestre-ye/train" className="cursor-pointer bg-green-500/10 text-green-600 dark:text-green-400">
                           <GraduationCap className="mr-2 h-4 w-4" />
-                          🔧 Painel de Treinamento
+                          Painel de Treinamento
                         </Link>
                       </DropdownMenuItem>
 

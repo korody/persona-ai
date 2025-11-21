@@ -18,19 +18,98 @@ interface PlaygroundTabProps {
   avatar: any
 }
 
+interface DebugData {
+  anamnese: {
+    nome: string
+    elemento: string
+    intensidade: number
+    data: string
+    hasAnamnese: boolean
+  }
+  knowledgeBase: {
+    total: number
+    threshold: number
+    maxDocs: number
+    items: Array<{
+      title: string
+      category: string
+      similarity: number
+      isPrimary: boolean
+      isSecondary: boolean
+    }>
+  }
+  exercisesFound?: Array<{
+    title: string
+    course: string
+    similarity: number
+    level: string
+    element: string
+    duration_minutes: number
+    enabled: boolean
+    benefits: string[]
+    indications: string[]
+  }>
+  conversationContext: {
+    messageCount: number
+    lastUserMessage: string
+    hasAnamnese: boolean
+  }
+  conversationExamples: {
+    total: number
+    items: Array<{
+      userMessage: string
+      assistantResponse: string
+      similarity: number
+    }>
+  }
+  searchInfo: {
+    method: string
+    symptomsFound: string[]
+    isGenericRequest: boolean
+    elemento: string | null
+  }
+}
+
 export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
   const [message, setMessage] = useState('')
   const [sending, setSending] = useState(false)
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([])
+  const [debugData, setDebugData] = useState<DebugData | null>(null)
+  const [loadingDebug, setLoadingDebug] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  // Removido auto-scroll para não atrapalhar visualização do debug
+  // O usuário pode fazer scroll manual se necessário
+
+  const loadDebugData = async (msg: string) => {
+    if (!msg.trim() || !avatar) return
+
+    setLoadingDebug(true)
+    try {
+      const response = await fetch('/api/playground/debug', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message: msg,
+          messages,
+          avatarSlug: avatar.slug 
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch debug data')
+      }
+
+      const data = await response.json()
+      setDebugData(data)
+    } catch (error) {
+      console.error('Error loading debug data:', error)
+      toast.error('Erro ao carregar debug')
+    } finally {
+      setLoadingDebug(false)
+    }
   }
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
 
   async function handleSend() {
     if (!message.trim() || sending || !avatar) return
@@ -38,6 +117,9 @@ export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
     const userMessage = message
     setMessage('')
     setSending(true)
+
+    // Carregar debug antes de enviar
+    await loadDebugData(userMessage)
 
     // Adicionar mensagem do usuário
     const newMessages = [...(messages || []), { role: 'user', content: userMessage }]
@@ -176,6 +258,7 @@ export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
   const handleClearChat = () => {
     if (confirm('Limpar todo o histórico de chat?')) {
       setMessages([])
+      setDebugData(null)
     }
   }
 
@@ -193,7 +276,7 @@ export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -244,8 +327,8 @@ export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
                       <div
                         className={`max-w-[80%] rounded-lg p-3 ${
                           msg.role === 'user'
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-background border'
+                            ? 'bg-muted/80 text-foreground'
+                            : 'bg-primary/10 border border-primary/20'
                         }`}
                       >
                         <div className="text-sm whitespace-pre-wrap break-words prose prose-sm dark:prose-invert max-w-none">
@@ -292,6 +375,235 @@ export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Debug Panel - Below Chat */}
+      {debugData && (
+        <Card className="border-green-500/20">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <CardTitle className="text-lg">🔍 Debug de Contexto da IA</CardTitle>
+            </div>
+            <CardDescription>
+              Dados enviados para a IA na última mensagem
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Anamnese Data */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <h4 className="font-semibold text-sm">🩺 Dados da Anamnese</h4>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-muted/50 rounded p-2">
+                  <p className="text-xs text-muted-foreground">Nome</p>
+                  <p className="font-medium text-sm">{debugData.anamnese.nome}</p>
+                </div>
+                <div className="bg-muted/50 rounded p-2">
+                  <p className="text-xs text-muted-foreground">Elemento</p>
+                  <Badge variant="outline">{debugData.anamnese.elemento}</Badge>
+                </div>
+                <div className="bg-muted/50 rounded p-2">
+                  <p className="text-xs text-muted-foreground">Intensidade</p>
+                  <p className="font-medium text-sm">{debugData.anamnese.intensidade}/10</p>
+                </div>
+                <div className="bg-muted/50 rounded p-2">
+                  <p className="text-xs text-muted-foreground">Data</p>
+                  <p className="font-medium text-sm">{debugData.anamnese.data}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Knowledge Base Stats */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <h4 className="font-semibold text-sm">📚 Base de Conhecimento Encontrada</h4>
+              </div>
+              <div className="grid grid-cols-3 gap-2 mb-2">
+                <div className="bg-purple-50 dark:bg-purple-950/20 rounded p-2 border border-purple-200 dark:border-purple-800">
+                  <p className="text-xs text-purple-600 dark:text-purple-400">Total</p>
+                  <p className="font-bold text-lg text-purple-700 dark:text-purple-300">
+                    {debugData.knowledgeBase.total}
+                  </p>
+                  <p className="text-xs text-purple-600/70">documentos</p>
+                </div>
+                <div className="bg-muted/50 rounded p-2">
+                  <p className="text-xs text-muted-foreground">Threshold</p>
+                  <p className="font-medium text-sm">{debugData.knowledgeBase.threshold}%</p>
+                </div>
+                <div className="bg-muted/50 rounded p-2">
+                  <p className="text-xs text-muted-foreground">Máximo</p>
+                  <p className="font-medium text-sm">{debugData.knowledgeBase.maxDocs}</p>
+                </div>
+              </div>
+              {/* Knowledge Items */}
+              {debugData.knowledgeBase.items && debugData.knowledgeBase.items.length > 0 && (
+                <div className="space-y-1 max-h-[200px] overflow-y-auto">
+                  {debugData.knowledgeBase.items.map((item, idx) => (
+                    <div key={idx} className="bg-muted/30 rounded p-2 text-xs">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium truncate">{item.title}</p>
+                          <p className="text-muted-foreground">{item.category}</p>
+                        </div>
+                        <div className="flex gap-1 items-center shrink-0">
+                          {item.isPrimary && (
+                            <Badge variant="default" className="text-[10px] px-1 py-0">
+                              1º
+                            </Badge>
+                          )}
+                          {item.isSecondary && (
+                            <Badge variant="secondary" className="text-[10px] px-1 py-0">
+                              2º
+                            </Badge>
+                          )}
+                          <span className="text-muted-foreground">{item.similarity}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Conversation Examples */}
+            {debugData.conversationExamples && debugData.conversationExamples.total > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <h4 className="font-semibold text-sm">
+                    💬 Exemplos de Conversas ({debugData.conversationExamples.total})
+                  </h4>
+                </div>
+                <div className="space-y-1 max-h-[200px] overflow-y-auto">
+                  {debugData.conversationExamples.items.map((example, idx) => (
+                    <div key={idx} className="bg-blue-50 dark:bg-blue-950/20 rounded p-2 text-xs border border-blue-200 dark:border-blue-800">
+                      <p className="text-muted-foreground mb-1">
+                        <span className="font-medium">Usuário:</span> {example.userMessage}...
+                      </p>
+                      <p className="text-muted-foreground">
+                        <span className="font-medium">Avatar:</span> {example.assistantResponse}...
+                      </p>
+                      <p className="text-right text-[10px] text-blue-600 dark:text-blue-400 mt-1">
+                        {example.similarity}% match
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Search Info */}
+            {debugData.searchInfo && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <h4 className="font-semibold text-sm">🔍 Informações de Busca</h4>
+                </div>
+                <div className="bg-muted/50 rounded p-3 space-y-2">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Método de busca</p>
+                    <Badge variant="outline" className="mt-1">
+                      {debugData.searchInfo.method === 'symptoms' && '🎯 Por sintomas'}
+                      {debugData.searchInfo.method === 'generic' && '📚 Genérico'}
+                      {debugData.searchInfo.method === 'semantic' && '🧠 Semântico (embeddings)'}
+                      {debugData.searchInfo.method === 'element' && '🌳 Por elemento MTC'}
+                      {debugData.searchInfo.method === 'none' && '❌ Nenhum'}
+                    </Badge>
+                  </div>
+                  {debugData.searchInfo.symptomsFound.length > 0 && (
+                    <div>
+                      <p className="text-xs text-muted-foreground">Sintomas detectados</p>
+                      <div className="flex gap-1 mt-1 flex-wrap">
+                        {debugData.searchInfo.symptomsFound.map((symptom, idx) => (
+                          <Badge key={idx} variant="secondary" className="text-xs">
+                            {symptom}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {debugData.searchInfo.isGenericRequest && (
+                    <p className="text-xs text-orange-600 dark:text-orange-400">
+                      ℹ️ Pedido genérico detectado
+                    </p>
+                  )}
+                  {debugData.searchInfo.elemento && (
+                    <div>
+                      <p className="text-xs text-muted-foreground">Elemento do usuário</p>
+                      <Badge variant="outline" className="mt-1">{debugData.searchInfo.elemento}</Badge>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Exercises Found */}
+            {debugData.exercisesFound && debugData.exercisesFound.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <h4 className="font-semibold text-sm">
+                    🎯 Exercícios Recomendados ({debugData.exercisesFound.length})
+                  </h4>
+                </div>
+                <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                  {debugData.exercisesFound.map((exercise, idx) => (
+                    <div 
+                      key={idx} 
+                      className="bg-muted/50 rounded p-3 space-y-2 border"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">{exercise.title}</p>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {exercise.course}
+                          </p>
+                        </div>
+                        {exercise.enabled ? (
+                          <Badge variant="default" className="shrink-0 gap-1 text-xs">
+                            ✅ Ativo
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="shrink-0 gap-1 text-xs">
+                            🚫 Inativo
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="outline" className="text-xs">
+                          {exercise.level}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          {exercise.element}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          {exercise.duration_minutes}min
+                        </Badge>
+                        <div className="ml-auto">
+                          <Badge variant="secondary" className="text-xs">
+                            {(exercise.similarity * 100).toFixed(1)}% match
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Conversation Context */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <h4 className="font-semibold text-sm">💬 Contexto da Conversa</h4>
+              </div>
+              <div className="bg-muted/50 rounded p-3">
+                <p className="text-xs text-muted-foreground mb-1">Mensagens na conversa</p>
+                <p className="font-medium text-sm">{debugData.conversationContext.messageCount}</p>
+                <p className="text-xs text-muted-foreground mt-2 mb-1">Última mensagem do usuário</p>
+                <p className="text-sm italic">&ldquo;{debugData.conversationContext.lastUserMessage}&rdquo;</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

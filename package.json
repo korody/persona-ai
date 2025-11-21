@@ -7,7 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "sync-memberkit": "tsx --env-file=.env.local scripts/sync-memberkit.ts",
+    "setup-semantic": "tsx --env-file=.env.local scripts/setup-semantic-search.ts",
+    "generate-embeddings": "tsx --env-file=.env.local scripts/generate-embeddings.ts",
+    "test-migrations": "tsx --env-file=.env.local scripts/apply-migrations.ts",
+    "check-disabled": "tsx --env-file=.env.local scripts/check-disabled-exercises.ts",
+    "check-active": "tsx --env-file=.env.local scripts/check-active-courses-embeddings.ts",
+    "check-categorization": "tsx --env-file=.env.local scripts/check-categorization.ts",
+    "semantize-courses": "tsx --env-file=.env.local scripts/semantize-specific-courses.ts",
+    "auto-categorize": "tsx --env-file=.env.local scripts/auto-categorize-exercises.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.40",
@@ -38,7 +47,9 @@
     "nanoid": "^5.0.8",
     "next": "15.3.0-canary.31",
     "next-themes": "^0.3.0",
+    "openai": "^6.9.1",
     "pdf-parse": "^2.4.5",
+    "pg": "^8.16.3",
     "react": "19.0.0-rc-45804af1-20241021",
     "react-dom": "19.0.0-rc-45804af1-20241021",
     "react-markdown": "^10.1.0",

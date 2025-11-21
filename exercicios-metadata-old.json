@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "lastSync": null,
+  "exercicios": {
+    "respiracao-la-sal": {
+      "duration_minutes": 10,
+      "level": "INICIANTE",
+      "element": "METAL",
+      "organs": ["PULMÃO"],
+      "benefits": ["Fortalece pulmões", "Melhora respiração", "Desintoxica"],
+      "indications": ["ansiedade", "estresse", "respiração_curta"],
+      "contraindications": ["Crise aguda respiratória"]
+    },
+    "ba-duan-jin-peca-1": {
+      "duration_minutes": 5,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CORAÇÃO"],
+      "benefits": ["Alonga coluna", "Libera ombros", "Acalma mente"],
+      "indications": ["ansiedade", "dor_ombro", "tensão_superior"],
+      "contraindications": ["Lesão aguda no ombro"]
+    },
+    "yi-jin-jing-as-tres-reverencias": {
+      "duration_minutes": 8,
+      "level": "INTERMEDIÁRIO",
+      "element": "ÁGUA",
+      "organs": ["RIM"],
+      "benefits": ["Fortalece lombar", "Nutre Rins", "Aumenta energia"],
+      "indications": ["dor_lombar", "fadiga", "fraqueza_pernas"],
+      "contraindications": ["Hérnia de disco aguda"]
+    },
+    "respiracao-abdominal-e-diafragmatico-para-relaxar-o-corpo-acalmar-a-mente-dormir-melhor": {
+      "duration_minutes": 12,
+      "level": "INICIANTE",
+      "element": "FOGO",
+      "organs": ["CORAÇÃO"],
+      "benefits": ["Relaxa corpo", "Acalma mente", "Melhora sono"],
+      "indications": ["insônia", "ansiedade", "estresse"],
+      "contraindications": []
+    }
+  }
+}

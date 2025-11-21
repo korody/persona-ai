@@ -17,6 +17,7 @@ import { KnowledgeTab } from '@/components/training/knowledge-tab'
 import { ExamplesTab } from '@/components/training/examples-tab'
 import { PersonalityTab } from '@/components/training/personality-tab'
 import { PlaygroundTab } from '@/components/training/playground-tab'
+import { MemberkitSyncTab } from '@/components/admin/memberkit-sync-tab'
 
 interface PageProps {
   params: {
@@ -72,7 +73,7 @@ export default async function TrainAvatarPage({ params }: PageProps) {
 
       {/* Tabs */}
       <Tabs defaultValue="knowledge" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 lg:w-auto">
+        <TabsList className="grid w-full grid-cols-5 lg:w-auto">
           <TabsTrigger value="knowledge">
             🧠 Base de Conhecimento
           </TabsTrigger>
@@ -81,6 +82,9 @@ export default async function TrainAvatarPage({ params }: PageProps) {
           </TabsTrigger>
           <TabsTrigger value="examples">
             💬 Exemplos
+          </TabsTrigger>
+          <TabsTrigger value="memberkit">
+            🗄️ Memberkit
           </TabsTrigger>
           <TabsTrigger value="playground">
             🎮 Playground
@@ -97,6 +101,10 @@ export default async function TrainAvatarPage({ params }: PageProps) {
 
         <TabsContent value="examples" className="space-y-4">
           <ExamplesTab avatarId={avatar.id} />
+        </TabsContent>
+
+        <TabsContent value="memberkit" className="space-y-4">
+          <MemberkitSyncTab />
         </TabsContent>
 
         <TabsContent value="playground" className="space-y-4">
