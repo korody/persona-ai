@@ -26,7 +26,7 @@ export default function SignupPage() {
   
   const router = useRouter()
 
-  // Validação de telefone (mesma lógica do quiz)
+  // Validação de telefone
   const handlePhoneChange = (value: string) => {
     const digitsOnly = value.replace(/\D/g, '')
     setPhone(digitsOnly)
@@ -76,13 +76,13 @@ export default function SignupPage() {
       return
     }
 
-    if (phone && phoneValid !== true) {
+    if (!phone || phoneValid !== true) {
       setError('Por favor, digite um celular válido')
       setLoading(false)
       return
     }
 
-    // Converter telefone para E.164 (se fornecido)
+    // Converter telefone para E.164
     let phoneE164 = null
     if (phone) {
       try {
@@ -152,7 +152,7 @@ export default function SignupPage() {
           <div className="mb-8 text-center">
             <h1 className="text-2xl font-bold">Comece grátis</h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              20 créditos de boas-vindas + 30 do Quiz MTC
+              20 créditos de boas-vindas + 30 da Anamnese MTC
             </p>
           </div>
 
@@ -195,10 +195,7 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <Label htmlFor="phone">Celular (WhatsApp) - Opcional</Label>
-              <p className="text-sm text-muted-foreground mb-2">
-                📱 Para vinculação automática com seu diagnóstico do quiz
-              </p>
+              <Label htmlFor="phone">Celular (WhatsApp)</Label>
               
               <div className="flex gap-2">
                 <select
@@ -221,6 +218,7 @@ export default function SignupPage() {
                   placeholder={phoneCountry === 'BR' ? '11 99999-9999' : 'Número local'}
                   value={phone}
                   onChange={(e) => handlePhoneChange(e.target.value)}
+                  required
                   disabled={loading}
                   className={
                     phoneValid === false
@@ -278,7 +276,7 @@ export default function SignupPage() {
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Check className="h-4 w-4 text-green-600" />
-              <span>+30 créditos ao completar o Quiz</span>
+              <span>+30 créditos ao completar a Anamnese MTC</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Check className="h-4 w-4 text-green-600" />
