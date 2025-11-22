@@ -30,7 +30,7 @@ export const Suggestion = ({
           className="-right-12 md:-right-16 absolute z-50 flex w-56 flex-col gap-3 rounded-2xl border bg-background p-3 font-sans text-sm shadow-xl"
           exit={{ opacity: 0, y: -10 }}
           initial={{ opacity: 0, y: -10 }}
-          key={`${suggestion.documentId}-${suggestion.selectionStart}`}
+          key={`${suggestion.selectionStart}-${suggestion.selectionEnd}`}
           transition={{ type: "spring", stiffness: 500, damping: 30 }}
           whileHover={{ scale: 1.05 }}
         >
