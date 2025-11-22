@@ -10,7 +10,16 @@ import type { ArtifactKind } from "@/components/artifact";
 import { Suggestion as PreviewSuggestion } from "@/components/suggestion";
 import type { Suggestion } from "@/lib/db/schema";
 
-export interface UISuggestion extends Suggestion {
+export interface UISuggestion {
+  id: string;
+  documentId: string;
+  documentCreatedAt: Date;
+  originalText: string;
+  suggestedText: string;
+  description: string | null;
+  isResolved: boolean;
+  userId: string;
+  createdAt: Date;
   selectionStart: number;
   selectionEnd: number;
 }
