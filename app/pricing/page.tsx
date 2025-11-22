@@ -32,7 +32,6 @@ export default function PricingPage() {
   const [user, setUser] = useState<any>(null)
   
   const router = useRouter()
-  const supabase = createClient()
 
   // Buscar planos do Supabase
   useEffect(() => {
@@ -41,6 +40,7 @@ export default function PricingPage() {
         setLoading(true)
         setError(null)
 
+        const supabase = createClient()
         // Buscar planos ativos ordenados por sort_order
         const { data, error: fetchError } = await supabase
           .from('subscription_plans')
@@ -60,6 +60,7 @@ export default function PricingPage() {
     }
 
     async function checkUser() {
+      const supabase = createClient()
       const { data: { user: authUser } } = await supabase.auth.getUser()
       setUser(authUser)
     }

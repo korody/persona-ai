@@ -31,13 +31,13 @@ export default function ChatPage() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const { mutate: mutateCredits } = useCredits()
   const { mutate: mutateConversations } = useConversations()
-  const supabase = createClient()
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const chat = useChat({
     transport: new TextStreamChatTransport({
       api: '/api/chat',
       async headers() {
+        const supabase = createClient()
         const { data: { session } } = await supabase.auth.getSession()
         return {
           'Authorization': `Bearer ${session?.access_token || ''}`,
@@ -91,6 +91,7 @@ export default function ChatPage() {
       // Após primeira mensagem completa, tentar buscar a última conversa
       const fetchLatestConversation = async () => {
         try {
+          const supabase = createClient()
           const { data: { session } } = await supabase.auth.getSession()
           if (!session) return
 
@@ -115,7 +116,7 @@ export default function ChatPage() {
       
       fetchLatestConversation()
     }
-  }, [conversationId, messages.length, supabase])
+  }, [conversationId, messages.length])
 
   const handleSend = async (message: string) => {
     await chat.sendMessage({
@@ -135,6 +136,7 @@ export default function ChatPage() {
       setConversationId(convId)
       console.log('Carregando conversa:', convId)
 
+      const supabase = createClient()
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
 

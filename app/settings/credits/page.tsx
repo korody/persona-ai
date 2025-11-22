@@ -25,8 +25,6 @@ export default function CreditsPage() {
   const { credits, isLoading: creditsLoading } = useCredits()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
-  
-  const supabase = createClient()
 
   useEffect(() => {
     loadTransactions()
@@ -34,6 +32,7 @@ export default function CreditsPage() {
 
   const loadTransactions = async () => {
     try {
+      const supabase = createClient()
       const { data: { session } } = await supabase.auth.getSession()
       
       if (!session) return

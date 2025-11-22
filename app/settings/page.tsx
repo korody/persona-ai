@@ -21,7 +21,6 @@ export default function SettingsPage() {
   const [phone, setPhone] = useState('')
   
   const router = useRouter()
-  const supabase = createClient()
 
   useEffect(() => {
     loadUserData()
@@ -29,6 +28,7 @@ export default function SettingsPage() {
 
   const loadUserData = async () => {
     try {
+      const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       
       if (!user) {
@@ -57,6 +57,7 @@ export default function SettingsPage() {
     setSaving(true)
 
     try {
+      const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       
       if (!user) return

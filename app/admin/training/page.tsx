@@ -18,8 +18,6 @@ export default function AdminTrainingPage() {
   const [examples, setExamples] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  const supabase = createClient()
-
   useEffect(() => {
     loadData()
   }, [])
@@ -28,6 +26,7 @@ export default function AdminTrainingPage() {
     try {
       setLoading(true)
       
+      const supabase = createClient()
       // MODO DEV: dados mockados enquanto autenticação não funciona
       const mockAvatar = {
         id: '1',
