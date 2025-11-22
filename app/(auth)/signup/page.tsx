@@ -10,10 +10,15 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertCircle, Loader2, Check } from 'lucide-react'
+import { parsePhoneNumber } from 'libphonenumber-js'
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [phoneCountry, setPhoneCountry] = useState('BR')
+  const [phoneValid, setPhoneValid] = useState<boolean | null>(null)
+  const [phoneFormatted, setPhoneFormatted] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -21,16 +26,74 @@ export default function SignupPage() {
   
   const router = useRouter()
 
+  // Validação de telefone (mesma lógica do quiz)
+  const handlePhoneChange = (value: string) => {
+    const digitsOnly = value.replace(/\D/g, '')
+    setPhone(digitsOnly)
+
+    if (digitsOnly.length >= 8) {
+      try {
+        const phoneNumber = parsePhoneNumber(digitsOnly, phoneCountry)
+        const valid = phoneNumber && phoneNumber.isValid()
+        setPhoneValid(valid)
+        setPhoneFormatted(valid ? phoneNumber.formatInternational() : '')
+      } catch {
+        setPhoneValid(false)
+        setPhoneFormatted('')
+      }
+    } else {
+      setPhoneValid(null)
+      setPhoneFormatted('')
+    }
+  }
+
+  const handleCountryChange = (country: string) => {
+    setPhoneCountry(country)
+    
+    // Re-validar telefone com novo país
+    if (phone) {
+      try {
+        const phoneNumber = parsePhoneNumber(phone, country)
+        const valid = phoneNumber && phoneNumber.isValid()
+        setPhoneValid(valid)
+        setPhoneFormatted(valid ? phoneNumber.formatInternational() : '')
+      } catch {
+        setPhoneValid(false)
+        setPhoneFormatted('')
+      }
+    }
+  }
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
-    // Validação de senha
+    // Validações
     if (password.length < 6) {
       setError('A senha deve ter no mínimo 6 caracteres')
       setLoading(false)
       return
+    }
+
+    if (phone && phoneValid !== true) {
+      setError('Por favor, digite um celular válido')
+      setLoading(false)
+      return
+    }
+
+    // Converter telefone para E.164 (se fornecido)
+    let phoneE164 = null
+    if (phone) {
+      try {
+        const phoneNumber = parsePhoneNumber(phone, phoneCountry)
+        if (phoneNumber && phoneNumber.isValid()) {
+          phoneE164 = phoneNumber.format('E.164') // Ex: +5511998457676
+        }
+      } catch {
+        // Se falhar, continua sem telefone
+        phoneE164 = null
+      }
     }
 
     const supabase = createClient()
@@ -40,6 +103,7 @@ export default function SignupPage() {
       options: {
         data: {
           full_name: fullName,
+          phone: phoneE164, // Salva em formato E.164 para matching robusto
         },
         emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
@@ -131,6 +195,56 @@ export default function SignupPage() {
                 required
                 disabled={loading}
               />
+            </div>
+
+            <div>
+              <Label htmlFor="phone">Celular (WhatsApp) - Opcional</Label>
+              <p className="text-sm text-muted-foreground mb-2">
+                📱 Para vinculação automática com seu diagnóstico do quiz
+              </p>
+              
+              <div className="flex gap-2">
+                <select
+                  value={phoneCountry}
+                  onChange={(e) => handleCountryChange(e.target.value)}
+                  disabled={loading}
+                  className="w-36 px-3 py-2 border border-input rounded-md text-sm bg-background"
+                >
+                  <option value="BR">🇧🇷 Brasil +55</option>
+                  <option value="PT">🇵🇹 Portugal +351</option>
+                  <option value="US">🇺🇸 EUA +1</option>
+                  <option value="ES">🇪🇸 Espanha +34</option>
+                  <option value="AR">🇦🇷 Argentina +54</option>
+                  <option value="MX">🇲🇽 México +52</option>
+                </select>
+
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder={phoneCountry === 'BR' ? '11 99999-9999' : 'Número local'}
+                  value={phone}
+                  onChange={(e) => handlePhoneChange(e.target.value)}
+                  disabled={loading}
+                  className={
+                    phoneValid === false
+                      ? 'border-red-500 focus-visible:ring-red-500'
+                      : phoneValid === true
+                      ? 'border-green-500 focus-visible:ring-green-500'
+                      : ''
+                  }
+                />
+              </div>
+
+              {phone && phone.length >= 8 && phoneValid === false && (
+                <p className="text-sm text-red-600 mt-1">
+                  ❌ Número inválido para {phoneCountry === 'BR' ? 'Brasil' : 'o país selecionado'}
+                </p>
+              )}
+              {phoneValid === true && (
+                <p className="text-sm text-green-600 mt-1">
+                  ✅ {phoneFormatted}
+                </p>
+              )}
             </div>
 
             <div>

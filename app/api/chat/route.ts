@@ -88,13 +88,62 @@ export async function POST(req: Request) {
     let hasQuiz = false
     let quizLead: QuizLead | null = null
     
-    const { data: quizData } = await supabase
+    // 🎯 BUSCA HÍBRIDA: user_id (prioridade 1) → telefone → email
+    
+    // Prioridade 1: Buscar por user_id (vinculação já estabelecida)
+    let { data: quizData } = await supabase
       .from('quiz_leads')
       .select('*')
-      .eq('email', user.email)
+      .eq('user_id', userId)
       .order('created_at', { ascending: false })
       .limit(1)
-      .single()
+      .maybeSingle()
+
+    // Prioridade 2: Se não encontrou, buscar por telefone e vincular
+    if (!quizData && user.phone) {
+      const { data: quizByPhone } = await supabase
+        .from('quiz_leads')
+        .select('*')
+        .eq('telefone', user.phone)
+        .is('user_id', null) // Apenas quiz ainda não vinculado
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (quizByPhone) {
+        // Vincular permanentemente
+        await supabase
+          .from('quiz_leads')
+          .update({ user_id: userId })
+          .eq('id', quizByPhone.id)
+        
+        quizData = quizByPhone
+        console.log(`✅ Quiz vinculado por telefone: ${quizByPhone.id}`)
+      }
+    }
+
+    // Prioridade 3: Se ainda não encontrou, buscar por email e vincular
+    if (!quizData && user.email) {
+      const { data: quizByEmail } = await supabase
+        .from('quiz_leads')
+        .select('*')
+        .eq('email', user.email)
+        .is('user_id', null) // Apenas quiz ainda não vinculado
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (quizByEmail) {
+        // Vincular permanentemente
+        await supabase
+          .from('quiz_leads')
+          .update({ user_id: userId })
+          .eq('id', quizByEmail.id)
+        
+        quizData = quizByEmail
+        console.log(`✅ Quiz vinculado por email: ${quizByEmail.id}`)
+      }
+    }
 
     if (quizData) {
       hasQuiz = true
