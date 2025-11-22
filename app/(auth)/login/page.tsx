@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertCircle, Loader2 } from 'lucide-react'
+import { LegalFooter } from '@/components/legal-footer'
 
 function LoginForm() {
   const [email, setEmail] = useState('')
@@ -57,14 +58,11 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-slate-950 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
       <div className="w-full max-w-md">
         <div className="rounded-2xl bg-white dark:bg-slate-900 p-8 shadow-xl border dark:border-slate-800">
-          {/* Logo */}
+          {/* Header */}
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-green-700">
-              <span className="text-3xl font-bold text-white">P</span>
-            </div>
             <h1 className="text-2xl font-bold">Bem-vindo de volta</h1>
             <p className="mt-2 text-sm text-muted-foreground">
               Entre para conversar com o Mestre Ye
@@ -157,17 +155,7 @@ function LoginForm() {
           </p>
         </div>
 
-        {/* Footer */}
-        <p className="mt-8 text-center text-xs text-muted-foreground">
-          Ao entrar, você concorda com nossos{' '}
-          <a href="#" className="underline">
-            Termos de Uso
-          </a>{' '}
-          e{' '}
-          <a href="#" className="underline">
-            Política de Privacidade
-          </a>
-        </p>
+        <LegalFooter />
       </div>
     </div>
   )

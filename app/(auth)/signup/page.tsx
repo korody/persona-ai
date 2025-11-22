@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertCircle, Loader2, Check } from 'lucide-react'
 import { parsePhoneNumber, type CountryCode } from 'libphonenumber-js'
+import { LegalFooter } from '@/components/legal-footer'
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState('')
@@ -256,6 +257,26 @@ export default function SignupPage() {
               />
             </div>
 
+            <div className="flex items-start gap-2 text-sm">
+              <input
+                id="terms"
+                type="checkbox"
+                required
+                disabled={loading}
+                className="mt-1"
+              />
+              <label htmlFor="terms" className="text-muted-foreground cursor-pointer">
+                Li e concordo com os{' '}
+                <Link href="/termos" target="_blank" className="text-primary hover:underline">
+                  Termos de Uso
+                </Link>{' '}
+                e{' '}
+                <Link href="/privacidade" target="_blank" className="text-primary hover:underline">
+                  Política de Privacidade
+                </Link>
+              </label>
+            </div>
+
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (
                 <>
@@ -299,17 +320,7 @@ export default function SignupPage() {
           </p>
         </div>
 
-        {/* Footer */}
-        <p className="mt-8 text-center text-xs text-muted-foreground">
-          Ao criar uma conta, você concorda com nossos{' '}
-          <a href="#" className="underline">
-            Termos de Uso
-          </a>{' '}
-          e{' '}
-          <a href="#" className="underline">
-            Política de Privacidade
-          </a>
-        </p>
+        <LegalFooter />
       </div>
     </div>
   )
