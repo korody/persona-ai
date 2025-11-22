@@ -182,6 +182,9 @@ importers:
       react:
         specifier: 19.0.0-rc-45804af1-20241021
         version: 19.0.0-rc-45804af1-20241021
+      react-data-grid:
+        specifier: ^7.0.0-beta.47
+        version: 7.0.0-beta.58(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)
       react-dom:
         specifier: 19.0.0-rc-45804af1-20241021
         version: 19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021)
@@ -3179,6 +3182,12 @@ packages:
 
   quansync@0.2.11:
     resolution: {integrity: sha512-AifT7QEbW9Nri4tAwR5M/uzpBuqfZf+zwaEM/QkzEjj7NBuFD2rBuy0K3dE+8wltbezDV7JMA0WfnCPYRSYbXA==}
+
+  react-data-grid@7.0.0-beta.58:
+    resolution: {integrity: sha512-ND7BsMOJRF/KHUeKU465AmmofoKruQFTe+3GaACiHja1ytd9+lh4ODn0oXPgm/deJgmAXJVORv+fMSXlk4OVTQ==}
+    peerDependencies:
+      react: ^19.2
+      react-dom: ^19.2
 
   react-dom@19.0.0-rc-45804af1-20241021:
     resolution: {integrity: sha512-8hOckEFO7Vxo+nH/EEddIGdencOFT0/3iJqF3mKrqv71n1xxhYcp0595JbT/DP31G8bHfDcBSMWVhIvyCGWy/A==}
@@ -6883,6 +6892,11 @@ snapshots:
       side-channel: 1.1.0
 
   quansync@0.2.11: {}
+
+  react-data-grid@7.0.0-beta.58(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021):
+    dependencies:
+      react: 19.0.0-rc-45804af1-20241021
+      react-dom: 19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021)
 
   react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021):
     dependencies:
