@@ -152,7 +152,7 @@ export default function SignupPage() {
           <div className="mb-8 text-center">
             <h1 className="text-2xl font-bold">Comece grátis</h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              20 créditos de boas-vindas + 30 da Anamnese MTC
+              20 créditos de boas-vindas
             </p>
           </div>
 
@@ -273,10 +273,6 @@ export default function SignupPage() {
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Check className="h-4 w-4 text-green-600" />
               <span>20 créditos de boas-vindas</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Check className="h-4 w-4 text-green-600" />
-              <span>+30 créditos ao completar a Anamnese MTC</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Check className="h-4 w-4 text-green-600" />
