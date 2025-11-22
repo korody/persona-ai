@@ -148,11 +148,8 @@ export default function SignupPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
       <div className="w-full max-w-md">
         <div className="rounded-2xl bg-white dark:bg-slate-800 p-8 shadow-xl border dark:border-slate-700">
-          {/* Logo */}
+          {/* Header */}
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80">
-              <span className="text-3xl font-bold text-primary-foreground">P</span>
-            </div>
             <h1 className="text-2xl font-bold">Comece grátis</h1>
             <p className="mt-2 text-sm text-muted-foreground">
               20 créditos de boas-vindas + 30 do Quiz MTC
