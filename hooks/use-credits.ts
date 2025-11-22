@@ -16,6 +16,9 @@ interface Credits {
 
 const fetcher = async (url: string) => {
   const supabase = createClient()
+  
+  if (!supabase) throw new Error('Supabase client not available')
+  
   const { data: { session } } = await supabase.auth.getSession()
   
   if (!session) throw new Error('Not authenticated')
