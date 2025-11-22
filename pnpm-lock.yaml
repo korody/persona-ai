@@ -11,6 +11,9 @@ importers:
       '@ai-sdk/anthropic':
         specifier: ^2.0.40
         version: 2.0.40(zod@3.25.76)
+      '@ai-sdk/gateway':
+        specifier: ^1.0.0
+        version: 1.0.15(zod@3.25.76)
       '@ai-sdk/openai':
         specifier: ^2.0.59
         version: 2.0.59(zod@3.25.76)
