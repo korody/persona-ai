@@ -98,6 +98,9 @@ importers:
       '@vercel/analytics':
         specifier: ^1.3.1
         version: 1.5.0(next@15.3.0-canary.31(@opentelemetry/api@1.9.0)(react-dom@19.0.0-rc-45804af1-20241021(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021))(react@19.0.0-rc-45804af1-20241021)(svelte@5.43.2)(vue@3.5.22(typescript@5.8.2))
+      '@vercel/functions':
+        specifier: ^1.4.1
+        version: 1.6.0
       '@vercel/otel':
         specifier: ^1.11.0
         version: 1.14.0(@opentelemetry/api-logs@0.57.2)(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.57.2(@opentelemetry/api@1.9.0))(@opentelemetry/resources@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.57.2(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))
@@ -2091,6 +2094,15 @@ packages:
       vue:
         optional: true
       vue-router:
+        optional: true
+
+  '@vercel/functions@1.6.0':
+    resolution: {integrity: sha512-R6FKQrYT5MZs5IE1SqeCJWxMuBdHawFcCZboKKw8p7s+6/mcd55Gx6tWmyKnQTyrSEA04NH73Tc9CbqpEle8RA==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      '@aws-sdk/credential-provider-web-identity': '*'
+    peerDependenciesMeta:
+      '@aws-sdk/credential-provider-web-identity':
         optional: true
 
   '@vercel/oidc@3.0.3':
@@ -5688,6 +5700,8 @@ snapshots:
       react: 19.0.0-rc-45804af1-20241021
       svelte: 5.43.2
       vue: 3.5.22(typescript@5.8.2)
+
+  '@vercel/functions@1.6.0': {}
 
   '@vercel/oidc@3.0.3': {}
 
