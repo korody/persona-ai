@@ -1,4 +1,4 @@
-import type { LanguageModelV2StreamPart } from "@ai-sdk/provider";
+import type { LanguageModelV1StreamPart } from "@ai-sdk/provider";
 import { generateId, type ModelMessage } from "ai";
 import { TEST_PROMPTS } from "./basic";
 
@@ -48,38 +48,28 @@ export function compareMessages(
   return true;
 }
 
-const textToDeltas = (text: string): LanguageModelV2StreamPart[] => {
-  const id = generateId();
-
+const textToDeltas = (text: string): LanguageModelV1StreamPart[] => {
   const deltas = text.split(" ").map((char) => ({
-    id,
     type: "text-delta" as const,
-    delta: `${char} `,
+    textDelta: `${char} `,
   }));
 
-  return [{ id, type: "text-start" }, ...deltas, { id, type: "text-end" }];
+  return [...deltas];
 };
 
-const reasoningToDeltas = (text: string): LanguageModelV2StreamPart[] => {
-  const id = generateId();
-
-  const deltas = text.split(" ").map((char) => ({
-    id,
-    type: "reasoning-delta" as const,
-    delta: `${char} `,
-  }));
-
+const reasoningToDeltas = (text: string): LanguageModelV1StreamPart[] => {
   return [
-    { id, type: "reasoning-start" },
-    ...deltas,
-    { id, type: "reasoning-end" },
+    {
+      type: "reasoning" as const,
+      textDelta: text,
+    },
   ];
 };
 
 export const getResponseChunksByPrompt = (
   prompt: ModelMessage[],
   isReasoningEnabled = false
-): LanguageModelV2StreamPart[] => {
+): LanguageModelV1StreamPart[] => {
   const recentMessage = prompt.at(-1);
 
   if (!recentMessage) {
@@ -94,7 +84,7 @@ export const getResponseChunksByPrompt = (
         {
           type: "finish",
           finishReason: "stop",
-          usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
+          usage: { promptTokens: 3, completionTokens: 10 },
         },
       ];
     }
@@ -108,7 +98,7 @@ export const getResponseChunksByPrompt = (
         {
           type: "finish",
           finishReason: "stop",
-          usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
+          usage: { promptTokens: 3, completionTokens: 10 },
         },
       ];
     }
@@ -120,7 +110,7 @@ export const getResponseChunksByPrompt = (
       {
         type: "finish",
         finishReason: "stop",
-        usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
+        usage: { promptTokens: 3, completionTokens: 10 },
       },
     ];
   }
@@ -131,7 +121,7 @@ export const getResponseChunksByPrompt = (
       {
         type: "finish",
         finishReason: "stop",
-        usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
+        usage: { promptTokens: 3, completionTokens: 10 },
       },
     ];
   }
@@ -142,7 +132,7 @@ export const getResponseChunksByPrompt = (
       {
         type: "finish",
         finishReason: "stop",
-        usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
+        usage: { promptTokens: 3, completionTokens: 10 },
       },
     ];
   }
@@ -154,7 +144,7 @@ export const getResponseChunksByPrompt = (
       {
         type: "finish",
         finishReason: "stop",
-        usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
+        usage: { promptTokens: 3, completionTokens: 10 },
       },
     ];
   }
@@ -165,7 +155,7 @@ export const getResponseChunksByPrompt = (
       {
         type: "finish",
         finishReason: "stop",
-        usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
+        usage: { promptTokens: 3, completionTokens: 10 },
       },
     ];
   }
@@ -175,36 +165,27 @@ export const getResponseChunksByPrompt = (
 
     return [
       {
-        id: toolCallId,
-        type: "tool-input-start",
+        type: "tool-call",
+        toolCallType: "function",
+        toolCallId,
         toolName: "createDocument",
-      },
-      {
-        id: toolCallId,
-        type: "tool-input-delta",
-        delta: JSON.stringify({
+        args: JSON.stringify({
           title: "Essay about Silicon Valley",
           kind: "text",
         }),
       },
       {
-        id: toolCallId,
-        type: "tool-input-end",
-      },
-      {
-        toolCallId,
-        type: "tool-result",
-        toolName: "createDocument",
-        result: {
+        type: "text-delta",
+        textDelta: JSON.stringify({
           id: "doc_123",
           title: "Essay about Silicon Valley",
           kind: "text",
-        },
+        }),
       },
       {
         type: "finish",
         finishReason: "stop",
-        usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
+        usage: { promptTokens: 3, completionTokens: 10 },
       },
     ];
   }
@@ -233,7 +214,7 @@ As we move forward, Silicon Valley continues to reinvent itself. While some pred
       {
         type: "finish",
         finishReason: "stop",
-        usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
+        usage: { promptTokens: 3, completionTokens: 10 },
       },
     ];
   }
@@ -246,7 +227,7 @@ As we move forward, Silicon Valley continues to reinvent itself. While some pred
       {
         type: "finish",
         finishReason: "stop",
-        usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
+        usage: { promptTokens: 3, completionTokens: 10 },
       },
     ];
   }
@@ -255,14 +236,15 @@ As we move forward, Silicon Valley continues to reinvent itself. While some pred
     return [
       {
         type: "tool-call",
+        toolCallType: "function",
         toolCallId: "call_456",
         toolName: "getWeather",
-        input: JSON.stringify({ latitude: 37.7749, longitude: -122.4194 }),
+        args: JSON.stringify({ latitude: 37.7749, longitude: -122.4194 }),
       },
       {
         type: "finish",
         finishReason: "stop",
-        usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
+        usage: { promptTokens: 3, completionTokens: 10 },
       },
     ];
   }
@@ -273,10 +255,11 @@ As we move forward, Silicon Valley continues to reinvent itself. While some pred
       {
         type: "finish",
         finishReason: "stop",
-        usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
+        usage: { promptTokens: 3, completionTokens: 10 },
       },
     ];
   }
 
-  return [{ id: "6", type: "text-delta", delta: "Unknown test prompt!" }];
+  return [{ type: "text-delta", textDelta: "Unknown test prompt!" }];
 };
+
