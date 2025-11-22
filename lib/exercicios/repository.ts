@@ -14,14 +14,21 @@ import type {
 // CONFIGURAÇÃO DO CLIENTE SUPABASE
 // ============================================
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+let supabaseInstance: any = null
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  throw new Error('Supabase URL ou SERVICE_ROLE_KEY não configurados')
+function getSupabase() {
+  if (!supabaseInstance) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error('Supabase URL ou SERVICE_ROLE_KEY não configurados')
+    }
+
+    supabaseInstance = createClient(supabaseUrl, supabaseServiceKey)
+  }
+  return supabaseInstance
 }
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 // ============================================
 // REPOSITORY FUNCTIONS
@@ -35,6 +42,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 export async function upsertExercise(
   data: ExerciseInsert
 ): Promise<Exercise> {
+  const supabase = getSupabase()
   const { data: result, error } = await supabase
     .from('exercises')
     .upsert(data, {
@@ -56,6 +64,7 @@ export async function upsertExercise(
  * Ex: "anxiety", "insomnia", "back_pain"
  */
 export async function searchByIndication(tag: string): Promise<Exercise[]> {
+  const supabase = getSupabase()
   const { data, error } = await supabase
     .from('exercises')
     .select('*')
@@ -77,6 +86,7 @@ export async function searchByIndication(tag: string): Promise<Exercise[]> {
 export async function searchByElement(
   element: MTCElement
 ): Promise<Exercise[]> {
+  const supabase = getSupabase()
   const { data, error } = await supabase
     .from('exercises')
     .select('*')
@@ -96,6 +106,7 @@ export async function searchByElement(
  * Ordenados por posição
  */
 export async function listAll(): Promise<Exercise[]> {
+  const supabase = getSupabase()
   const { data, error } = await supabase
     .from('exercises')
     .select('*')
