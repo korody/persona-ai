@@ -105,6 +105,7 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "autoprefixer": "^10.4.20",
     "dotenv": "^17.2.3",
+    "drizzle-kit": "^0.30.0",
     "postcss": "^8",
     "tailwindcss": "^4.1.13",
     "tsx": "^4.20.6",
