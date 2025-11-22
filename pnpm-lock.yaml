@@ -188,6 +188,9 @@ importers:
       prosemirror-inputrules:
         specifier: ^1.4.0
         version: 1.5.1
+      prosemirror-markdown:
+        specifier: ^1.13.2
+        version: 1.13.2
       prosemirror-model:
         specifier: ^1.25.4
         version: 1.25.4
@@ -2026,8 +2029,17 @@ packages:
   '@types/katex@0.16.7':
     resolution: {integrity: sha512-HMwFiRujE5PjrgwHQ25+bsLJgowjGjm5Z8FVSf0N6PwgJrwxH0QxzHYDcKsTfV3wva0vzrpqMTJS2jXPr5BMEQ==}
 
+  '@types/linkify-it@5.0.0':
+    resolution: {integrity: sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q==}
+
+  '@types/markdown-it@14.1.2':
+    resolution: {integrity: sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog==}
+
   '@types/mdast@4.0.4':
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
+
+  '@types/mdurl@2.0.0':
+    resolution: {integrity: sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg==}
 
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
@@ -2198,6 +2210,9 @@ packages:
 
   argparse@1.0.10:
     resolution: {integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==}
+
+  argparse@2.0.1:
+    resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
 
   aria-hidden@1.2.4:
     resolution: {integrity: sha512-y+CcFFwelSXpLZk/7fMB2mUbGtX9lKycf1MWJ7CaTIERyitVlyQx6C+sxcROU2BAJ24OiZyK+8wj2i8AlBoS3A==}
@@ -3134,6 +3149,9 @@ packages:
     resolution: {integrity: sha512-utfs7Pr5uJyyvDETitgsaqSyjCb2qNRAtuqUeWIAKztsOYdcACf2KtARYXg2pSvhkt+9NfoaNY7fxjl6nuMjIQ==}
     engines: {node: '>= 12.0.0'}
 
+  linkify-it@5.0.0:
+    resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
+
   local-pkg@1.1.2:
     resolution: {integrity: sha512-arhlxbFRmoQHl33a0Zkle/YWlmNwoyt6QNZEIJcqNbdrsix5Lvc4HyyI3EnwxTYlZYc32EbYrQ8SzEZ7dqgg9A==}
     engines: {node: '>=14'}
@@ -3181,6 +3199,10 @@ packages:
   mammoth@1.11.0:
     resolution: {integrity: sha512-BcEqqY/BOwIcI1iR5tqyVlqc3KIaMRa4egSoK83YAVrBf6+yqdAAbtUcFDCWX8Zef8/fgNZ6rl4VUv+vVX8ddQ==}
     engines: {node: '>=12.0.0'}
+    hasBin: true
+
+  markdown-it@14.1.0:
+    resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
     hasBin: true
 
   markdown-table@3.0.4:
@@ -3242,6 +3264,9 @@ packages:
 
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
+
+  mdurl@2.0.0:
+    resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
 
   mermaid@11.12.1:
     resolution: {integrity: sha512-UlIZrRariB11TY1RtTgUWp65tphtBv4CSq7vyS2ZZ2TgoMjs2nloq+wFqxiwcxlhHUvs7DPGgMjs2aeQxz5h9g==}
@@ -3647,6 +3672,9 @@ packages:
   prosemirror-keymap@1.2.3:
     resolution: {integrity: sha512-4HucRlpiLd1IPQQXNqeo81BGtkY8Ai5smHhKW9jjPKRc2wQIxksg7Hl1tTI2IfT2B/LgX6bfYvXxEpJl7aKYKw==}
 
+  prosemirror-markdown@1.13.2:
+    resolution: {integrity: sha512-FPD9rHPdA9fqzNmIIDhhnYQ6WgNoSWX9StUZ8LEKapaXU9i6XgykaHKhp6XMyXlOWetmaFgGDS/nu/w9/vUc5g==}
+
   prosemirror-menu@1.2.5:
     resolution: {integrity: sha512-qwXzynnpBIeg1D7BAtjOusR+81xCp53j7iWu/IargiRZqRjGIlQuu1f3jFi+ehrHhWMLoyOQTSRx/IWZJqOYtQ==}
 
@@ -3667,6 +3695,10 @@ packages:
 
   prosemirror-view@1.41.3:
     resolution: {integrity: sha512-SqMiYMUQNNBP9kfPhLO8WXEk/fon47vc52FQsUiJzTBuyjKgEcoAwMyF04eQ4WZ2ArMn7+ReypYL60aKngbACQ==}
+
+  punycode.js@2.3.1:
+    resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
+    engines: {node: '>=6'}
 
   qs@6.14.0:
     resolution: {integrity: sha512-YWWTjgABSKcvs/nWBi9PycY/JiPJqOD4JA6o9Sej2AtvSGarXxKC3OQSk4pAarbdQlKAh5D4FCQkJNkW+GAn3w==}
@@ -4016,6 +4048,9 @@ packages:
     resolution: {integrity: sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  uc.micro@2.1.0:
+    resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
 
   ufo@1.6.1:
     resolution: {integrity: sha512-9a4/uxlTWJ4+a5i0ooc1rU7C7YOw3wT+UGqdeNNHWnOF9qcMBgLRS+4IYUqbczewFx4mLEig6gawh7X6mFlEkA==}
@@ -5752,9 +5787,18 @@ snapshots:
 
   '@types/katex@0.16.7': {}
 
+  '@types/linkify-it@5.0.0': {}
+
+  '@types/markdown-it@14.1.2':
+    dependencies:
+      '@types/linkify-it': 5.0.0
+      '@types/mdurl': 2.0.0
+
   '@types/mdast@4.0.4':
     dependencies:
       '@types/unist': 3.0.3
+
+  '@types/mdurl@2.0.0': {}
 
   '@types/ms@2.1.0': {}
 
@@ -5923,6 +5967,8 @@ snapshots:
   argparse@1.0.10:
     dependencies:
       sprintf-js: 1.0.3
+
+  argparse@2.0.1: {}
 
   aria-hidden@1.2.4:
     dependencies:
@@ -6365,8 +6411,7 @@ snapshots:
       graceful-fs: 4.2.11
       tapable: 2.3.0
 
-  entities@4.5.0:
-    optional: true
+  entities@4.5.0: {}
 
   entities@6.0.1: {}
 
@@ -6891,6 +6936,10 @@ snapshots:
       lightningcss-win32-arm64-msvc: 1.30.2
       lightningcss-win32-x64-msvc: 1.30.2
 
+  linkify-it@5.0.0:
+    dependencies:
+      uc.micro: 2.1.0
+
   local-pkg@1.1.2:
     dependencies:
       mlly: 1.8.0
@@ -6947,6 +6996,15 @@ snapshots:
       path-is-absolute: 1.0.1
       underscore: 1.13.7
       xmlbuilder: 10.1.1
+
+  markdown-it@14.1.0:
+    dependencies:
+      argparse: 2.0.1
+      entities: 4.5.0
+      linkify-it: 5.0.0
+      mdurl: 2.0.0
+      punycode.js: 2.3.1
+      uc.micro: 2.1.0
 
   markdown-table@3.0.4: {}
 
@@ -7118,6 +7176,8 @@ snapshots:
   mdast-util-to-string@4.0.0:
     dependencies:
       '@types/mdast': 4.0.4
+
+  mdurl@2.0.0: {}
 
   mermaid@11.12.1:
     dependencies:
@@ -7676,6 +7736,12 @@ snapshots:
       prosemirror-state: 1.4.4
       w3c-keyname: 2.2.8
 
+  prosemirror-markdown@1.13.2:
+    dependencies:
+      '@types/markdown-it': 14.1.2
+      markdown-it: 14.1.0
+      prosemirror-model: 1.25.4
+
   prosemirror-menu@1.2.5:
     dependencies:
       crelt: 1.0.6
@@ -7712,6 +7778,8 @@ snapshots:
       prosemirror-model: 1.25.4
       prosemirror-state: 1.4.4
       prosemirror-transform: 1.10.5
+
+  punycode.js@2.3.1: {}
 
   qs@6.14.0:
     dependencies:
@@ -8158,6 +8226,8 @@ snapshots:
       fsevents: 2.3.3
 
   typescript@5.8.2: {}
+
+  uc.micro@2.1.0: {}
 
   ufo@1.6.1: {}
 
