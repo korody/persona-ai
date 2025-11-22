@@ -10,13 +10,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertCircle, Loader2, Check } from 'lucide-react'
-import { parsePhoneNumber } from 'libphonenumber-js'
+import { parsePhoneNumber, type CountryCode } from 'libphonenumber-js'
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
-  const [phoneCountry, setPhoneCountry] = useState('BR')
+  const [phoneCountry, setPhoneCountry] = useState<CountryCode>('BR')
   const [phoneValid, setPhoneValid] = useState<boolean | null>(null)
   const [phoneFormatted, setPhoneFormatted] = useState('')
   const [password, setPassword] = useState('')
@@ -48,12 +48,12 @@ export default function SignupPage() {
   }
 
   const handleCountryChange = (country: string) => {
-    setPhoneCountry(country)
+    setPhoneCountry(country as CountryCode)
     
     // Re-validar telefone com novo país
     if (phone) {
       try {
-        const phoneNumber = parsePhoneNumber(phone, country)
+        const phoneNumber = parsePhoneNumber(phone, country as CountryCode)
         const valid = phoneNumber && phoneNumber.isValid()
         setPhoneValid(valid)
         setPhoneFormatted(valid ? phoneNumber.formatInternational() : '')
