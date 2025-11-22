@@ -125,9 +125,9 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-4">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
         <div className="w-full max-w-md">
-          <div className="rounded-2xl bg-white p-8 shadow-xl text-center">
+          <div className="rounded-2xl bg-white dark:bg-slate-800 p-8 shadow-xl border dark:border-slate-700 text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
               <Check className="h-8 w-8 text-green-600" />
             </div>
@@ -145,13 +145,13 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
       <div className="w-full max-w-md">
-        <div className="rounded-2xl bg-white p-8 shadow-xl">
+        <div className="rounded-2xl bg-white dark:bg-slate-800 p-8 shadow-xl border dark:border-slate-700">
           {/* Logo */}
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-green-700">
-              <span className="text-3xl font-bold text-white">P</span>
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80">
+              <span className="text-3xl font-bold text-primary-foreground">P</span>
             </div>
             <h1 className="text-2xl font-bold">Comece grátis</h1>
             <p className="mt-2 text-sm text-muted-foreground">
