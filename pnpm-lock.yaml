@@ -146,6 +146,9 @@ importers:
       openai:
         specifier: ^6.9.1
         version: 6.9.1(ws@8.18.3(bufferutil@4.0.9))(zod@3.25.76)
+      orderedmap:
+        specifier: ^2.1.1
+        version: 2.1.1
       papaparse:
         specifier: ^5.4.1
         version: 5.5.3
@@ -2357,6 +2360,9 @@ packages:
 
   option@0.2.4:
     resolution: {integrity: sha512-pkEqbDyl8ou5cpq+VsnQbe/WlEy5qS7xPzMS1U55OCG9KPvwFD46zDbxQIj3egJSFc3D+XhYOPUzz49zQAVy7A==}
+
+  orderedmap@2.1.1:
+    resolution: {integrity: sha512-TvAWxi0nDe1j/rtMcWcIj94+Ffe6n7zhow33h40SKxmsmozs6dz/e+EajymfoFcHd7sxNn8yHM8839uixMOV6g==}
 
   p-finally@1.0.0:
     resolution: {integrity: sha512-LICb2p9CB7FS+0eR1oqWnHhp0FljGLZCWBE9aix0Uye9W8LTQPwMTYVGWQWIw9RdQiDg4+epXQODwIYJtSJaow==}
@@ -4997,6 +5003,8 @@ snapshots:
       zod: 3.25.76
 
   option@0.2.4: {}
+
+  orderedmap@2.1.1: {}
 
   p-finally@1.0.0: {}
 
