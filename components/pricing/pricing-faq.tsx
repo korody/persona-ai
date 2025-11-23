@@ -10,7 +10,7 @@ import {
 const faqs = [
   {
     question: 'O que é 1 crédito?',
-    answer: '1 crédito = 1 turno completo de conversa (sua pergunta + resposta do Mestre Ye). Por exemplo, uma conversa típica de 5-8 perguntas usa 5-8 créditos.',
+    answer: '1 crédito = 1 interação completa (sua pergunta + resposta do Mestre Ye). Por exemplo: 50 créditos = 50 interações. Uma conversa típica de 10 interações usa 10 créditos.',
   },
   {
     question: 'Os créditos expiram?',

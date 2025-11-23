@@ -179,7 +179,7 @@ export default function PricingPage() {
                   <span className="underline decoration-dotted">O que é 1 crédito?</span>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
-                  <p>1 crédito = 1 turno completo de conversa (sua pergunta + resposta do Mestre Ye)</p>
+                  <p>1 crédito = 1 interação (sua pergunta + resposta do Mestre Ye). Exemplo: 50 créditos = 50 interações</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

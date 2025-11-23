@@ -12,15 +12,15 @@ import {
 
 const comparisonData = [
   {
-    feature: 'Créditos mensais',
+    feature: 'Interações mensais',
     free: '20',
     aprendiz: '50',
     discipulo: '250',
     mestre: '600',
   },
   {
-    feature: 'Créditos boas-vindas',
-    free: '50',
+    feature: 'Bônus de boas-vindas',
+    free: '50 interações',
     aprendiz: '-',
     discipulo: '-',
     mestre: '-',
