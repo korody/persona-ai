@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
               status: 'active',
               stripe_customer_id: session.customer as string,
               stripe_subscription_id: session.subscription as string,
-              current_credits: plan.credits_per_month,
+              current_credits: plan.credits_monthly,
               bonus_credits: plan.initial_bonus_credits || 0,
               bonus_credits_expiry: plan.bonus_credits_duration_months
                 ? new Date(Date.now() + plan.bonus_credits_duration_months * 30 * 24 * 60 * 60 * 1000).toISOString()
