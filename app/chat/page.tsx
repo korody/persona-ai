@@ -13,6 +13,7 @@ import { useCredits } from '@/hooks/use-credits'
 import { useConversations } from '@/hooks/use-conversations'
 import { createClient } from '@/lib/supabase/client'
 import { MessageSquare, Volume2, VolumeX } from 'lucide-react'
+import { WhatsAppSupport } from '@/components/whatsapp-support'
 
 // Helper para extrair texto de uma UIMessage
 function getMessageText(message: any): string {
@@ -342,6 +343,7 @@ export default function ChatPage() {
           />
         </div>
       </div>
+      <WhatsAppSupport />
     </div>
   )
 }

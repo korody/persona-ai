@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import { LegalFooter } from '@/components/legal-footer'
+import { WhatsAppSupport } from '@/components/whatsapp-support'
 
 function LoginForm() {
   const [email, setEmail] = useState('')
@@ -169,6 +170,7 @@ export default function LoginPage() {
       </div>
     }>
       <LoginForm />
+      <WhatsAppSupport />
     </Suspense>
   )
 }

@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label'
 import { AlertCircle, Loader2, Check } from 'lucide-react'
 import { parsePhoneNumber, type CountryCode } from 'libphonenumber-js'
 import { LegalFooter } from '@/components/legal-footer'
+import { WhatsAppSupport } from '@/components/whatsapp-support'
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState('')
@@ -322,6 +323,7 @@ export default function SignupPage() {
 
         <LegalFooter />
       </div>
+      <WhatsAppSupport />
     </div>
   )
 }

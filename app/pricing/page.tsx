@@ -303,6 +303,7 @@ export default function PricingPage() {
           </div>
         </div>
       </div>
+      <WhatsAppSupport />
     </div>
   )
 }
