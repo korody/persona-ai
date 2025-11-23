@@ -9,7 +9,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://digital.mestreye.com"),
   title: "Mestre Ye Digital - Seu Consultor de Medicina Tradicional Chinesa",
-  description: "Converse com o Mestre Ye, seu assistente especializado em Medicina Tradicional Chinesa, acupuntura e bem-estar holístico.",
+  description: "Converse com o Mestre Ye, seu assistente especializado em Medicina Tradicional Chinesa.",
 };
 
 export const viewport = {
