@@ -11,9 +11,6 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">P</span>
-            </div>
             <span className="font-bold text-lg">Mestre Ye Digital</span>
           </div>
           
@@ -29,12 +26,12 @@ export default function HomePage() {
       </header>
 
       {/* Hero */}
-      <section className="flex-1 bg-gradient-to-br from-green-50 to-green-100">
+      <section className="flex-1 bg-background">
         <div className="container py-24 md:py-32">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
               Converse com o{' '}
-              <span className="text-green-600">Mestre Ye</span>
+              <span className="bg-gradient-to-r from-slate-700 to-slate-900 dark:from-slate-100 dark:to-slate-400 bg-clip-text text-transparent">Mestre Ye</span>
               <br />
               24 horas por dia
             </h1>
@@ -44,7 +41,7 @@ export default function HomePage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Button size="lg" asChild className="text-lg px-8">
+              <Button size="lg" asChild className="text-lg px-8 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900">
                 <Link href="/signup">
                   Começar Grátis
                   <Sparkles className="ml-2 h-5 w-5" />
@@ -59,15 +56,15 @@ export default function HomePage() {
 
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-green-600" />
+                <Sparkles className="h-4 w-4" />
                 <span>20 créditos grátis</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-green-600" />
+                <Clock className="h-4 w-4" />
                 <span>Sem cartão de crédito</span>
               </div>
               <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-green-600" />
+                <Shield className="h-4 w-4" />
                 <span>Dados seguros</span>
               </div>
             </div>
@@ -84,8 +81,8 @@ export default function HomePage() {
           
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="text-center">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
-                <MessageSquare className="h-6 w-6 text-green-600" />
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
+                <MessageSquare className="h-6 w-6 text-slate-700 dark:text-slate-300" />
               </div>
               <h3 className="font-semibold text-lg mb-2">Sempre Disponível</h3>
               <p className="text-muted-foreground text-sm">
@@ -95,7 +92,7 @@ export default function HomePage() {
             </div>
 
             <div className="text-center">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
                 <span className="text-2xl">🌳</span>
               </div>
               <h3 className="font-semibold text-lg mb-2">Diagnóstico MTC</h3>
@@ -106,7 +103,7 @@ export default function HomePage() {
             </div>
 
             <div className="text-center">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-green-100">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
                 <span className="text-2xl">🧘</span>
               </div>
               <h3 className="font-semibold text-lg mb-2">Método Ye Xin</h3>
@@ -120,16 +117,16 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-gradient-to-br from-green-500 to-green-700 text-white">
+      <section className="py-24 bg-slate-50 dark:bg-slate-900 border-t">
         <div className="container text-center">
           <h2 className="text-4xl font-bold mb-4">
             Pronto para começar sua jornada?
           </h2>
-          <p className="text-lg mb-8 text-green-50 max-w-2xl mx-auto">
+          <p className="text-lg mb-8 text-muted-foreground max-w-2xl mx-auto">
             Junte-se a milhares de pessoas que já melhoraram sua qualidade de vida 
             com a orientação do Mestre Ye.
           </p>
-          <Button size="lg" variant="secondary" asChild className="text-lg px-8">
+          <Button size="lg" asChild className="text-lg px-8 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900">
             <Link href="/signup">
               Criar Conta Grátis
             </Link>
@@ -142,11 +139,8 @@ export default function HomePage() {
         <div className="container">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">P</span>
-                </div>
-                <span className="font-bold">Mestre Ye Digital</span>
+              <div className="mb-4">
+                <span className="font-bold text-lg">Mestre Ye Digital</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Medicina Tradicional Chinesa acessível para todos.
@@ -172,8 +166,8 @@ export default function HomePage() {
             <div>
               <h4 className="font-semibold mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#">Termos de Uso</a></li>
-                <li><a href="#">Privacidade</a></li>
+                <li><Link href="/termos">Termos de Uso</Link></li>
+                <li><Link href="/privacidade">Privacidade</Link></li>
               </ul>
             </div>
           </div>
