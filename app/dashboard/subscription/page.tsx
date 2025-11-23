@@ -21,8 +21,8 @@ interface Subscription {
   plan: {
     name: string
     slug: string
-    price_monthly: number
-    credits_per_month: number
+    price_brl: number
+    credits_monthly: number
   }
 }
 
@@ -55,8 +55,8 @@ export default function SubscriptionPage() {
             plan:subscription_plans(
               name,
               slug,
-              price_monthly,
-              credits_per_month
+              price_brl,
+              credits_monthly
             )
           `)
           .eq('user_id', currentUser.id)
@@ -91,12 +91,12 @@ export default function SubscriptionPage() {
   }
 
   const totalCredits = (subscription?.current_credits || 0) + (subscription?.bonus_credits || 0)
-  const maxCredits = subscription?.plan?.credits_per_month || 100
+  const maxCredits = subscription?.plan?.credits_monthly || 100
   const creditsPercentage = Math.min((totalCredits / maxCredits) * 100, 100)
 
   return (
     <div className="min-h-screen bg-background">
-      <Header user={user} />
+      <Header />
 
       <div className="container max-w-4xl mx-auto py-12 px-4">
         <h1 className="text-3xl font-bold mb-8">Minha Assinatura</h1>
@@ -129,7 +129,7 @@ export default function SubscriptionPage() {
                       </Badge>
                     </CardTitle>
                     <CardDescription>
-                      R$ {subscription.plan.price_monthly.toFixed(2).replace('.', ',')} /mês
+                      R$ {subscription.plan.price_brl.toFixed(2).replace('.', ',')} /mês
                     </CardDescription>
                   </div>
                   <CreditCard className="h-8 w-8 text-muted-foreground" />

@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS subscription_plans (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   slug TEXT UNIQUE NOT NULL, -- 'free', 'aprendiz', 'discipulo', 'mestre'
   name TEXT NOT NULL,
-  price_monthly DECIMAL(10,2) NOT NULL,
-  credits_per_month INTEGER NOT NULL,
+  price_brl DECIMAL(10,2) NOT NULL,
+  credits_monthly INTEGER NOT NULL,
   stripe_price_id TEXT, -- NULL para FREE
   is_active BOOLEAN DEFAULT true,
   features JSONB, -- Array de features
@@ -29,8 +29,8 @@ COMMENT ON TABLE subscription_plans IS 'Planos de assinatura disponíveis';
 INSERT INTO subscription_plans (
   slug, 
   name, 
-  price_monthly, 
-  credits_per_month, 
+  price_brl, 
+  credits_monthly, 
   history_days, 
   features,
   description,
@@ -305,7 +305,7 @@ DECLARE
   v_plan_credits INTEGER;
 BEGIN
   -- Buscar créditos do plano
-  SELECT sp.credits_per_month INTO v_plan_credits
+  SELECT sp.credits_monthly INTO v_plan_credits
   FROM user_subscriptions us
   JOIN subscription_plans sp ON sp.id = us.plan_id
   WHERE us.user_id = p_user_id;

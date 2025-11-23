@@ -9,7 +9,7 @@ export default function HomePage() {
     <div className="flex min-h-screen flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
-        <div className="container flex h-16 items-center justify-between">
+        <div className="container max-w-7xl mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <span className="font-bold text-lg">Mestre Ye Digital</span>
           </div>
@@ -27,7 +27,7 @@ export default function HomePage() {
 
       {/* Hero */}
       <section className="flex-1 flex items-center justify-center bg-background">
-        <div className="container py-16 md:py-24">
+        <div className="container max-w-7xl mx-auto py-16 md:py-24 px-4">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
               Converse com o{' '}
@@ -74,7 +74,7 @@ export default function HomePage() {
 
       {/* Features */}
       <section className="py-24 bg-background">
-        <div className="container">
+        <div className="container max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
             Por que escolher o Mestre Ye Digital?
           </h2>
@@ -118,7 +118,7 @@ export default function HomePage() {
 
       {/* CTA */}
       <section className="py-24 bg-slate-50 dark:bg-slate-900 border-t">
-        <div className="container text-center">
+        <div className="container max-w-7xl mx-auto text-center px-4">
           <h2 className="text-4xl font-bold mb-4">
             Pronto para começar sua jornada?
           </h2>
@@ -136,7 +136,7 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="border-t py-12 bg-background">
-        <div className="container">
+        <div className="container max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="mb-4">

@@ -24,8 +24,8 @@ interface Plan {
   slug: string
   name: string
   description: string
-  price_monthly: number
-  credits_per_month: number
+  price_brl: number
+  credits_monthly: number
   features: string[]
   estimated_conversations: string
   popular: boolean
@@ -69,7 +69,7 @@ export default function PricingPage() {
           .from('subscription_plans')
           .select('*')
           .eq('is_active', true)
-          .order('price_monthly', { ascending: true })
+          .order('price_brl', { ascending: true })
 
         if (error) throw error
 
@@ -144,9 +144,9 @@ export default function PricingPage() {
   const plansToDisplay = plans.map(plan => ({
     id: plan.slug,
     name: plan.name,
-    priceDisplay: plan.price_monthly === 0 
+    priceDisplay: plan.price_brl === 0 
       ? 'Grátis' 
-      : `R$ ${plan.price_monthly.toFixed(2).replace('.', ',')}`,
+      : `R$ ${plan.price_brl.toFixed(2).replace('.', ',')}`,
     description: plan.description || '',
     features: Array.isArray(plan.features) ? plan.features : [],
     estimatedConversations: plan.estimated_conversations || '',
@@ -156,7 +156,7 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header user={user} />
+      <Header />
 
       {/* Hero Section */}
       <section className="py-20 px-4 border-b">
