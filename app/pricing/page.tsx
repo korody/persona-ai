@@ -1,309 +1,262 @@
-// app/pricing/page.tsx
-
 'use client'
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
+import { useRouter } from 'next/navigation'
+import { Header } from '@/components/header'
+import { PricingCard } from '@/components/pricing/pricing-card'
+import { PricingComparison } from '@/components/pricing/pricing-comparison'
+import { PricingFAQ } from '@/components/pricing/pricing-faq'
+import { WhatsAppSupport } from '@/components/whatsapp-support'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Check, Loader2 } from 'lucide-react'
-import { Header } from '@/components/header'
-import { useRouter } from 'next/navigation'
-import { WhatsAppSupport } from '@/components/whatsapp-support'
+import { Loader2, Info } from 'lucide-react'
+import Link from 'next/link'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 interface Plan {
   id: string
   slug: string
   name: string
   description: string
-  price_brl: number
-  credits_monthly: number
+  price_monthly: number
+  credits_per_month: number
   features: string[]
-  is_active: boolean
-  sort_order: number
+  estimated_conversations: string
+  popular: boolean
+  stripe_price_id: string | null
 }
 
 export default function PricingPage() {
-  // Estados
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null)
   const [user, setUser] = useState<any>(null)
-  
+  const [currentPlanSlug, setCurrentPlanSlug] = useState<string | null>(null)
   const router = useRouter()
 
-  // Buscar planos do Supabase
+  // Buscar planos e usuário
   useEffect(() => {
-    async function fetchPlans() {
+    async function fetchData() {
       try {
-        setLoading(true)
-        setError(null)
-
         const supabase = createClient()
-        // Buscar planos ativos ordenados por sort_order
-        const { data, error: fetchError } = await supabase
+
+        // Buscar usuário autenticado
+        const { data: { user: currentUser } } = await supabase.auth.getUser()
+        setUser(currentUser)
+
+        // Buscar plano atual do usuário (se autenticado)
+        if (currentUser) {
+          const { data: subscription } = await supabase
+            .from('user_subscriptions')
+            .select('plan_id, subscription_plans(slug)')
+            .eq('user_id', currentUser.id)
+            .eq('status', 'active')
+            .single()
+
+          if (subscription) {
+            setCurrentPlanSlug((subscription as any).subscription_plans?.slug || null)
+          }
+        }
+
+        // Buscar planos disponíveis
+        const { data, error } = await supabase
           .from('subscription_plans')
           .select('*')
           .eq('is_active', true)
-          .order('sort_order', { ascending: true })
+          .order('price_monthly', { ascending: true })
 
-        if (fetchError) throw fetchError
+        if (error) throw error
 
         setPlans(data || [])
-      } catch (err: any) {
-        console.error('Erro ao buscar planos:', err)
-        setError(err.message || 'Erro ao carregar planos')
+      } catch (error) {
+        console.error('Erro ao carregar planos:', error)
       } finally {
         setLoading(false)
       }
     }
 
-    async function checkUser() {
-      const supabase = createClient()
-      const { data: { user: authUser } } = await supabase.auth.getUser()
-      setUser(authUser)
-    }
-
-    fetchPlans()
-    checkUser()
+    fetchData()
   }, [])
 
-  // Handler do botão "Começar Agora"
-  const handleSelectPlan = async (planSlug: string) => {
-    // Verificar se usuário está logado
-    if (!user) {
-      router.push(`/login?redirect=/pricing&plan=${planSlug}`)
+  // Função para selecionar plano
+  async function handleSelectPlan(planSlug: string) {
+    const plan = plans.find(p => p.slug === planSlug)
+    if (!plan) return
+
+    // Plano FREE - redirecionar para signup
+    if (plan.slug === 'free') {
+      router.push('/signup')
       return
     }
 
-    setSelectedPlan(planSlug)
+    // Verificar autenticação
+    if (!user) {
+      router.push('/login?redirect=/pricing')
+      return
+    }
+
+    // Iniciar checkout
+    setCheckoutLoading(plan.slug)
 
     try {
-      // TODO: Preparar para checkout Stripe (implementar depois)
-      console.log('Plano selecionado:', planSlug)
-      
-      // Exemplo de integração futura:
-      // const response = await fetch('/api/checkout', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ planSlug })
-      // })
-      // const { url } = await response.json()
-      // window.location.href = url
-      
-      alert(`Em breve! Checkout do plano ${planSlug}`)
-    } catch (err) {
-      console.error('Erro ao selecionar plano:', err)
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planId: plan.id,
+          userId: user.id,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.error) {
+        alert(data.error)
+        return
+      }
+
+      // Redirecionar para Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url
+      }
+    } catch (error) {
+      console.error('Erro ao criar checkout:', error)
+      alert('Erro ao processar pagamento. Tente novamente.')
     } finally {
-      setSelectedPlan(null)
+      setCheckoutLoading(null)
     }
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  const plansToDisplay = plans.map(plan => ({
+    id: plan.slug,
+    name: plan.name,
+    priceDisplay: plan.price_monthly === 0 
+      ? 'Grátis' 
+      : `R$ ${plan.price_monthly.toFixed(2).replace('.', ',')}`,
+    description: plan.description || '',
+    features: Array.isArray(plan.features) ? plan.features : [],
+    estimatedConversations: plan.estimated_conversations || '',
+    popular: plan.popular || false,
+    ctaText: plan.slug === 'free' ? 'Começar Grátis' : 'Assinar Agora',
+  }))
+
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      
-      <div className="flex-1 py-16 px-4">
-        {/* Header */}
-        <div className="max-w-7xl mx-auto text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+    <div className="min-h-screen bg-background">
+      <Header user={user} />
+
+      {/* Hero Section */}
+      <section className="py-20 px-4 border-b">
+        <div className="max-w-7xl mx-auto text-center">
+          <Badge className="mb-4" variant="outline">
+            PREÇOS TRANSPARENTES
+          </Badge>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Escolha Seu Plano
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground mb-4 max-w-2xl mx-auto">
             Comece sua jornada de autocuidado com o Mestre Ye. 
             Escolha o plano ideal para você.
           </p>
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger className="flex items-center gap-1 cursor-help">
+                  <Info className="h-4 w-4" />
+                  <span className="underline decoration-dotted">O que é 1 crédito?</span>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>1 crédito = 1 turno completo de conversa (sua pergunta + resposta do Mestre Ye)</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
+      </section>
 
-        {/* Cards dos Planos */}
-        {loading ? (
-          <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <Card key={i} className="animate-pulse border">
-                <CardHeader className="space-y-4">
-                  <div className="h-6 bg-muted rounded w-1/2"></div>
-                  <div className="h-8 bg-muted rounded w-3/4"></div>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {[1, 2, 3, 4].map((j) => (
-                    <div key={j} className="h-4 bg-muted rounded"></div>
-                  ))}
-                </CardContent>
-              </Card>
+      {/* Pricing Cards */}
+      <section className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {plansToDisplay.map((plan) => (
+              <PricingCard
+                key={plan.id}
+                plan={plan}
+                onSelect={handleSelectPlan}
+                loading={checkoutLoading === plan.id}
+                currentPlan={currentPlanSlug === plan.id}
+              />
             ))}
           </div>
-        ) : error ? (
-          <div className="max-w-2xl mx-auto">
-            <Card className="border-destructive bg-destructive/10">
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <p className="text-destructive font-semibold mb-2">
-                    Erro ao carregar planos
-                  </p>
-                  <p className="text-destructive/80 text-sm">{error}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        ) : (
-          <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
-            {plans.map((plan) => {
-              const isPopular = plan.slug === 'discipulo'
-              const isLoading = selectedPlan === plan.slug
 
-              return (
-                <Card
-                  key={plan.id}
-                  className={`relative transition-all duration-300 hover:shadow-2xl ${
-                    isPopular
-                      ? 'border-2 border-primary shadow-xl scale-[1.05] bg-card'
-                      : 'border hover:scale-[1.02] bg-card'
-                  }`}
-                >
-                  {/* Badge "MAIS POPULAR" */}
-                  {isPopular && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                      <Badge className="bg-primary hover:bg-primary text-primary-foreground px-4 py-1.5 text-sm font-semibold shadow-lg">
-                        MAIS POPULAR
-                      </Badge>
-                    </div>
-                  )}
-
-                  <CardHeader className="text-center space-y-4 pt-10 px-6">
-                    <h3 className="text-2xl font-bold">
-                      {plan.name}
-                    </h3>
-                    
-                    {/* Preço */}
-                    <div className="space-y-2">
-                      <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-5xl font-bold tracking-tight">
-                          R$ {plan.price_brl.toFixed(2).replace('.', ',')}
-                        </span>
-                        <span className="text-muted-foreground text-lg">/mês</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground font-medium">
-                        {plan.credits_monthly} créditos por mês
-                      </p>
-                    </div>
-
-                    <p className="text-sm text-muted-foreground min-h-[3rem] leading-relaxed">
-                      {plan.description}
-                    </p>
-                  </CardHeader>
-
-                  <CardContent className="px-6 py-6">
-                    {/* Features List */}
-                    <ul className="space-y-3.5">
-                      {plan.features.map((feature, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                          <Check className="h-5 w-5 text-green-600 dark:text-green-500 shrink-0 mt-0.5" />
-                          <span className="text-sm leading-relaxed">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-
-                  <CardFooter className="px-6 pb-8">
-                    <Button
-                      onClick={() => handleSelectPlan(plan.slug)}
-                      disabled={isLoading}
-                      size="lg"
-                      className={`w-full text-base font-semibold transition-all shadow-md hover:shadow-lg ${
-                        isPopular
-                          ? 'bg-primary hover:bg-primary/90'
-                          : ''
-                      }`}
-                      variant={isPopular ? 'default' : 'outline'}
-                      aria-label={`Selecionar plano ${plan.name}`}
-                    >
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                          Processando...
-                        </>
-                      ) : (
-                        'Começar Agora'
-                      )}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              )
-            })}
-          </div>
-        )}
-
-        {/* FAQ Section */}
-        <div className="max-w-4xl mx-auto mt-24">
-          <h2 className="text-3xl font-bold text-center mb-10">
-            Perguntas Frequentes
-          </h2>
-          
-          <div className="space-y-4">
-            <details className="group rounded-lg bg-card p-6 border transition-all hover:shadow-lg">
-              <summary className="font-semibold cursor-pointer list-none flex justify-between items-center">
-                <span>Como funcionam os créditos?</span>
-                <span className="text-muted-foreground group-open:rotate-180 transition-transform">
-                  ▼
-                </span>
-              </summary>
-              <div className="mt-4 text-muted-foreground text-sm leading-relaxed space-y-2">
-                <p>
-                  <strong>1 crédito = 1 interação completa</strong> com o Mestre Ye.
-                </p>
-                <p>
-                  Uma interação é composta por: sua mensagem + resposta do Mestre Ye.
-                </p>
-                <p>
-                  Créditos mensais resetam todo mês, enquanto créditos bônus 
-                  (como do Quiz) acumulam sem expirar.
-                </p>
-              </div>
-            </details>
-
-            <details className="group rounded-lg bg-card p-6 border transition-all hover:shadow-lg">
-              <summary className="font-semibold cursor-pointer list-none flex justify-between items-center">
-                <span>Posso cancelar a qualquer momento?</span>
-                <span className="text-muted-foreground group-open:rotate-180 transition-transform">
-                  ▼
-                </span>
-              </summary>
-              <p className="mt-4 text-muted-foreground text-sm leading-relaxed">
-                Sim! Você pode cancelar sua assinatura a qualquer momento. 
-                Você continua tendo acesso até o fim do período pago.
-              </p>
-            </details>
-
-            <details className="group rounded-lg bg-card p-6 border transition-all hover:shadow-lg">
-              <summary className="font-semibold cursor-pointer list-none flex justify-between items-center">
-                <span>O que acontece com créditos não usados?</span>
-                <span className="text-muted-foreground group-open:rotate-180 transition-transform">
-                  ▼
-                </span>
-              </summary>
-              <p className="mt-4 text-muted-foreground text-sm leading-relaxed">
-                Créditos mensais NÃO acumulam - resetam todo mês. 
-                Já os créditos bônus (Quiz, indicações) acumulam indefinidamente.
-              </p>
-            </details>
-
-            <details className="group rounded-lg bg-card p-6 border transition-all hover:shadow-lg">
-              <summary className="font-semibold cursor-pointer list-none flex justify-between items-center">
-                <span>Posso trocar de plano depois?</span>
-                <span className="text-muted-foreground group-open:rotate-180 transition-transform">
-                  ▼
-                </span>
-              </summary>
-              <p className="mt-4 text-muted-foreground text-sm leading-relaxed">
-                Sim! Você pode fazer upgrade ou downgrade a qualquer momento. 
-                O valor é ajustado proporcionalmente ao período restante.
-              </p>
-            </details>
+          {/* Garantia de 7 dias */}
+          <div className="mt-12 text-center">
+            <p className="text-sm text-muted-foreground">
+              💚 <strong>Garantia de 7 dias</strong> no primeiro pagamento. 
+              Não gostou? Devolvemos 100% do valor.
+            </p>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Comparison Table */}
+      <section className="py-20 px-4 bg-slate-50 dark:bg-slate-900">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Compare os Planos
+          </h2>
+          <PricingComparison />
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Perguntas Frequentes
+          </h2>
+          <PricingFAQ />
+        </div>
+      </section>
+
+      {/* CTA Final */}
+      <section className="py-20 px-4 border-t">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            Pronto para começar?
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Junte-se a milhares de pessoas que já melhoraram sua qualidade de vida 
+            com a orientação do Mestre Ye.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" asChild>
+              <Link href="/signup">
+                Começar Grátis
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/login">
+                Já tenho conta
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       <WhatsAppSupport />
     </div>
   )
