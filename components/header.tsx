@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
-import { User, Settings, CreditCard, LogOut, Menu, GraduationCap, BookOpen } from 'lucide-react'
+import { User, Settings, CreditCard, LogOut, Menu, GraduationCap, BookOpen, MessageCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
@@ -85,6 +85,17 @@ export function Header() {
                       <CreditCard className="mr-2 h-4 w-4" />
                       Meus Créditos
                     </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <a 
+                      href="https://wa.me/5511963982121?text=Olá!%20Preciso%20de%20Suporte%20Técnico%20com%20o%20Mestre%20Ye%20Digital" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="cursor-pointer"
+                    >
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Suporte Técnico
+                    </a>
                   </DropdownMenuItem>
                   
                   {isAdmin && (

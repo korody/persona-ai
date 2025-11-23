@@ -76,7 +76,7 @@ export function QuizStatusBadge() {
       <Alert className="border-green-500/50 bg-green-500/10">
         <CheckCircle2 className="h-4 w-4 text-green-500" />
         <AlertDescription className="flex items-center gap-2">
-          <span className="font-semibold">Avaliação Completa</span>
+          <span className="font-semibold">Anamnese Completa</span>
           <span className="text-muted-foreground">•</span>
           <span>
             {emoji} Elemento Principal: <strong>{quizData.elemento_principal}</strong>
@@ -96,12 +96,12 @@ export function QuizStatusBadge() {
       <Lightbulb className="h-4 w-4 text-blue-500" />
       <AlertDescription className="flex items-center justify-between gap-4">
         <div className="flex-1">
-          <p className="font-semibold mb-1">Avaliação dos 5 Elementos</p>
+          <p className="font-semibold mb-1">⚠️ Anamnese pendente!</p>
           <p className="text-sm text-muted-foreground">
-            Faça a avaliação para respostas personalizadas baseadas no seu elemento principal
+            Faça sua Anamnese Express dos 5 Elementos da Medicina Tradicional Chinesa para ter respostas personalizadas, baseadas no seu elemento principal e diagnóstico individual.
           </p>
         </div>
-        <Link href="/quiz">
+        <Link href="https://quiz.qigongbrasil.com/" target="_blank" rel="noopener noreferrer">
           <Button size="sm" variant="outline">
             Fazer Avaliação →
           </Button>

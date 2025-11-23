@@ -257,7 +257,6 @@ export default function PricingPage() {
         </div>
       </section>
 
-      <WhatsAppSupport />
     </div>
   )
 }
