@@ -14,7 +14,7 @@ ALTER TABLE subscription_plans
 -- Atualizar dados dos planos existentes
 UPDATE subscription_plans SET
   description = 'Experimente o Mestre Ye gratuitamente',
-  estimated_conversations = '8-10 conversas por mês',
+  estimated_conversations = '50 interações por mês',
   popular = false,
   initial_bonus_credits = 50,
   bonus_credits_duration_months = 6
@@ -22,19 +22,19 @@ WHERE slug = 'free';
 
 UPDATE subscription_plans SET
   description = 'Ideal para começar sua jornada com o Mestre Ye',
-  estimated_conversations = '8-10 conversas por mês',
+  estimated_conversations = '50 interações por mês',
   popular = false
 WHERE slug = 'aprendiz';
 
 UPDATE subscription_plans SET
   description = 'Para quem quer mergulhar fundo na medicina chinesa',
-  estimated_conversations = '35-50 conversas por mês',
+  estimated_conversations = '250 interações por mês',
   popular = true
 WHERE slug = 'discipulo';
 
 UPDATE subscription_plans SET
   description = 'Experiência completa e personalizada',
-  estimated_conversations = '75-120 conversas por mês',
+  estimated_conversations = '600 interações por mês',
   popular = false
 WHERE slug = 'mestre';
 

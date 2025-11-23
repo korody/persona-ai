@@ -54,7 +54,7 @@ INSERT INTO subscription_plans (
     "Suporte via email"
   ]'::jsonb,
   'Experimente o Mestre Ye gratuitamente',
-  '8-10 conversas por mês',
+  '50 interações (bônus) + 20/mês por 6 meses',
   false,
   50,
   6
@@ -73,7 +73,7 @@ INSERT INTO subscription_plans (
     "Suporte via email"
   ]'::jsonb,
   'Ideal para começar sua jornada com o Mestre Ye',
-  '8-10 conversas por mês',
+  '50 interações por mês',
   false,
   0,
   0
@@ -94,7 +94,7 @@ INSERT INTO subscription_plans (
     "Biblioteca completa de exercícios"
   ]'::jsonb,
   'Para quem quer mergulhar fundo na medicina chinesa',
-  '35-50 conversas por mês',
+  '250 interações por mês',
   true,
   0,
   0
@@ -108,14 +108,13 @@ INSERT INTO subscription_plans (
   '[
     "600 créditos por mês",
     "Tudo do plano Discípulo",
-    "Áudio bidirecional (falar e ouvir)",
     "Upload de imagens para análise",
     "Suporte VIP dedicado (24h)",
     "Relatórios mensais de progresso",
     "Prioridade em novos recursos"
   ]'::jsonb,
   'Experiência completa e personalizada',
-  '75-120 conversas por mês',
+  '600 interações por mês',
   false,
   0,
   0

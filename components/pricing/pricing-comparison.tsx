@@ -40,13 +40,6 @@ const comparisonData = [
     mestre: true,
   },
   {
-    feature: 'Áudio bidirecional',
-    free: false,
-    aprendiz: false,
-    discipulo: false,
-    mestre: true,
-  },
-  {
     feature: 'Upload de imagens',
     free: false,
     aprendiz: false,
