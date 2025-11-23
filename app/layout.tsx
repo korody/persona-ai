@@ -7,9 +7,9 @@ import { CookieBanner } from "@/components/cookie-banner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://chat.vercel.ai"),
-  title: "Next.js Chatbot Template",
-  description: "Next.js chatbot template using the AI SDK.",
+  metadataBase: new URL("https://digital.mestreye.com"),
+  title: "Mestre Ye Digital - Seu Consultor de Medicina Tradicional Chinesa",
+  description: "Converse com o Mestre Ye, seu assistente especializado em Medicina Tradicional Chinesa, acupuntura e bem-estar holístico.",
 };
 
 export const viewport = {

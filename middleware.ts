@@ -32,7 +32,9 @@ export async function middleware(request: NextRequest) {
     '/signup',
     '/auth',
     '/api/auth',
-    '/pricing'
+    '/pricing',
+    '/termos',
+    '/privacidade'
   ]
 
   const isPublicRoute = publicRoutes.some(route => 
