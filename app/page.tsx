@@ -26,8 +26,8 @@ export default function HomePage() {
       </header>
 
       {/* Hero */}
-      <section className="flex-1 bg-background">
-        <div className="container py-24 md:py-32">
+      <section className="flex-1 flex items-center justify-center bg-background">
+        <div className="container py-16 md:py-24">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="text-5xl md:text-6xl font-bold tracking-tight mb-6">
               Converse com o{' '}
