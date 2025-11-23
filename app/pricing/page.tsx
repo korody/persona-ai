@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Check, Loader2 } from 'lucide-react'
 import { Header } from '@/components/header'
 import { useRouter } from 'next/navigation'
+import { WhatsAppSupport } from '@/components/whatsapp-support'
 
 interface Plan {
   id: string
