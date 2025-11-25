@@ -210,16 +210,13 @@ export default function ChatPage() {
                 
                 {/* Quiz Status Badge */}
                 <QuizStatusBadge onSendDiagnosis={(message) => {
-                  chat.append({
-                    role: 'user',
-                    content: message
-                  })
+                  chat.sendMessage({ parts: [{ type: 'text', text: message }] })
                 }} />
               </div>
             </div>
           )}
           
-          {/* Status Bar when sidebar is open */
+          {/* Status Bar when sidebar is open */}
           {!isSidebarCollapsed && messages.length > 0 && (
             <div className="border-b px-4 py-2 bg-muted/10">
               <div className="flex flex-col gap-3">
@@ -233,10 +230,7 @@ export default function ChatPage() {
                 
                 {/* Quiz Status Badge */}
                 <QuizStatusBadge onSendDiagnosis={(message) => {
-                  chat.append({
-                    role: 'user',
-                    content: message
-                  })
+                  chat.sendMessage({ parts: [{ type: 'text', text: message }] })
                 }} />
               </div>
             </div>
