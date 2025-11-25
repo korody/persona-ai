@@ -6,6 +6,8 @@ export async function POST(request: Request) {
   try {
     const { email } = await request.json()
 
+    console.log('[check-email] Email recebido:', email)
+
     if (!email) {
       return NextResponse.json(
         { error: 'Email é obrigatório' },
@@ -13,10 +15,14 @@ export async function POST(request: Request) {
       )
     }
 
+    console.log('[check-email] Criando admin client...')
     const supabase = await createAdminClient()
+    console.log('[check-email] Admin client criado')
 
     // Verificar se o email já existe na tabela auth.users
+    console.log('[check-email] Listando usuários...')
     const { data, error } = await supabase.auth.admin.listUsers()
+    console.log('[check-email] Resultado:', { userCount: data?.users?.length, error })
     
     const userExists = data?.users?.some(user => user.email?.toLowerCase() === email.toLowerCase())
 
@@ -28,6 +34,7 @@ export async function POST(request: Request) {
       )
     }
 
+    console.log('[check-email] User exists:', userExists)
     return NextResponse.json({
       exists: userExists || false,
       email,
