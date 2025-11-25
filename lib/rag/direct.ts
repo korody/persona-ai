@@ -6,7 +6,7 @@
 import { generateEmbedding } from '@/lib/rag/embeddings'
 import type { SearchResult } from '@/lib/rag/vector-search'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseUrl = process.env.SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SECRET_API_KEY!
 
 /**

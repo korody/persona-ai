@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Usar service role key para bypass do cache
     const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_URL!,
       process.env.SUPABASE_SECRET_API_KEY!,
       {
         auth: {
