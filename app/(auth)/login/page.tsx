@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import { LegalFooter } from '@/components/legal-footer'
+import { WhatsAppSupport } from '@/components/whatsapp-support'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
@@ -192,6 +193,7 @@ function LoginForm() {
 
         <LegalFooter />
       </div>
+      <WhatsAppSupport />
     </div>
   )
 }

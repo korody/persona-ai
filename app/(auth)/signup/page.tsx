@@ -323,6 +323,7 @@ export default function SignupPage() {
 
         <LegalFooter />
       </div>
+      <WhatsAppSupport />
     </div>
   )
 }
