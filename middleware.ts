@@ -44,6 +44,7 @@ export async function middleware(request: NextRequest) {
   const publicApiRoutes = [
     '/api/auth/callback',
     '/api/webhooks/stripe',
+    '/api/stripe/webhook',
     '/api/cron'
   ]
 

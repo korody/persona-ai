@@ -10,12 +10,11 @@ function AuthCallbackContent() {
 
   useEffect(() => {
     const handleCallback = async () => {
-      const supabase = createClient()
-      
-      // LOG: Mostrar todos os parâmetros recebidos
       console.log('🔍 URL completa:', window.location.href)
       console.log('🔍 Query params:', Object.fromEntries(searchParams.entries()))
       console.log('🔍 Hash:', window.location.hash)
+      
+      const supabase = createClient()
       
       // 1. Verificar se tem hash fragment (#access_token=...)
       const hashParams = new URLSearchParams(window.location.hash.substring(1))
@@ -72,14 +71,17 @@ function AuthCallbackContent() {
       // 3. Verificar se tem code (OAuth/PKCE flow)
       const code = searchParams.get('code')
       if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code)
-        if (!error) {
+        console.log('📝 Tentando trocar code por sessão...')
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+        
+        if (!error && data?.session) {
           console.log('✅ Sessão criada via OAuth code')
           const redirect = searchParams.get('next') ?? searchParams.get('redirect') ?? '/chat'
           router.replace(redirect)
           return
         } else {
           console.error('❌ Erro ao trocar code:', error)
+          console.error('❌ Detalhes:', error?.message, error?.status)
           router.replace('/login?error=auth_failed')
           return
         }
