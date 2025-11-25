@@ -4,13 +4,13 @@ import { createBrowserClient } from '@supabase/ssr'
 
 export function createClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY
+  const supabasePublicKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY
 
-  if (!supabaseUrl || !supabaseKey) {
+  if (!supabaseUrl || !supabasePublicKey) {
     // Durante SSR/prerender sem env vars, retornar um cliente mock
     // Isso previne erros de build mas o cliente real será criado no browser
     return null as any
   }
 
-  return createBrowserClient(supabaseUrl, supabaseKey)
+  return createBrowserClient(supabaseUrl, supabasePublicKey)
 }

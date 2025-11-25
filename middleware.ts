@@ -65,7 +65,7 @@ export async function middleware(request: NextRequest) {
   try {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_KEY!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!,
       {
         cookies: {
           getAll() {
