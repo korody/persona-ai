@@ -13,6 +13,21 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Loader2, Plus, Trash2, Edit2, Save, X, Upload, FileUp, Download, Link2, Info } from 'lucide-react'
 import type { AvatarProduct } from '@/types/marketing'
 
+interface ProductFormData {
+  product_name: string
+  product_type: string
+  product_description: string
+  product_price_brl: string
+  product_url: string
+  memberkit_url: string
+  memberkit_course_id: string
+  tags: string
+  element: string
+  recommended_for: string
+  benefits: string
+  is_featured: boolean
+}
+
 export function ProductManager({ avatarSlug }: { avatarSlug: string }) {
   const [products, setProducts] = useState<AvatarProduct[]>([])
   const [memberkitProducts, setMemberkitProducts] = useState<any[]>([])
@@ -23,7 +38,7 @@ export function ProductManager({ avatarSlug }: { avatarSlug: string }) {
   const [integrating, setIntegrating] = useState(false)
   const [integrationResult, setIntegrationResult] = useState<any>(null)
   const [showImportDialog, setShowImportDialog] = useState(false)
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<ProductFormData>({
     product_name: '',
     product_type: '',
     product_description: '',
