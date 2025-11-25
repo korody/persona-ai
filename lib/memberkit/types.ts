@@ -30,6 +30,7 @@ export interface MemberkitCourse {
   name: string
   description: string
   slug?: string
+  thumbnail_url?: string
   is_published?: boolean
   sections: MemberkitSection[]
   created_at?: string
