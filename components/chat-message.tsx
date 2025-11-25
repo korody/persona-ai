@@ -61,6 +61,16 @@ export function ChatMessage({ role, content, isStreaming }: ChatMessageProps) {
                 p: ({ children }) => (
                   <p className="mb-2 last:mb-0">{children}</p>
                 ),
+                a: ({ href, children }) => (
+                  <a 
+                    href={href} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:text-blue-600 underline"
+                  >
+                    {children}
+                  </a>
+                ),
                 ul: ({ children }) => (
                   <ul className="list-disc pl-4 mb-2">{children}</ul>
                 ),
