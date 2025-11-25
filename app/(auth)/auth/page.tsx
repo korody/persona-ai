@@ -194,8 +194,24 @@ function AuthFlow() {
         return
       }
 
-      router.push(redirect)
-      router.refresh()
+      // Conta criada! Agora fazer login para obter a sessão
+      console.log('[signup] Conta criada, fazendo login...')
+      
+      const loginResponse = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+
+      if (loginResponse.ok) {
+        router.push(redirect)
+        router.refresh()
+      } else {
+        // Se login falhar, mostrar mensagem mas conta foi criada
+        setError('Conta criada! Faça login para continuar.')
+        setStep('email')
+        setPassword('')
+      }
     } catch (err) {
       console.error('Signup error:', err)
       setError('Erro de conexão')

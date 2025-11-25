@@ -31,9 +31,22 @@ export async function createClient() {
 
 // Admin client that bypasses RLS
 export function createAdminClient() {
+  const url = process.env.SUPABASE_URL
+  const key = process.env.SUPABASE_SECRET_API_KEY
+  
+  if (!url || !key) {
+    console.error('[createAdminClient] Missing env vars:', { 
+      hasUrl: !!url, 
+      hasKey: !!key,
+      url: url?.substring(0, 20) + '...',
+      allEnvKeys: Object.keys(process.env).filter(k => k.includes('SUPABASE'))
+    })
+    throw new Error('SUPABASE_URL and SUPABASE_SECRET_API_KEY are required')
+  }
+  
   return createSupabaseClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SECRET_API_KEY!,
+    url,
+    key,
     {
       auth: {
         autoRefreshToken: false,
