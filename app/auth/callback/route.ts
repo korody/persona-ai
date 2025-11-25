@@ -27,14 +27,14 @@ export async function GET(request: Request) {
     }
   }
 
-  // OAuth callback padrão (code)
+  // OAuth callback padrão (code) - server-side
   if (code) {
     await supabase.auth.exchangeCodeForSession(code)
     console.log('✅ Sessão criada via OAuth code')
     return NextResponse.redirect(new URL(next, request.url))
   }
 
-  // Se nenhum método funcionou, redireciona para login
-  console.warn('⚠️ Callback sem code nem token_hash, redirecionando para login')
-  return NextResponse.redirect(new URL('/login', request.url))
+  // Para todos os outros casos (incluindo hash fragment),
+  // deixar o page.tsx processar no client-side
+  return NextResponse.next()
 }
