@@ -36,7 +36,29 @@ export default function AuthCallbackPage() {
         }
       }
       
-      // 2. Verificar se tem code (OAuth/PKCE flow)
+      // 2. Verificar se tem token_hash (magic link do quiz)
+      const tokenHash = searchParams.get('token_hash')
+      const type = searchParams.get('type')
+      
+      if (tokenHash && type) {
+        const { error } = await supabase.auth.verifyOtp({
+          type: type as any,
+          token_hash: tokenHash,
+        })
+        
+        if (!error) {
+          console.log('✅ Sessão criada via magic link (quiz)')
+          const redirect = searchParams.get('redirect') ?? searchParams.get('next') ?? '/chat'
+          router.replace(redirect)
+          return
+        } else {
+          console.error('❌ Erro ao verificar magic link:', error)
+          router.replace('/login?error=auth_failed')
+          return
+        }
+      }
+      
+      // 3. Verificar se tem code (OAuth/PKCE flow)
       const code = searchParams.get('code')
       if (code) {
         const { error } = await supabase.auth.exchangeCodeForSession(code)
@@ -52,8 +74,8 @@ export default function AuthCallbackPage() {
         }
       }
       
-      // 3. Se não tem nem hash nem code, redirecionar para login
-      console.warn('⚠️ Callback sem access_token nem code')
+      // 4. Se não tem nenhum método, redirecionar para login
+      console.warn('⚠️ Callback sem token válido')
       router.replace('/login')
     }
 
