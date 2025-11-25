@@ -8,10 +8,17 @@ export async function POST(request: Request) {
     const data = await request.json()
     const { email, fullName, phone, quizData } = data
 
-    console.log('[quiz/complete] Dados recebidos:', { email, fullName, phone: phone?.substring(0, 5) + '...' })
+    console.log('[quiz/complete] ====== INÍCIO ======')
+    console.log('[quiz/complete] Dados recebidos:', { 
+      email, 
+      fullName, 
+      phone: phone?.substring(0, 5) + '...',
+      hasQuizData: !!quizData 
+    })
 
     // Validações
     if (!email || !fullName || !phone) {
+      console.error('[quiz/complete] Validação falhou:', { email: !!email, fullName: !!fullName, phone: !!phone })
       return NextResponse.json(
         { error: 'Email, nome e telefone são obrigatórios' },
         { status: 400 }
@@ -152,17 +159,23 @@ export async function POST(request: Request) {
     console.log('[quiz/complete] Sessão criada com sucesso!')
 
     // Retornar sucesso com URL de redirect
-    return NextResponse.json({
+    const response = {
       success: true,
       userId,
       redirectUrl: '/chat',
       message: 'Autenticação concluída com sucesso!',
-    })
+    }
+
+    console.log('[quiz/complete] ====== SUCESSO ======')
+    console.log('[quiz/complete] Resposta:', response)
+
+    return NextResponse.json(response)
 
   } catch (error) {
+    console.error('[quiz/complete] ====== ERRO ======')
     console.error('[quiz/complete] Erro interno:', error)
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      { error: 'Erro interno do servidor', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
   }
