@@ -53,7 +53,13 @@ function AuthCallbackContent() {
           return
         } else {
           console.error('❌ Erro ao verificar magic link:', error)
-          router.replace('/login?error=auth_failed')
+          
+          // Se o link expirou ou já foi usado
+          if (error.message?.includes('expired') || error.message?.includes('already been used')) {
+            router.replace('/login?error=link_expired')
+          } else {
+            router.replace('/login?error=auth_failed')
+          }
           return
         }
       }

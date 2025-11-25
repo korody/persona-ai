@@ -23,6 +23,15 @@ function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') || '/chat'
+  const errorParam = searchParams.get('error')
+
+  useEffect(() => {
+    if (errorParam === 'link_expired') {
+      setError('Link mágico expirou ou já foi usado. Solicite um novo.')
+    } else if (errorParam === 'auth_failed') {
+      setError('Falha na autenticação. Tente novamente.')
+    }
+  }, [errorParam])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
