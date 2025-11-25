@@ -107,6 +107,23 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url)
     }
 
+    // ============================================
+    // PROTEÇÃO ÁREA ADMIN
+    // ============================================
+    if (pathname.startsWith('/admin')) {
+      const allowedAdminEmails = [
+        'marko@persona.cx',
+        'admin@qigongbrasil.com'
+      ]
+      
+      if (!allowedAdminEmails.includes(user.email || '')) {
+        console.log('[Middleware] Access denied to admin area for:', user.email)
+        const url = request.nextUrl.clone()
+        url.pathname = '/chat'
+        return NextResponse.redirect(url)
+      }
+    }
+
     // Se está logado e tenta acessar login/signup → redireciona pro chat
     if (user && (pathname === '/login' || pathname === '/signup')) {
       const url = request.nextUrl.clone()

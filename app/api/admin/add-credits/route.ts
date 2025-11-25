@@ -1,12 +1,16 @@
 ﻿// app/api/admin/add-credits/route.ts
 
 import { createAdminClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/auth/admin-check'
 import { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
 
 export async function POST(req: NextRequest) {
   try {
+    // Verificar se é admin
+    await requireAdmin()
+    
     const { email, amount = 1000 } = await req.json()
 
     if (!email) {
