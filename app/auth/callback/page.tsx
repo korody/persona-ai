@@ -12,6 +12,11 @@ function AuthCallbackContent() {
     const handleCallback = async () => {
       const supabase = createClient()
       
+      // LOG: Mostrar todos os parâmetros recebidos
+      console.log('🔍 URL completa:', window.location.href)
+      console.log('🔍 Query params:', Object.fromEntries(searchParams.entries()))
+      console.log('🔍 Hash:', window.location.hash)
+      
       // 1. Verificar se tem hash fragment (#access_token=...)
       const hashParams = new URLSearchParams(window.location.hash.substring(1))
       const accessToken = hashParams.get('access_token')
