@@ -182,7 +182,7 @@ export async function POST(req: Request) {
     const hasActiveCampaign = !!marketingContext.activeCampaign
     const productsCount = marketingContext.recommendedProducts.length
     
-    if (hasActiveCampaign) {
+    if (hasActiveCampaign && marketingContext.activeCampaign) {
       console.log(`✅ Active campaign: ${marketingContext.activeCampaign.name}`)
     }
     if (productsCount > 0) {
