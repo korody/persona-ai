@@ -37,7 +37,7 @@ function AuthCallbackContent() {
       }
       
       // 2. Verificar se tem token_hash (magic link do quiz)
-      const tokenHash = searchParams.get('token_hash')
+      const tokenHash = searchParams.get('token_hash') || searchParams.get('token')
       const type = searchParams.get('type')
       
       if (tokenHash && type) {
@@ -47,7 +47,7 @@ function AuthCallbackContent() {
         })
         
         if (!error) {
-          console.log('✅ Sessão criada via magic link (quiz)')
+          console.log('✅ Sessão criada via magic link')
           const redirect = searchParams.get('redirect') ?? searchParams.get('next') ?? '/chat'
           router.replace(redirect)
           return
