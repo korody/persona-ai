@@ -1,0 +1,169 @@
+// app/api/quiz/complete/route.ts
+import { createClient, createAdminClient } from '@/lib/supabase/server'
+import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+
+export async function POST(request: Request) {
+  try {
+    const data = await request.json()
+    const { email, fullName, phone, quizData } = data
+
+    console.log('[quiz/complete] Dados recebidos:', { email, fullName, phone: phone?.substring(0, 5) + '...' })
+
+    // Validações
+    if (!email || !fullName || !phone) {
+      return NextResponse.json(
+        { error: 'Email, nome e telefone são obrigatórios' },
+        { status: 400 }
+      )
+    }
+
+    const adminSupabase = await createAdminClient()
+
+    // 1. Verificar se usuário já existe
+    console.log('[quiz/complete] Verificando se usuário existe...')
+    const { data: existingUsers } = await adminSupabase.auth.admin.listUsers()
+    const existingUser = existingUsers?.users?.find(
+      u => u.email?.toLowerCase() === email.toLowerCase()
+    )
+
+    let userId: string
+
+    if (existingUser) {
+      // Usuário já existe - apenas atualizar dados
+      console.log('[quiz/complete] Usuário já existe:', existingUser.id)
+      userId = existingUser.id
+
+      // Atualizar metadata se necessário
+      await adminSupabase.auth.admin.updateUserById(userId, {
+        user_metadata: {
+          full_name: fullName,
+          phone: phone,
+        },
+      })
+    } else {
+      // Criar novo usuário
+      console.log('[quiz/complete] Criando novo usuário...')
+      const { data: newUser, error: signupError } = await adminSupabase.auth.admin.createUser({
+        email,
+        email_confirm: true, // Auto-confirmar email
+        user_metadata: {
+          full_name: fullName,
+          phone: phone,
+        },
+      })
+
+      if (signupError || !newUser.user) {
+        console.error('[quiz/complete] Erro ao criar usuário:', signupError)
+        return NextResponse.json(
+          { error: 'Erro ao criar usuário' },
+          { status: 500 }
+        )
+      }
+
+      userId = newUser.user.id
+      console.log('[quiz/complete] Usuário criado:', userId)
+    }
+
+    // 2. Salvar dados do quiz (se fornecidos)
+    if (quizData) {
+      console.log('[quiz/complete] Salvando dados do quiz...')
+      
+      // Verificar se já existe registro
+      const { data: existingQuiz } = await adminSupabase
+        .from('quiz_leads')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle()
+
+      if (existingQuiz) {
+        // Atualizar
+        await adminSupabase
+          .from('quiz_leads')
+          .update({
+            nome: fullName,
+            whatsapp: phone,
+            ...quizData,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', existingQuiz.id)
+      } else {
+        // Inserir novo
+        await adminSupabase
+          .from('quiz_leads')
+          .insert({
+            email,
+            nome: fullName,
+            whatsapp: phone,
+            ...quizData,
+          })
+      }
+    }
+
+    // 3. Criar sessão via magic link
+    console.log('[quiz/complete] Gerando magic link...')
+    const { data: magicLinkData, error: magicLinkError } = await adminSupabase.auth.admin.generateLink({
+      type: 'magiclink',
+      email,
+      options: {
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://digital.mestreye.com'}/chat`,
+      },
+    })
+
+    if (magicLinkError || !magicLinkData) {
+      console.error('[quiz/complete] Erro ao gerar magic link:', magicLinkError)
+      return NextResponse.json(
+        { error: 'Erro ao criar sessão' },
+        { status: 500 }
+      )
+    }
+
+    console.log('[quiz/complete] Magic link gerado com sucesso')
+
+    // 4. Extrair tokens do magic link
+    const url = new URL(magicLinkData.properties.action_link)
+    const token = url.searchParams.get('token')
+    const tokenHash = url.searchParams.get('token_hash')
+
+    if (!token || !tokenHash) {
+      console.error('[quiz/complete] Token não encontrado no magic link')
+      return NextResponse.json(
+        { error: 'Erro ao processar autenticação' },
+        { status: 500 }
+      )
+    }
+
+    // 5. Verificar token e criar sessão
+    console.log('[quiz/complete] Verificando OTP...')
+    const supabase = await createClient()
+    const { data: sessionData, error: verifyError } = await supabase.auth.verifyOtp({
+      token_hash: tokenHash,
+      type: 'magiclink',
+    })
+
+    if (verifyError || !sessionData.session) {
+      console.error('[quiz/complete] Erro ao verificar OTP:', verifyError)
+      return NextResponse.json(
+        { error: 'Erro ao criar sessão' },
+        { status: 500 }
+      )
+    }
+
+    console.log('[quiz/complete] Sessão criada com sucesso!')
+
+    // Retornar sucesso com URL de redirect
+    return NextResponse.json({
+      success: true,
+      userId,
+      redirectUrl: '/chat',
+      message: 'Autenticação concluída com sucesso!',
+    })
+
+  } catch (error) {
+    console.error('[quiz/complete] Erro interno:', error)
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    )
+  }
+}
