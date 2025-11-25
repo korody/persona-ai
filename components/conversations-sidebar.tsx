@@ -1,4 +1,4 @@
-// components/conversations-sidebar.tsx
+﻿// components/conversations-sidebar.tsx
 
 'use client'
 

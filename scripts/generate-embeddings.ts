@@ -19,7 +19,7 @@ async function generateEmbeddings() {
 		// 1. Buscar exercícios com metadata (element não null)
 		console.log('\n📚 Buscando exercícios curados...')
 		const { data: exercises, error } = await supabase
-			.from('exercises')
+			.from('hub_exercises')
 			.select('*')
 			.not('element', 'is', null)
 			.order('memberkit_lesson_id')
@@ -58,7 +58,7 @@ async function generateEmbeddings() {
 
 				// Salvar no banco
 				const { error: updateError } = await supabase
-					.from('exercises')
+					.from('hub_exercises')
 					.update({ embedding })
 					.eq('id', exercise.id)
 

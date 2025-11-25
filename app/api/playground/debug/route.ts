@@ -1,4 +1,4 @@
-/**
+﻿/**
  * API Debug de Contexto
  * Retorna informações COMPLETAS sobre o que será enviado para a IA
  * Espelho da lógica do chat normal
@@ -14,6 +14,7 @@ import {
   searchKnowledgeGeneric,
   searchExamples
 } from '@/lib/rag'
+import { getMarketingContext } from '@/lib/helpers/marketing-helpers'
 import { 
   searchExercisesBySymptoms,
   extractSymptomsFromMessage,
@@ -95,12 +96,12 @@ export async function POST(req: NextRequest) {
     if (hasQuiz && quizLead) {
       knowledgeDocs = await searchKnowledgeWithAnamnese(
         message, avatar.id, quizLead,
-        { matchThreshold: 0.4, matchCount: 5 }
+        { matchThreshold: 0.6, matchCount: 5 }
       )
     } else {
       knowledgeDocs = await searchKnowledgeGeneric(
         message, avatar.id,
-        { matchThreshold: 0.4, matchCount: 5 }
+        { matchThreshold: 0.6, matchCount: 5 }
       )
     }
 
@@ -159,7 +160,7 @@ export async function POST(req: NextRequest) {
     // Formatar base de conhecimento
     const knowledgeBase = {
       total: knowledgeDocs.length,
-      threshold: 40, // 0.4 * 100
+      threshold: 60, // 0.6 * 100
       maxDocs: 5,
       items: knowledgeDocs.map((doc: any) => ({
         title: doc.title || doc.metadata?.title || 'Sem título',
@@ -195,13 +196,41 @@ export async function POST(req: NextRequest) {
       elemento: quizLead?.elemento_principal || null
     }
 
+    // BUSCAR CONTEXTO DE MARKETING (campanhas + produtos)
+    const marketingContext = await getMarketingContext(
+      supabase,
+      avatarSlug,
+      user.id,
+      quizLead?.elemento_principal
+    )
+
+    const marketingInfo = {
+      activeCampaign: marketingContext.activeCampaign ? {
+        name: marketingContext.activeCampaign.name,
+        description: marketingContext.activeCampaign.description,
+        cta: marketingContext.activeCampaign.cta,
+        url: marketingContext.activeCampaign.url,
+        targetAudience: marketingContext.activeCampaign.targetAudience,
+        suggestedMoments: marketingContext.activeCampaign.suggestedMoments
+      } : null,
+      recommendedProducts: marketingContext.recommendedProducts.map(p => ({
+        name: p.name,
+        type: p.type,
+        price: p.price,
+        url: p.url,
+        salesPageUrl: p.salesPageUrl,
+        benefits: p.benefits
+      }))
+    }
+
     return NextResponse.json({
       anamnese,
       knowledgeBase,
       exercisesFound,
       conversationContext,
       conversationExamples,
-      searchInfo
+      searchInfo,
+      marketingInfo
     })
 
   } catch (error) {

@@ -9,7 +9,7 @@ async function listExercisesByCourse() {
 
   // Buscar todos os exercícios
   const { data: exercises, error } = await supabase
-    .from("exercises")
+    .from("hub_exercises")
     .select("id, title, memberkit_course_id, memberkit_course_slug, embedding, position")
     .order("memberkit_course_slug", { ascending: true })
     .order("position", { ascending: true });

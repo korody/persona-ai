@@ -22,7 +22,7 @@ async function checkCategorization() {
 
   for (const courseSlug of TARGET_COURSES) {
     const { data: exercises } = await supabase
-      .from('exercises')
+      .from('hub_exercises')
       .select('id, title, duration_minutes, level, element, embedding')
       .eq('memberkit_course_slug', courseSlug)
       .eq('enabled', true)

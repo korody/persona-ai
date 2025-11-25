@@ -1,4 +1,4 @@
-// app/pricing/metadata.ts
+﻿// app/pricing/metadata.ts
 // Adicione este código no topo do page.tsx quando converter para Server Component
 
 import type { Metadata } from 'next'

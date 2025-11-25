@@ -1,4 +1,4 @@
-// components/header.tsx
+﻿// components/header.tsx
 
 'use client'
 

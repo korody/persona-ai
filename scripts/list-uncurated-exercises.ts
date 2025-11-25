@@ -11,7 +11,7 @@ async function listUncuratedExercises() {
   console.log('━'.repeat(70))
 
   const { data: exercises } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('title, memberkit_lesson_id, memberkit_course_slug, url')
     .is('element', null)
     .eq('is_active', true)

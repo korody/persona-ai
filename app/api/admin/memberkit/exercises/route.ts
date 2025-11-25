@@ -1,14 +1,20 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createAdminClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     const { data: exercises, error } = await supabase
-      .from('exercises')
-      .select('id, memberkit_lesson_id, title, memberkit_course_slug, duration_minutes, level, element, embedding, enabled')
+      .from('hub_exercises')
+      .select('id, memberkit_lesson_id, title, memberkit_course_slug, duration_minutes, level, element, embedding, is_active')
       .order('title')
+
+    console.log('🔍 Raw data sample:', exercises?.slice(0, 3).map(e => ({ 
+      title: e.title, 
+      is_active: e.is_active,
+      type: typeof e.is_active 
+    })))
 
     if (error) {
       console.error('Supabase error:', error)
@@ -32,8 +38,14 @@ export async function GET() {
       duration_minutes: exercise.duration_minutes,
       level: exercise.level,
       element: exercise.element,
-      enabled: exercise.enabled !== false // Default true if null
+      enabled: exercise.is_active === true || exercise.is_active === null // Explicitly true or null = enabled
     }))
+
+    console.log('📊 Exercise stats:', {
+      total: exercisesWithStatus.length,
+      enabled: exercisesWithStatus.filter(e => e.enabled).length,
+      disabled: exercisesWithStatus.filter(e => !e.enabled).length
+    })
 
     return NextResponse.json({
       exercises: exercisesWithStatus,

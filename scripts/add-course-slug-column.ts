@@ -8,7 +8,7 @@ async function addCourseSlugColumn() {
   // Como não temos RPC direto, vamos usar uma abordagem alternativa
   // Primeiro verificar se a coluna já existe
   const { data: existing } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('memberkit_course_slug')
     .limit(1)
   

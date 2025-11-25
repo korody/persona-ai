@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { BookIcon, ChevronDownIcon } from "lucide-react";
 import type { ComponentProps } from "react";

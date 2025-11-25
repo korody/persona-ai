@@ -26,7 +26,7 @@ async function testInsert() {
   console.log('Tentando inserir:', JSON.stringify(testExercise, null, 2))
   
   const { data, error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .insert(testExercise)
     .select()
   

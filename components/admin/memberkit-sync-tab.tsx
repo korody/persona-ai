@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -20,7 +20,7 @@ export function MemberkitSyncTab() {
                 Gerenciamento Memberkit
               </CardTitle>
               <CardDescription>
-                Sincronize cursos, gerencie metadados e acompanhe o progresso da categorização
+                Sincronize cursos da plataforma e gerencie quais exercícios a IA pode recomendar nas conversas
               </CardDescription>
             </div>
             <Badge variant="outline" className="gap-1">
@@ -43,7 +43,7 @@ export function MemberkitSyncTab() {
           </TabsTrigger>
           <TabsTrigger value="exercises" className="gap-2">
             <FileEdit className="h-4 w-4" />
-            Categorização Exercícios
+            Gestão Exercícios
           </TabsTrigger>
         </TabsList>
 

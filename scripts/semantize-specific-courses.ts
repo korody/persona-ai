@@ -33,7 +33,7 @@ async function semantizeSpecificCourses() {
     console.log('\n📚 Buscando exercícios ativos sem embeddings...')
     
     const { data: exercises, error } = await supabase
-      .from('exercises')
+      .from('hub_exercises')
       .select('*')
       .in('memberkit_course_slug', TARGET_COURSES)
       .eq('enabled', true)
@@ -108,7 +108,7 @@ async function semantizeSpecificCourses() {
 
         // Salvar no banco
         const { error: updateError } = await supabase
-          .from('exercises')
+          .from('hub_exercises')
           .update({ embedding })
           .eq('id', exercise.id)
 
@@ -140,7 +140,7 @@ async function semantizeSpecificCourses() {
     console.log('\n📋 Status por curso:')
     for (const courseSlug of TARGET_COURSES) {
       const { data: courseExercises } = await supabase
-        .from('exercises')
+        .from('hub_exercises')
         .select('id, embedding')
         .eq('memberkit_course_slug', courseSlug)
         .eq('enabled', true)

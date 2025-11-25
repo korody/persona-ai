@@ -5,7 +5,7 @@ async function checkConstraints() {
   
   // Pegar definição da tabela diretamente
   const { data, error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('*')
     .limit(0)
   
@@ -22,7 +22,7 @@ async function checkConstraints() {
   
   for (const test of testCases) {
     const result = await supabase
-      .from('exercises')
+      .from('hub_exercises')
       .insert({
         memberkit_course_id: 'test',
         memberkit_section_id: 'test',
@@ -40,7 +40,7 @@ async function checkConstraints() {
       console.log(`✅ ${test.element}: aceito`)
       // Deletar o teste
       await supabase
-        .from('exercises')
+        .from('hub_exercises')
         .delete()
         .eq('memberkit_lesson_id', `test-${test.element}`)
     }

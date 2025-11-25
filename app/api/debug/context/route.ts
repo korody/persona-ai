@@ -1,4 +1,4 @@
-// app/api/debug/context/route.ts
+﻿// app/api/debug/context/route.ts
 // Endpoint para debugar o contexto completo que está sendo enviado para a IA
 
 import { createAdminClient } from '@/lib/supabase/server'

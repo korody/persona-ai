@@ -1,4 +1,4 @@
-import type { UseChatHelpers } from "@ai-sdk/react";
+﻿import type { UseChatHelpers } from "@ai-sdk/react";
 import equal from "fast-deep-equal";
 import { AnimatePresence } from "framer-motion";
 import { ArrowDownIcon } from "lucide-react";

@@ -7,7 +7,7 @@ async function checkIntroExercises() {
   
   // Buscar por título
   const { data: byTitle } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('id, title, level, indications')
     .eq('is_active', true)
     .or('title.ilike.%introdução%,title.ilike.%sequência completa%')
@@ -22,7 +22,7 @@ async function checkIntroExercises() {
   
   // Buscar por indication prática_diária
   const { data: byIndication } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('id, title, level, indications')
     .eq('is_active', true)
     .contains('indications', ['prática_diária'])
@@ -41,7 +41,7 @@ async function checkIntroExercises() {
   
   // Buscar Ba Duan Jin completo
   const { data: baDuanJin } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('*')
     .eq('is_active', true)
     .ilike('title', '%sequência completa%')

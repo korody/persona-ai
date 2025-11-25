@@ -1,4 +1,4 @@
-import type { UseChatHelpers } from "@ai-sdk/react";
+﻿import type { UseChatHelpers } from "@ai-sdk/react";
 import type { DataUIPart } from "ai";
 import type { ComponentType, Dispatch, ReactNode, SetStateAction } from "react";
 import type { Suggestion } from "@/lib/db/schema";

@@ -1,4 +1,4 @@
-import { createAdminClient } from '@/lib/supabase/server'
+﻿import { createAdminClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
@@ -17,40 +17,53 @@ export async function POST(request: NextRequest) {
 
     console.log('🔄 Toggling course:', { slug, enabled })
 
-    // Debug: Try a raw select first to see if we can read the data
-    const { data: beforeUpdate, error: selectError } = await supabase
-      .from('exercises')
-      .select('id, memberkit_course_slug, enabled')
+    // 1. Update course in hub_courses table
+    const { data: courseData, error: courseError } = await supabase
+      .from('hub_courses')
+      .update({ is_published: enabled })
       .eq('memberkit_course_slug', slug)
-      .limit(3)
-    
-    console.log('📋 Before update - found exercises:', {
-      count: beforeUpdate?.length,
-      samples: beforeUpdate?.map(e => ({ id: e.id, slug: e.memberkit_course_slug, enabled: e.enabled }))
-    })
+      .select('memberkit_course_id')
 
-    // Now try the update
-    const { data, error } = await supabase
-      .from('exercises')
-      .update({ enabled })
-      .eq('memberkit_course_slug', slug)
-      .select()
-
-    console.log('✅ After update:', { 
-      count: data?.length, 
-      error,
-      samples: data?.slice(0, 3).map(e => ({ id: e.id, enabled: e.enabled }))
-    })
-
-    if (error) {
-      console.error('Error toggling course:', error)
+    if (courseError) {
+      console.error('Error toggling course:', courseError)
       return NextResponse.json(
-        { error: error.message },
+        { error: courseError.message },
         { status: 500 }
       )
     }
 
-    return NextResponse.json({ success: true, updatedCount: data?.length })
+    if (!courseData || courseData.length === 0) {
+      return NextResponse.json(
+        { error: 'Course not found' },
+        { status: 404 }
+      )
+    }
+
+    const courseId = courseData[0].memberkit_course_id
+
+    // 2. Update all exercises of this course
+    const { data: exercisesData, error: exercisesError } = await supabase
+      .from('hub_exercises')
+      .update({ is_active: enabled })
+      .eq('memberkit_course_id', courseId)
+      .select('id')
+
+    console.log('✅ Course and exercises updated:', { 
+      courseId,
+      slug,
+      is_published: enabled,
+      exercisesUpdated: exercisesData?.length || 0
+    })
+
+    if (exercisesError) {
+      console.error('Error updating exercises:', exercisesError)
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      courseUpdated: true,
+      exercisesUpdated: exercisesData?.length || 0
+    })
   } catch (error) {
     console.error('Error toggling course:', error)
     return NextResponse.json(

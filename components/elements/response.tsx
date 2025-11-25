@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { type ComponentProps, memo } from "react";
 import { Streamdown } from "streamdown";

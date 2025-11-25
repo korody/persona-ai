@@ -6,7 +6,7 @@ async function deleteAllExercises() {
   console.log('⚠️  Deletando TODOS os exercícios...\n')
   
   const { error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .delete()
     .neq('id', '00000000-0000-0000-0000-000000000000') // Deleta tudo (truthy condition)
   
@@ -17,7 +17,7 @@ async function deleteAllExercises() {
   
   // Confirmar
   const { count } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('*', { count: 'exact', head: true })
   
   console.log(`✅ Exercícios restantes: ${count}\n`)

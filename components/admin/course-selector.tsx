@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -18,11 +18,13 @@ import { CheckCircle2, XCircle, Sparkles, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface CourseStatus {
+  memberkit_course_id: number
   slug: string
   name: string
   total: number
   categorized: number
   withEmbeddings: number
+  activeCount: number
   percentage: number
   enabled: boolean
 }
@@ -91,7 +93,9 @@ export function CourseSelector() {
 
   const enabledCount = courses.filter(c => c.enabled).length
   const totalExercises = courses.reduce((acc, c) => acc + c.total, 0)
+  const totalActiveExercises = courses.reduce((acc, c) => acc + c.activeCount, 0)
   const enabledExercises = courses.filter(c => c.enabled).reduce((acc, c) => acc + c.total, 0)
+  const enabledActiveExercises = courses.filter(c => c.enabled).reduce((acc, c) => acc + c.activeCount, 0)
 
   if (loading) {
     return (
@@ -117,7 +121,7 @@ export function CourseSelector() {
             <div className="text-right">
               <div className="text-2xl font-bold">{enabledCount}/{courses.length}</div>
               <p className="text-xs text-muted-foreground">
-                {enabledExercises} de {totalExercises} exercícios
+                {enabledActiveExercises}/{totalActiveExercises} exercícios ativos
               </p>
             </div>
           </div>
@@ -144,7 +148,7 @@ export function CourseSelector() {
                   </TableRow>
                 ) : (
                   courses.map(course => (
-                    <TableRow key={course.slug}>
+                    <TableRow key={course.memberkit_course_id}>
                       <TableCell>
                         <Switch
                           checked={course.enabled}
@@ -170,10 +174,10 @@ export function CourseSelector() {
                         <div className="space-y-1 min-w-[120px]">
                           <div className="flex items-center justify-between text-xs">
                             <span className="text-muted-foreground">
-                              {course.percentage.toFixed(0)}%
+                              {(course.percentage ?? 0).toFixed(0)}%
                             </span>
                           </div>
-                          <Progress value={course.percentage} className="h-1" />
+                          <Progress value={course.percentage ?? 0} className="h-1" />
                         </div>
                       </TableCell>
                     </TableRow>

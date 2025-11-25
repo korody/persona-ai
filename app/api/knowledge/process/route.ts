@@ -1,4 +1,4 @@
-/**
+﻿/**
  * API Endpoint: Processar documento e criar chunks automaticamente
  * Chamado após upload de documento
  */

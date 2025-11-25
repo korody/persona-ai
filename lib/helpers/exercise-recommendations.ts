@@ -23,10 +23,10 @@ export async function searchExercisesByAnamnese(
   
   // Buscar por elemento principal
   const { data: exercises, error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('*')
     .eq('is_active', true)
-    .eq('enabled', true)
+    
     .eq('element', quizLead.elemento_principal.toUpperCase())
     .order('position', { ascending: true })
     .limit(matchCount)
@@ -54,10 +54,10 @@ export async function searchExercisesBySymptoms(
   
   // Buscar exercícios que contenham qualquer dos sintomas nas indicações
   const { data: exercises, error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('*')
     .eq('is_active', true)
-    .eq('enabled', true)
+    
     .overlaps('indications', symptoms)
     .limit(matchCount)
   
@@ -84,10 +84,10 @@ export async function searchExercisesByElement(
   const supabase = await createAdminClient()
   
   let query = supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('*')
     .eq('is_active', true)
-    .eq('enabled', true)
+    
     .eq('element', element.toUpperCase())
     .order('position', { ascending: true })
   
@@ -154,10 +154,15 @@ export async function searchExercisesBySemantic(
 /**
  * Formata exercícios para incluir no contexto do sistema
  */
-export function formatExercisesContext(
+/**
+ * Formata exercícios para incluir no contexto do sistema
+ * Agora inclui informação de aquisição dos cursos via avatar_portfolio
+ */
+export async function formatExercisesContext(
   exercises: Exercise[],
-  quizLead?: QuizLead
-): string {
+  quizLead?: QuizLead,
+  avatarSlug?: string
+): Promise<string> {
   if (exercises.length === 0) {
     return ''
   }
@@ -171,8 +176,51 @@ export function formatExercisesContext(
     context += `Intensidade: ${quizLead.intensidade_calculada}), recomendamos:\n\n`
   }
   
-  exercises.forEach((exercise, index) => {
-    context += `${index + 1}. **${exercise.title}**\n`
+  // Agrupar exercícios por curso
+  const exercisesByCourse = new Map<string, Exercise[]>()
+  const uniqueCourseIds = new Set<string>()
+  
+  exercises.forEach(exercise => {
+    const courseId = exercise.memberkit_course_id
+    uniqueCourseIds.add(courseId)
+    if (!exercisesByCourse.has(courseId)) {
+      exercisesByCourse.set(courseId, [])
+    }
+    exercisesByCourse.get(courseId)!.push(exercise)
+  })
+  
+  // Buscar informações de vendas dos cursos do avatar_portfolio
+  const coursesSalesInfo = new Map<string, { productName: string, salesUrl: string }>()
+  
+  if (avatarSlug && uniqueCourseIds.size > 0) {
+    try {
+      const { createClient } = await import('@/lib/supabase/client')
+      const supabase = createClient()
+      
+      const { data: products } = await supabase
+        .from('avatar_portfolio')
+        .select('memberkit_course_id, product_name, product_url')
+        .eq('avatar_slug', avatarSlug)
+        .in('memberkit_course_id', Array.from(uniqueCourseIds).map(id => parseInt(id)))
+        .not('product_url', 'is', null)
+      
+      if (products) {
+        products.forEach((p: any) => {
+          coursesSalesInfo.set(p.memberkit_course_id.toString(), {
+            productName: p.product_name,
+            salesUrl: p.product_url
+          })
+        })
+      }
+    } catch (error) {
+      console.error('Error fetching sales info:', error)
+    }
+  }
+  
+  // Listar exercícios
+  let exerciseIndex = 1
+  exercises.forEach((exercise) => {
+    context += `${exerciseIndex}. **${exercise.title}**\n`
     
     if (exercise.element) {
       context += `   - Elemento: ${exercise.element}\n`
@@ -200,10 +248,44 @@ export function formatExercisesContext(
     
     // Link clicável que abre em nova aba
     context += `   - 🔗 <a href="${exercise.url}" target="_blank" rel="noopener noreferrer">Acessar vídeo</a>\n\n`
+    exerciseIndex++
   })
   
-  context += '**IMPORTANTE:** Ao recomendar exercícios, sempre inclua o link direto para o vídeo.\n'
-  context += 'Explique brevemente por que cada exercício é adequado para o caso específico do usuário.\n'
+  context += '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+  context += '⚠️ REGRA OBRIGATÓRIA SOBRE EXERCÍCIOS:\n'
+  context += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+  context += 'SEMPRE que recomendar ou mencionar um exercício da lista acima:\n'
+  context += '1. INCLUA o link do vídeo usando o formato: 🔗 [Nome do Exercício](URL_DO_VIDEO)\n'
+  context += '2. Use o link EXATO fornecido acima (não invente URLs)\n'
+  context += '3. Explique brevemente por que o exercício é adequado para o caso\n'
+  context += '4. Mencione duração e nível de dificuldade quando relevante\n\n'
+  
+  // Adicionar informação de aquisição por curso
+  if (coursesSalesInfo.size > 0) {
+    context += '**INFORMAÇÃO DE ACESSO AOS CURSOS:**\n'
+    context += 'Ao final da sua resposta, quando recomendar exercícios, adicione esta mensagem:\n\n'
+    
+    const coursesWithSales: string[] = []
+    coursesSalesInfo.forEach((info, courseId) => {
+      const exercises = exercisesByCourse.get(courseId) || []
+      coursesWithSales.push(`"${info.productName}": ${info.salesUrl}`)
+    })
+    
+    if (coursesWithSales.length === 1) {
+      const [productInfo] = Array.from(coursesSalesInfo.values())
+      context += `"Caso você ainda não tenha acesso a esses exercícios do ${productInfo.productName}, `
+      context += `você pode adquirir através deste link: ${productInfo.salesUrl}. `
+      context += `Caso tenha alguma dúvida sobre os produtos, fale com a Letícia do Comercial no Whatsapp: https://sendflow.pro/l/suporte-leticiawa"\n\n`
+    } else {
+      context += `"Caso você ainda não tenha acesso a esses exercícios, você pode adquirir os cursos através dos links abaixo. `
+      context += `Caso tenha alguma dúvida sobre os produtos, fale com a Letícia do Comercial no Whatsapp: https://sendflow.pro/l/suporte-leticiawa"\n\n`
+      
+      coursesSalesInfo.forEach((info, courseId) => {
+        const courseExercises = exercisesByCourse.get(courseId) || []
+        context += `- ${info.productName}: ${info.salesUrl} (${courseExercises.length} exercício${courseExercises.length > 1 ? 's' : ''})\n`
+      })
+    }
+  }
   
   return context
 }
@@ -401,10 +483,10 @@ export async function searchIntroductoryExercises(
   
   // Buscar primeiro por exercícios com indication prática_diária
   let { data: exercises, error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('*')
     .eq('is_active', true)
-    .eq('enabled', true)
+    
     .contains('indications', ['prática_diária'])
     .order('position', { ascending: true })
     .limit(matchCount)
@@ -412,10 +494,10 @@ export async function searchIntroductoryExercises(
   // Se não encontrou, buscar sequências completas ou introduções
   if (!exercises || exercises.length === 0) {
     const result = await supabase
-      .from('exercises')
+      .from('hub_exercises')
       .select('*')
       .eq('is_active', true)
-      .eq('enabled', true)
+      
       .or('title.ilike.%sequência completa%,title.ilike.%introdução%')
       .limit(matchCount)
     

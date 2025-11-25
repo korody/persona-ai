@@ -1,4 +1,4 @@
-/**
+﻿/**
  * API Route: Upload e processa documento para base de conhecimento
  * POST /api/avatar-training/upload-document
  */

@@ -1,4 +1,4 @@
-// app/api/chat/route.ts
+﻿// app/api/chat/route.ts
 
 import { anthropic } from '@ai-sdk/anthropic'
 import { streamText, convertToCoreMessages } from 'ai'
@@ -227,7 +227,7 @@ export async function POST(req: Request) {
         avatar.id, 
         quizLead,
         {
-          matchThreshold: 0.4,
+          matchThreshold: 0.6,
           matchCount: 5
         }
       )
@@ -246,7 +246,7 @@ export async function POST(req: Request) {
         userContent,
         avatar.id,
         {
-          matchThreshold: 0.4,
+          matchThreshold: 0.6,
           matchCount: 5
         }
       )
@@ -303,7 +303,7 @@ export async function POST(req: Request) {
       exercises = await searchExercisesByAnamnese(quizLead, { matchCount: 3 })
     }
     
-    const exercisesContext = formatExercisesContext(exercises, quizLead || undefined)
+    const exercisesContext = await formatExercisesContext(exercises, quizLead || undefined, avatarSlug)
     
     if (exercises.length > 0) {
       console.log(`✅ Found ${exercises.length} relevant exercises to recommend`)

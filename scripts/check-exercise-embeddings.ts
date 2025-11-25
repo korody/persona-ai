@@ -12,7 +12,7 @@ async function checkExerciseEmbeddings() {
 
   // Total com embeddings
   const { data: withEmbeddings, error: err1 } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('id, title, element')
     .not('embedding', 'is', null)
     .eq('is_active', true)
@@ -25,7 +25,7 @@ async function checkExerciseEmbeddings() {
   console.log('\n📊 Por elemento:')
   for (const element of elements) {
     const { data } = await supabase
-      .from('exercises')
+      .from('hub_exercises')
       .select('id, title')
       .not('embedding', 'is', null)
       .eq('element', element)
@@ -36,7 +36,7 @@ async function checkExerciseEmbeddings() {
 
   // Sem embeddings mas com metadata
   const { data: withoutEmbeddings } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('id, title, element')
     .is('embedding', null)
     .not('element', 'is', null)

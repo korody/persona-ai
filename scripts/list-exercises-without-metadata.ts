@@ -8,7 +8,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 async function listExercisesWithoutMetadata() {
 	try {
 		const { data: exercisesWithoutMetadata, error } = await supabase
-			.from('exercises')
+			.from('hub_exercises')
 			.select('memberkit_lesson_id, title, url, memberkit_course_id')
 			.is('element', null)
 			.order('memberkit_lesson_id')

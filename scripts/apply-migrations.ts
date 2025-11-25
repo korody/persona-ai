@@ -40,7 +40,7 @@ async function testMigrations() {
 	// Teste 1: Verificar se coluna enabled existe
 	console.log('1️⃣ Verificando coluna enabled...')
 	const { data: exercises, error: error1 } = await supabase
-		.from('exercises')
+		.from('hub_exercises')
 		.select('id, title, enabled')
 		.limit(5)
 
@@ -62,12 +62,12 @@ async function testMigrations() {
 	// Teste 2: Contar exercícios por status
 	console.log('\n2️⃣ Contando exercícios por status enabled...')
 	const { count: enabledCount } = await supabase
-		.from('exercises')
+		.from('hub_exercises')
 		.select('*', { count: 'exact', head: true })
 		.eq('enabled', true)
 
 	const { count: disabledCount } = await supabase
-		.from('exercises')
+		.from('hub_exercises')
 		.select('*', { count: 'exact', head: true })
 		.eq('enabled', false)
 
@@ -79,7 +79,7 @@ async function testMigrations() {
 	console.log('   (Este teste requer ter embeddings gerados)')
 
 	const { data: exercisesWithEmbedding } = await supabase
-		.from('exercises')
+		.from('hub_exercises')
 		.select('embedding')
 		.not('embedding', 'is', null)
 		.limit(1)

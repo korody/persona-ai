@@ -1,4 +1,4 @@
-import { memo } from "react";
+﻿import { memo } from "react";
 import { initialArtifactData, useArtifact } from "@/hooks/use-artifact";
 import { CrossIcon } from "./icons";
 import { Button } from "./ui/button";

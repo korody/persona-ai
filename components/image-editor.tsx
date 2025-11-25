@@ -1,4 +1,4 @@
-import cn from "classnames";
+﻿import cn from "classnames";
 import { LoaderIcon } from "./icons";
 
 type ImageEditorProps = {

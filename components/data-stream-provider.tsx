@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { DataUIPart } from "ai";
 import type React from "react";

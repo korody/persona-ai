@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { UseChatHelpers } from "@ai-sdk/react";
 import { motion } from "framer-motion";

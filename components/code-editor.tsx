@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { python } from "@codemirror/lang-python";
 import { EditorState, Transaction } from "@codemirror/state";

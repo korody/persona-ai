@@ -1,4 +1,4 @@
-/**
+﻿/**
  * API Endpoint: Listar documentos pendentes (sem chunks)
  */
 

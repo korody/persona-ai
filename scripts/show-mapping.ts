@@ -4,7 +4,7 @@ async function showMapping() {
   const supabase = await createAdminClient()
   
   const { data } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('memberkit_lesson_id, slug, title')
     .in('slug', [
       'sustentar-o-ceu-com-as-maos-para-regular-o-triplo-aquecedor-shuang-shou-tuo-tian-li-san-jiao',

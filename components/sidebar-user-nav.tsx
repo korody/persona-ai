@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ChevronUp, GraduationCap, Settings, CreditCard, LogOut } from "lucide-react";
 import Image from "next/image";

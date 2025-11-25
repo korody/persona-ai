@@ -1,4 +1,4 @@
-/**
+﻿/**
  * API Route: Gerencia exemplos de conversas (few-shot learning)
  * GET    /api/avatar-training/examples?avatar_id=xxx
  * POST   /api/avatar-training/examples

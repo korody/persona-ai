@@ -8,12 +8,12 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 async function checkStats() {
 	try {
 		const { data: withMetadata } = await supabase
-			.from('exercises')
+			.from('hub_exercises')
 			.select('memberkit_lesson_id, element')
 			.not('element', 'is', null)
 
 		const { data: without } = await supabase
-			.from('exercises')
+			.from('hub_exercises')
 			.select('memberkit_lesson_id')
 			.is('element', null)
 

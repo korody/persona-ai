@@ -1,4 +1,4 @@
-// app/api/credits/transactions/route.ts
+﻿// app/api/credits/transactions/route.ts
 
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'

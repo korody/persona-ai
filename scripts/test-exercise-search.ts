@@ -22,7 +22,7 @@ async function testExerciseSearch() {
   // 1. Verificar total de exercícios
   console.log('\n📊 1. Verificando total de exercícios...')
   const { data: allExercises, count } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('*', { count: 'exact' })
     .eq('is_active', true)
   
@@ -96,7 +96,7 @@ async function testExerciseSearch() {
   
   for (const element of elements) {
     const { count } = await supabase
-      .from('exercises')
+      .from('hub_exercises')
       .select('*', { count: 'exact', head: true })
       .eq('is_active', true)
       .eq('element', element)
@@ -111,7 +111,7 @@ async function testExerciseSearch() {
   
   for (const level of levels) {
     const { count } = await supabase
-      .from('exercises')
+      .from('hub_exercises')
       .select('*', { count: 'exact', head: true })
       .eq('is_active', true)
       .eq('level', level)

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * API Route para atualizar personalidade do avatar
  * POST /api/avatar-training/personality
  * 

@@ -1,4 +1,4 @@
-export default function LegalLayout({
+﻿export default function LegalLayout({
   children,
 }: {
   children: React.ReactNode

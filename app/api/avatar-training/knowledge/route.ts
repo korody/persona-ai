@@ -1,4 +1,4 @@
-/**
+﻿/**
  * API Route: Adiciona conhecimento manual (texto direto)
  * POST /api/avatar-training/knowledge
  * GET  /api/avatar-training/knowledge?avatar_id=xxx

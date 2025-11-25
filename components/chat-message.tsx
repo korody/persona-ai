@@ -1,4 +1,4 @@
-// components/chat-message.tsx
+﻿// components/chat-message.tsx
 
 'use client'
 

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * API Route: Buscar Exercícios
  * Endpoint para buscar exercícios do Memberkit
  */

@@ -5,7 +5,7 @@ async function checkUpdatedUrls() {
   
   // Pegar alguns exercícios para verificar URLs
   const { data: exercises } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('title, slug, url')
     .limit(5)
   

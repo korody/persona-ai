@@ -1,4 +1,4 @@
-// API para gerenciar prompts dos avatares
+﻿// API para gerenciar prompts dos avatares
 
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'

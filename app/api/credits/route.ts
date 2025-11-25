@@ -1,4 +1,4 @@
-// app/api/credits/route.ts
+﻿// app/api/credits/route.ts
 
 import { createAdminClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'

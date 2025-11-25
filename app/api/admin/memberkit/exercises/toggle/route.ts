@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
@@ -16,8 +16,8 @@ export async function POST(request: NextRequest) {
 
     // Update the specific exercise
     const { error } = await supabase
-      .from('exercises')
-      .update({ enabled })
+      .from('hub_exercises')
+      .update({ is_active: enabled })
       .eq('memberkit_lesson_id', lessonId)
 
     if (error) {

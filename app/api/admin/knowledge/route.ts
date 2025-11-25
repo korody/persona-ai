@@ -1,4 +1,4 @@
-// API para gerenciar conhecimento base dos avatares
+﻿// API para gerenciar conhecimento base dos avatares
 
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'

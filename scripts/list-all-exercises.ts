@@ -4,7 +4,7 @@ async function listAllExercises() {
   const supabase = await createAdminClient()
   
   const { data, error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('slug, title, memberkit_course_id')
     .order('title')
   

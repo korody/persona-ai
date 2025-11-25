@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 /**
  * Badge que mostra status do quiz do usuário
@@ -9,7 +9,7 @@
 import { useEffect, useState } from 'react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { CheckCircle2, Lightbulb } from 'lucide-react'
+import { CheckCircle2, Lightbulb, FileText, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 
@@ -19,10 +19,15 @@ interface QuizLead {
   nome_perfil: string
 }
 
-export function QuizStatusBadge() {
+interface QuizStatusBadgeProps {
+  onSendDiagnosis?: (diagnosis: string) => void
+}
+
+export function QuizStatusBadge({ onSendDiagnosis }: QuizStatusBadgeProps = {}) {
   const [quizData, setQuizData] = useState<QuizLead | null>(null)
   const [loading, setLoading] = useState(true)
   const [visible, setVisible] = useState(true)
+  const [loadingDiagnosis, setLoadingDiagnosis] = useState(false)
 
   useEffect(() => {
     async function loadQuizStatus() {
@@ -58,6 +63,21 @@ export function QuizStatusBadge() {
     return () => clearTimeout(timer)
   }, [])
 
+  const handleReceiveDiagnosis = async () => {
+    if (!onSendDiagnosis) return
+    
+    try {
+      setLoadingDiagnosis(true)
+      // Enviar mensagem artificial do usuário pedindo o diagnóstico
+      await onSendDiagnosis('Mestre Ye, por favor me envie o diagnóstico completo da minha Anamnese dos 5 Elementos.')
+      setLoadingDiagnosis(false)
+    } catch (error) {
+      console.error('Erro ao solicitar diagnóstico:', error)
+      setLoadingDiagnosis(false)
+      alert('Erro ao solicitar diagnóstico. Tente novamente.')
+    }
+  }
+
   if (loading || !visible) return null
 
   // COM QUIZ
@@ -75,16 +95,39 @@ export function QuizStatusBadge() {
     return (
       <Alert className="border-green-500/50 bg-green-500/10">
         <CheckCircle2 className="h-4 w-4 text-green-500" />
-        <AlertDescription className="flex items-center gap-2">
-          <span className="font-semibold">Anamnese Completa</span>
-          <span className="text-muted-foreground">•</span>
-          <span>
-            {emoji} Elemento Principal: <strong>{quizData.elemento_principal}</strong>
-          </span>
-          <span className="text-muted-foreground">•</span>
-          <span className="text-xs text-muted-foreground">
-            Respostas personalizadas ativas
-          </span>
+        <AlertDescription className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 flex-1">
+            <span className="font-semibold">Anamnese Completa</span>
+            <span className="text-muted-foreground">•</span>
+            <span>
+              {emoji} Elemento Principal: <strong>{quizData.elemento_principal}</strong>
+            </span>
+            <span className="text-muted-foreground">•</span>
+            <span className="text-xs text-muted-foreground">
+              Respostas personalizadas ativas
+            </span>
+          </div>
+          {onSendDiagnosis && (
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={handleReceiveDiagnosis}
+              disabled={loadingDiagnosis}
+              className="shrink-0"
+            >
+              {loadingDiagnosis ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Carregando...
+                </>
+              ) : (
+                <>
+                  <FileText className="mr-2 h-4 w-4" />
+                  Receber Diagnóstico
+                </>
+              )}
+            </Button>
+          )}
         </AlertDescription>
       </Alert>
     )

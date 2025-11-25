@@ -1,76 +1,84 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createAdminClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
-    // Get all exercises grouped by course
-    const { data: exercises } = await supabase
-      .from('exercises')
-      .select('memberkit_course_slug, duration_minutes, embedding, enabled')
+    // Get all courses from hub_courses (including inactive)
+    const { data: courses, error: coursesError } = await supabase
+      .from('hub_courses')
+      .select('*')
+      .order('is_published', { ascending: false })
+      .order('course_name')
 
-    if (!exercises) {
+    if (coursesError) {
+      console.error('Error fetching courses:', coursesError)
       return NextResponse.json({ courses: [] })
     }
 
-    // Group by course
-    const courseMap = new Map<string, {
+    if (!courses || courses.length === 0) {
+      return NextResponse.json({ courses: [] })
+    }
+
+    // Get all exercises to calculate stats
+    const { data: exercises } = await supabase
+      .from('hub_exercises')
+      .select('memberkit_course_id, duration_minutes, embedding, is_active')
+
+    // Build stats map by course ID
+    const statsMap = new Map<number, {
       total: number
       categorized: number
       withEmbeddings: number
-      enabledCount: number
+      activeCount: number
     }>()
 
-    exercises.forEach(exercise => {
-      const slug = exercise.memberkit_course_slug || 'sem-curso'
-      if (!courseMap.has(slug)) {
-        courseMap.set(slug, {
-          total: 0,
-          categorized: 0,
-          withEmbeddings: 0,
-          enabledCount: 0
-        })
-      }
-      const stats = courseMap.get(slug)!
-      stats.total++
-      if (exercise.duration_minutes !== null) stats.categorized++
-      if (exercise.embedding !== null) stats.withEmbeddings++
-      if (exercise.enabled !== false) stats.enabledCount++ // Count enabled exercises
-    })
+    if (exercises) {
+      exercises.forEach(exercise => {
+        const courseId = exercise.memberkit_course_id
+        if (!courseId) return
 
-    // Convert to array
-    const courses = Array.from(courseMap.entries())
-      .map(([slug, stats]) => {
-        const enabled = stats.enabledCount === stats.total
-        
-        // Debug log for specific course
-        if (slug === 'arte-da-cura-metodo-ye-xin') {
-          console.log('🎨 Arte da Cura status:', {
-            slug,
-            total: stats.total,
-            enabledCount: stats.enabledCount,
-            enabled,
-            allEnabled: stats.enabledCount === stats.total
+        if (!statsMap.has(courseId)) {
+          statsMap.set(courseId, {
+            total: 0,
+            categorized: 0,
+            withEmbeddings: 0,
+            activeCount: 0
           })
         }
-        
-        return {
-          slug, // Use the slug as-is from the database
-          name: slug
-            .split('-')
-            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(' '),
-          total: stats.total,
-          categorized: stats.categorized,
-          withEmbeddings: stats.withEmbeddings,
-          percentage: stats.total > 0 ? (stats.categorized / stats.total) * 100 : 0,
-          enabled
-        }
-      })
-      .sort((a, b) => b.total - a.total)
 
-    return NextResponse.json({ courses })
+        const stats = statsMap.get(courseId)!
+        stats.total++
+        if (exercise.duration_minutes !== null) stats.categorized++
+        if (exercise.embedding !== null) stats.withEmbeddings++
+        if (exercise.is_active !== false) stats.activeCount++
+      })
+    }
+
+    // Map courses with stats
+    const coursesWithStats = courses.map(course => {
+      const stats = statsMap.get(course.memberkit_course_id) || {
+        total: 0,
+        categorized: 0,
+        withEmbeddings: 0,
+        activeCount: 0
+      }
+
+      return {
+        memberkit_course_id: course.memberkit_course_id,
+        slug: course.memberkit_course_slug,
+        name: course.course_name,
+        total: stats.total,
+        categorized: stats.categorized,
+        withEmbeddings: stats.withEmbeddings,
+        activeCount: stats.activeCount,
+        percentage: stats.total > 0 ? (stats.categorized / stats.total) * 100 : 0,
+        enabled: course.is_published
+      }
+    })
+
+    return NextResponse.json({ courses: coursesWithStats })
   } catch (error) {
     console.error('Error fetching courses:', error)
     return NextResponse.json(

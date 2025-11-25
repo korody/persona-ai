@@ -22,7 +22,7 @@ async function checkDisabledExercises() {
 
 	// Get all exercises
 	const { data: allExercises, error } = await supabase
-		.from('exercises')
+		.from('hub_exercises')
 		.select('memberkit_course_slug, title, enabled, has_embedding:embedding')
 		.order('memberkit_course_slug')
 

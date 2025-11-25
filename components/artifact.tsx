@@ -1,4 +1,4 @@
-import type { UseChatHelpers } from "@ai-sdk/react";
+﻿import type { UseChatHelpers } from "@ai-sdk/react";
 import { formatDistance } from "date-fns";
 import equal from "fast-deep-equal";
 import { AnimatePresence, motion } from "framer-motion";

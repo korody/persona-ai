@@ -1,4 +1,4 @@
-/**
+﻿/**
  * API Route: Playground Chat (sem debitar créditos)
  * POST /api/playground/chat
  * 
@@ -17,6 +17,7 @@ import {
   formatExamples
 } from '@/lib/rag'
 import { buildAnamneseContext, buildNoAnamneseContext } from '@/lib/helpers/anamnese-helpers'
+import { getMarketingContext, formatMarketingContext } from '@/lib/helpers/marketing-helpers'
 import { 
   searchExercisesByAnamnese, 
   searchExercisesBySymptoms,
@@ -111,14 +112,14 @@ export async function POST(req: Request) {
     if (hasQuiz && quizLead) {
       const relevantKnowledge = await searchKnowledgeWithAnamnese(
         userQuery, avatar.id, quizLead,
-        { matchThreshold: 0.4, matchCount: 5 }
+        { matchThreshold: 0.6, matchCount: 5 }
       )
       knowledgeContext = formatKnowledgeContextWithAnamnese(relevantKnowledge)
       console.log(`✅ ${relevantKnowledge.length} knowledge items (with anamnese)`)
     } else {
       const relevantKnowledge = await searchKnowledgeGeneric(
         userQuery, avatar.id,
-        { matchThreshold: 0.4, matchCount: 5 }
+        { matchThreshold: 0.6, matchCount: 5 }
       )
       knowledgeContext = formatKnowledgeContext(relevantKnowledge)
       console.log(`✅ ${relevantKnowledge.length} knowledge items (generic)`)
@@ -165,8 +166,28 @@ export async function POST(req: Request) {
       exercises = await searchExercisesByAnamnese(quizLead, { matchCount: 3 })
     }
     
-    const exercisesContext = formatExercisesContext(exercises, quizLead || undefined)
+    const exercisesContext = await formatExercisesContext(exercises, quizLead || undefined, avatarSlug)
     console.log(`✅ ${exercises.length} exercises`)
+
+    // BUSCAR CONTEXTO DE MARKETING (campanhas + produtos)
+    console.log('🎯 Loading marketing context...')
+    const marketingContext = await getMarketingContext(
+      supabase, 
+      avatarSlug,
+      user.id,
+      quizLead?.elemento_principal
+    )
+    const marketingSection = formatMarketingContext(marketingContext)
+    
+    const hasActiveCampaign = !!marketingContext.activeCampaign
+    const productsCount = marketingContext.recommendedProducts.length
+    
+    if (hasActiveCampaign) {
+      console.log(`✅ Active campaign: ${marketingContext.activeCampaign.name}`)
+    }
+    if (productsCount > 0) {
+      console.log(`✅ ${productsCount} products to recommend`)
+    }
 
     // MONTAR PROMPT DO SISTEMA (igual ao chat normal)
     const systemPrompt = `${avatar.system_prompt}${quizContext}
@@ -178,6 +199,8 @@ export async function POST(req: Request) {
 ${knowledgeContext}
 
 ${exercisesContext}
+
+${marketingSection}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 💬 EXEMPLOS DE COMO RESPONDER

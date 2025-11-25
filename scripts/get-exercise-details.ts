@@ -16,7 +16,7 @@ async function getExerciseDetails() {
   ];
 
   const { data: exercises, error } = await supabase
-    .from("exercises")
+    .from("hub_exercises")
     .select("*")
     .in("id", targetIds);
 

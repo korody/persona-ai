@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
@@ -7,31 +7,41 @@ export async function GET() {
 
     // Get total exercises
     const { count: totalExercises } = await supabase
-      .from('exercises')
+      .from('hub_exercises')
       .select('*', { count: 'exact', head: true })
 
-    // Get active exercises (enabled=true)
+    // Get active exercises (is_active=true)
     const { count: activeExercises } = await supabase
-      .from('exercises')
+      .from('hub_exercises')
       .select('*', { count: 'exact', head: true })
-      .eq('enabled', true)
+      .eq('is_active', true)
 
     // Get curated exercises (with metadata)
     const { count: curatedExercises } = await supabase
-      .from('exercises')
+      .from('hub_exercises')
       .select('*', { count: 'exact', head: true })
       .not('duration_minutes', 'is', null)
 
     // Get exercises with embeddings
     const { count: withEmbeddings } = await supabase
-      .from('exercises')
+      .from('hub_exercises')
       .select('*', { count: 'exact', head: true })
       .not('embedding', 'is', null)
 
-    // Get course statistics
+    // Get courses from hub_courses
+    const { count: totalCourses } = await supabase
+      .from('hub_courses')
+      .select('*', { count: 'exact', head: true })
+
+    const { count: activeCourses } = await supabase
+      .from('hub_courses')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_published', true)
+
+    // Get course statistics from exercises
     const { data: courseData } = await supabase
-      .from('exercises')
-      .select('memberkit_course_slug, duration_minutes, enabled')
+      .from('hub_exercises')
+      .select('memberkit_course_slug, duration_minutes, is_active')
 
     // Group by course and calculate stats
     const courseMap = new Map<string, { total: number; curated: number; enabledCount: number }>()
@@ -46,16 +56,10 @@ export async function GET() {
       if (exercise.duration_minutes !== null) {
         stats.curated++
       }
-      if (exercise.enabled !== false) {
+      if (exercise.is_active !== false) {
         stats.enabledCount++
       }
     })
-
-    // Calculate total and active courses
-    const totalCourses = courseMap.size
-    const activeCourses = Array.from(courseMap.values()).filter(stats => 
-      stats.enabledCount === stats.total && stats.total > 0
-    ).length
 
     const courseStats = Array.from(courseMap.entries()).map(([slug, stats]) => ({
       slug,

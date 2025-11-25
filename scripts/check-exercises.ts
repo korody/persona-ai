@@ -4,7 +4,7 @@ async function checkExercises() {
   const supabase = await createAdminClient()
   
   const { data, error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('*')
     .limit(3)
   

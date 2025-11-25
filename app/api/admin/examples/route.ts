@@ -1,4 +1,4 @@
-// API para gerenciar exemplos de conversas dos avatares
+﻿// API para gerenciar exemplos de conversas dos avatares
 
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'

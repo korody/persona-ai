@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 /**
  * Componente de Debug de Contexto da IA

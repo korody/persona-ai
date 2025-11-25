@@ -1,4 +1,4 @@
-import equal from "fast-deep-equal";
+﻿import equal from "fast-deep-equal";
 import { memo } from "react";
 import { toast } from "sonner";
 import { useSWRConfig } from "swr";

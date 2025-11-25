@@ -1,4 +1,4 @@
-// app/api/cron/reset-credits/route.ts
+﻿// app/api/cron/reset-credits/route.ts
 
 import { createAdminClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'

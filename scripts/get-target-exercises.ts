@@ -8,7 +8,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 async function getTargetExercises() {
   // 1. Protocolo Dor Lombar - TODOS
   const { data: lombar } = await supabase
-    .from("exercises")
+    .from("hub_exercises")
     .select("*")
     .eq("memberkit_course_slug", "protocolo-intensivo-contra-dor-na-lombar-e-coluna-com-metodo-ye-xin")
     .is("embedding", null)
@@ -16,7 +16,7 @@ async function getTargetExercises() {
 
   // 2. Protocolo Zumbido - TODOS que faltam
   const { data: zumbido } = await supabase
-    .from("exercises")
+    .from("hub_exercises")
     .select("*")
     .eq("memberkit_course_slug", "protocolo-intensivo-contra-zumbido-e-labirintite-com-metodo-ye-xin")
     .is("embedding", null)
@@ -24,7 +24,7 @@ async function getTargetExercises() {
 
   // 3. Dose Semanal - até 30% (atualmente 6/49, precisa chegar a ~15, então +9)
   const { data: dose } = await supabase
-    .from("exercises")
+    .from("hub_exercises")
     .select("*")
     .eq("memberkit_course_slug", "dose-semanal-de-qi-gong")
     .is("embedding", null)

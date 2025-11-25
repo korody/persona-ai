@@ -1,4 +1,4 @@
-// app/api/conversations/route.ts
+﻿// app/api/conversations/route.ts
 
 import { createAdminClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -82,6 +82,7 @@ export function ExerciseBrowser() {
       }
       const data = await response.json()
       console.log('Exercises loaded:', data)
+      console.log('Inactive count:', data.exercises?.filter((e: Exercise) => e.enabled === false).length)
       setExercises(data.exercises || [])
       
       // Extract unique courses
@@ -132,10 +133,10 @@ export function ExerciseBrowser() {
 
   const filteredExercises = (exercises || []).filter(exercise => {
     // Active/Inactive filter (PRIMEIRO FILTRO - mais importante)
-    if (activeFilter === 'active' && !exercise.enabled) {
+    if (activeFilter === 'active' && exercise.enabled === false) {
       return false
     }
-    if (activeFilter === 'inactive' && exercise.enabled) {
+    if (activeFilter === 'inactive' && exercise.enabled !== false) {
       return false
     }
 
@@ -149,11 +150,11 @@ export function ExerciseBrowser() {
       return false
     }
 
-    // Status filter
-    if (statusFilter === 'curated' && !exercise.has_metadata) {
+    // Status filter (Categorização)
+    if (statusFilter === 'categorized' && !exercise.has_metadata) {
       return false
     }
-    if (statusFilter === 'uncurated' && exercise.has_metadata) {
+    if (statusFilter === 'uncategorized' && exercise.has_metadata) {
       return false
     }
     if (statusFilter === 'with-embedding' && !exercise.has_embedding) {

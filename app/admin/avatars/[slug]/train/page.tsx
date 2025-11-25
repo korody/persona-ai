@@ -18,6 +18,8 @@ import { ExamplesTab } from '@/components/training/examples-tab'
 import { PersonalityTab } from '@/components/training/personality-tab'
 import { PlaygroundTab } from '@/components/training/playground-tab'
 import { MemberkitSyncTab } from '@/components/admin/memberkit-sync-tab'
+import { CampaignManager } from '@/components/admin/campaign-manager'
+import { ProductManager } from '@/components/admin/product-manager'
 
 interface PageProps {
   params: Promise<{
@@ -73,7 +75,7 @@ export default async function TrainAvatarPage({ params }: PageProps) {
 
       {/* Tabs */}
       <Tabs defaultValue="knowledge" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 lg:w-auto">
+        <TabsList className="grid w-full grid-cols-6 lg:w-auto">
           <TabsTrigger value="knowledge">
             🧠 Base de Conhecimento
           </TabsTrigger>
@@ -85,6 +87,9 @@ export default async function TrainAvatarPage({ params }: PageProps) {
           </TabsTrigger>
           <TabsTrigger value="memberkit">
             🗄️ Memberkit
+          </TabsTrigger>
+          <TabsTrigger value="marketing">
+            📢 Marketing
           </TabsTrigger>
           <TabsTrigger value="playground">
             🎮 Playground
@@ -105,6 +110,23 @@ export default async function TrainAvatarPage({ params }: PageProps) {
 
         <TabsContent value="memberkit" className="space-y-4">
           <MemberkitSyncTab />
+        </TabsContent>
+
+        <TabsContent value="marketing" className="space-y-4">
+          <Tabs defaultValue="campaigns" className="space-y-6">
+            <TabsList className="grid w-full max-w-md grid-cols-2">
+              <TabsTrigger value="campaigns">Campanhas</TabsTrigger>
+              <TabsTrigger value="products">Produtos</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="campaigns">
+              <CampaignManager avatarSlug={avatar.slug} />
+            </TabsContent>
+
+            <TabsContent value="products">
+              <ProductManager avatarSlug={avatar.slug} />
+            </TabsContent>
+          </Tabs>
         </TabsContent>
 
         <TabsContent value="playground" className="space-y-4">

@@ -263,7 +263,7 @@ async function generateMetadataByLessonId() {
   
   // Buscar TODOS os exercícios
   const { data: allExercises } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('memberkit_lesson_id, slug')
   
   if (!allExercises) {

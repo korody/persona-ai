@@ -1,4 +1,4 @@
-// app/(auth)/signup/page.tsx
+﻿// app/(auth)/signup/page.tsx
 
 'use client'
 

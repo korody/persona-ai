@@ -1,4 +1,4 @@
-/**
+﻿/**
  * API Route para adicionar colunas temperature e max_tokens na tabela avatars
  * POST /api/admin/migrate-avatar-columns
  */

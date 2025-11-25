@@ -5,6 +5,7 @@
 
 import { fetchCourses, fetchCourseDetails } from './api'
 import { upsertExercise } from '../exercicios/repository'
+import { createClient } from '@/lib/supabase/server'
 import type {
   ExercisesMetadataMap,
   ExerciseInsert,
@@ -45,6 +46,54 @@ function generateCourseSlug(courseName: string): string {
 }
 
 /**
+ * Sincronizar cursos do Memberkit para a tabela hub_courses
+ */
+async function syncCourses(courses: MemberkitCourse[]): Promise<void> {
+  console.log('\n📚 Sincronizando cursos para hub_courses...')
+  const supabase = await createClient()
+
+  for (const course of courses) {
+    try {
+      const courseDetails = await fetchCourseDetails(Number(course.id))
+      const slug = generateCourseSlug(course.name)
+      
+      // Calcular totais
+      const totalLessons = courseDetails.sections?.reduce(
+        (acc, section) => acc + (section.lessons?.length || 0),
+        0
+      ) || 0
+      const totalSections = courseDetails.sections?.length || 0
+
+      const { error } = await supabase
+        .from('hub_courses')
+        .upsert({
+          memberkit_course_id: Number(course.id),
+          memberkit_course_slug: slug,
+          course_name: course.name,
+          description: courseDetails.description || null,
+          course_url: `https://memberkitapp.com/course/${course.id}`,
+          thumbnail_url: courseDetails.thumbnail_url || null,
+          total_lessons: totalLessons,
+          total_sections: totalSections,
+          is_published: courseDetails.is_published ?? true,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'memberkit_course_id'
+        })
+
+      if (error) {
+        console.error(`❌ Erro ao sincronizar curso ${course.name}:`, error)
+      } else {
+        console.log(`✅ Curso sincronizado: ${course.name} (${totalLessons} aulas)`)
+      }
+    } catch (error) {
+      console.error(`❌ Erro ao processar curso ${course.name}:`, error)
+    }
+  }
+  console.log('✅ Sincronização de cursos concluída\n')
+}
+
+/**
  * Sincronizar exercícios do Memberkit para o banco de dados
  * 
  * @param metadataMap - Mapa de metadata customizada por lesson_id
@@ -68,7 +117,10 @@ export async function syncExercises(
     const courses = await fetchCourses()
     console.log(`✅ ${courses.length} curso(s) encontrado(s)\n`)
 
-    // 2. Processar cada curso
+    // 2. Sincronizar cursos para hub_courses
+    await syncCourses(courses)
+
+    // 3. Processar cada curso
     for (const course of courses) {
       console.log(`\n📖 Curso: ${course.name} (ID: ${course.id})`)
       console.log('-'.repeat(70))

@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { generateEmbedding } from '@/lib/ai/embeddings'
 
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     // Update exercise metadata
     const { data: updatedExercise, error: updateError } = await supabase
-      .from('exercises')
+      .from('hub_exercises')
       .update({
         duration_minutes,
         level,
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
         
         if (embedding) {
           await supabase
-            .from('exercises')
+            .from('hub_exercises')
             .update({ embedding })
             .eq('id', updatedExercise.id)
           

@@ -14,7 +14,7 @@ async function checkActiveCourses() {
   
   // 1. Buscar todos os exercícios
   const { data: exercises, error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('id, title, memberkit_course_slug, enabled, embedding, level, element, duration_minutes')
     .order('memberkit_course_slug')
   

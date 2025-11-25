@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { ToolUIPart } from "ai";
 import {

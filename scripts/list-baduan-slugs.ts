@@ -4,7 +4,7 @@ async function listBaDuanSlugs() {
   const supabase = await createAdminClient()
   
   const { data } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('memberkit_lesson_id, slug, title')
     .order('title')
   

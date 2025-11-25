@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 /**
  * Aba Playground
@@ -49,6 +49,24 @@ interface DebugData {
     benefits: string[]
     indications: string[]
   }>
+  marketingInfo?: {
+    activeCampaign: {
+      name: string
+      description: string
+      cta: string
+      url: string
+      targetAudience: string
+      suggestedMoments: string
+    } | null
+    recommendedProducts: Array<{
+      name: string
+      type: string
+      price: number | null
+      url: string
+      salesPageUrl: string
+      benefits: string
+    }>
+  }
   conversationContext: {
     messageCount: number
     lastUserMessage: string
@@ -390,24 +408,27 @@ export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Anamnese Data */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <h4 className="font-semibold text-sm">🩺 Dados da Anamnese</h4>
+            <div className="border rounded-lg p-4 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                  🩺
+                </div>
+                <h4 className="font-semibold">Dados da Anamnese</h4>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <div className="bg-muted/50 rounded p-2">
+                <div className="bg-white/60 dark:bg-black/20 rounded p-2">
                   <p className="text-xs text-muted-foreground">Nome</p>
                   <p className="font-medium text-sm">{debugData.anamnese.nome}</p>
                 </div>
-                <div className="bg-muted/50 rounded p-2">
+                <div className="bg-white/60 dark:bg-black/20 rounded p-2">
                   <p className="text-xs text-muted-foreground">Elemento</p>
                   <Badge variant="outline">{debugData.anamnese.elemento}</Badge>
                 </div>
-                <div className="bg-muted/50 rounded p-2">
+                <div className="bg-white/60 dark:bg-black/20 rounded p-2">
                   <p className="text-xs text-muted-foreground">Intensidade</p>
                   <p className="font-medium text-sm">{debugData.anamnese.intensidade}/10</p>
                 </div>
-                <div className="bg-muted/50 rounded p-2">
+                <div className="bg-white/60 dark:bg-black/20 rounded p-2">
                   <p className="text-xs text-muted-foreground">Data</p>
                   <p className="font-medium text-sm">{debugData.anamnese.data}</p>
                 </div>
@@ -415,23 +436,26 @@ export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
             </div>
 
             {/* Knowledge Base Stats */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <h4 className="font-semibold text-sm">📚 Base de Conhecimento Encontrada</h4>
+            <div className="border rounded-lg p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+                  📚
+                </div>
+                <h4 className="font-semibold">Base de Conhecimento Encontrada</h4>
               </div>
-              <div className="grid grid-cols-3 gap-2 mb-2">
-                <div className="bg-purple-50 dark:bg-purple-950/20 rounded p-2 border border-purple-200 dark:border-purple-800">
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                <div className="bg-white/60 dark:bg-black/20 rounded p-2">
                   <p className="text-xs text-purple-600 dark:text-purple-400">Total</p>
                   <p className="font-bold text-lg text-purple-700 dark:text-purple-300">
                     {debugData.knowledgeBase.total}
                   </p>
                   <p className="text-xs text-purple-600/70">documentos</p>
                 </div>
-                <div className="bg-muted/50 rounded p-2">
+                <div className="bg-white/60 dark:bg-black/20 rounded p-2">
                   <p className="text-xs text-muted-foreground">Threshold</p>
                   <p className="font-medium text-sm">{debugData.knowledgeBase.threshold}%</p>
                 </div>
-                <div className="bg-muted/50 rounded p-2">
+                <div className="bg-white/60 dark:bg-black/20 rounded p-2">
                   <p className="text-xs text-muted-foreground">Máximo</p>
                   <p className="font-medium text-sm">{debugData.knowledgeBase.maxDocs}</p>
                 </div>
@@ -440,7 +464,7 @@ export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
               {debugData.knowledgeBase.items && debugData.knowledgeBase.items.length > 0 && (
                 <div className="space-y-1 max-h-[200px] overflow-y-auto">
                   {debugData.knowledgeBase.items.map((item, idx) => (
-                    <div key={idx} className="bg-muted/30 rounded p-2 text-xs">
+                    <div key={idx} className="bg-white/60 dark:bg-black/20 rounded p-2 text-xs">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
                           <p className="font-medium truncate">{item.title}</p>
@@ -468,15 +492,18 @@ export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
 
             {/* Conversation Examples */}
             {debugData.conversationExamples && debugData.conversationExamples.total > 0 && (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <h4 className="font-semibold text-sm">
-                    💬 Exemplos de Conversas ({debugData.conversationExamples.total})
+              <div className="border rounded-lg p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center">
+                    💬
+                  </div>
+                  <h4 className="font-semibold">
+                    Exemplos de Conversas ({debugData.conversationExamples.total})
                   </h4>
                 </div>
                 <div className="space-y-1 max-h-[200px] overflow-y-auto">
                   {debugData.conversationExamples.items.map((example, idx) => (
-                    <div key={idx} className="bg-blue-50 dark:bg-blue-950/20 rounded p-2 text-xs border border-blue-200 dark:border-blue-800">
+                    <div key={idx} className="bg-white/60 dark:bg-black/20 rounded p-2 text-xs">
                       <p className="text-muted-foreground mb-1">
                         <span className="font-medium">Usuário:</span> {example.userMessage}...
                       </p>
@@ -494,11 +521,14 @@ export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
 
             {/* Search Info */}
             {debugData.searchInfo && (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <h4 className="font-semibold text-sm">🔍 Informações de Busca</h4>
+              <div className="border rounded-lg p-4 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-950/20 dark:to-emerald-950/20">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900 flex items-center justify-center">
+                    🔍
+                  </div>
+                  <h4 className="font-semibold">Informações de Busca</h4>
                 </div>
-                <div className="bg-muted/50 rounded p-3 space-y-2">
+                <div className="bg-white/60 dark:bg-black/20 rounded p-3 space-y-2">
                   <div>
                     <p className="text-xs text-muted-foreground">Método de busca</p>
                     <Badge variant="outline" className="mt-1">
@@ -538,17 +568,20 @@ export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
 
             {/* Exercises Found */}
             {debugData.exercisesFound && debugData.exercisesFound.length > 0 && (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <h4 className="font-semibold text-sm">
-                    🎯 Exercícios Recomendados ({debugData.exercisesFound.length})
+              <div className="border rounded-lg p-4 bg-gradient-to-br from-green-50 to-lime-50 dark:from-green-950/20 dark:to-lime-950/20">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
+                    🎯
+                  </div>
+                  <h4 className="font-semibold">
+                    Exercícios Recomendados ({debugData.exercisesFound.length})
                   </h4>
                 </div>
                 <div className="space-y-2 max-h-[300px] overflow-y-auto">
                   {debugData.exercisesFound.map((exercise, idx) => (
                     <div 
                       key={idx} 
-                      className="bg-muted/50 rounded p-3 space-y-2 border"
+                      className="bg-white/60 dark:bg-black/20 rounded p-3 space-y-2"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
@@ -589,16 +622,90 @@ export function PlaygroundTab({ avatar }: PlaygroundTabProps) {
               </div>
             )}
 
+            {/* Marketing Info - Campanhas e Produtos */}
+            {debugData.marketingInfo && (
+              <>
+                {debugData.marketingInfo.activeCampaign && (
+                  <div className="border rounded-lg p-4 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+                        📢
+                      </div>
+                      <h4 className="font-semibold">
+                        Campanha Ativa: {debugData.marketingInfo.activeCampaign.name}
+                      </h4>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <p><strong>Descrição:</strong> {debugData.marketingInfo.activeCampaign.description}</p>
+                      <p><strong>CTA:</strong> {debugData.marketingInfo.activeCampaign.cta}</p>
+                      <p><strong>URL:</strong> <a href={debugData.marketingInfo.activeCampaign.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{debugData.marketingInfo.activeCampaign.url}</a></p>
+                      <p><strong>Público-alvo:</strong> {debugData.marketingInfo.activeCampaign.targetAudience}</p>
+                      <p><strong>Quando mencionar:</strong> {debugData.marketingInfo.activeCampaign.suggestedMoments}</p>
+                    </div>
+                  </div>
+                )}
+
+                {debugData.marketingInfo.recommendedProducts.length > 0 && (
+                  <div className="border rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
+                        🛍️
+                      </div>
+                      <h4 className="font-semibold">
+                        Produtos Recomendados ({debugData.marketingInfo.recommendedProducts.length})
+                      </h4>
+                    </div>
+                    <div className="space-y-2">
+                      {debugData.marketingInfo.recommendedProducts.map((product, idx) => (
+                        <div
+                          key={idx}
+                          className="p-3 rounded bg-muted/50 space-y-2"
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-sm">{product.name}</p>
+                              <p className="text-xs text-muted-foreground">{product.type}</p>
+                            </div>
+                            {product.price && (
+                              <Badge variant="default" className="shrink-0">
+                                R$ {product.price.toFixed(2)}
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-xs">{product.benefits}</p>
+                          <a 
+                            href={product.salesPageUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-xs text-blue-600 hover:underline block"
+                          >
+                            🔗 {product.salesPageUrl}
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
             {/* Conversation Context */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <h4 className="font-semibold text-sm">💬 Contexto da Conversa</h4>
+            <div className="border rounded-lg p-4 bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-950/20 dark:to-gray-950/20">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
+                  💬
+                </div>
+                <h4 className="font-semibold">Contexto da Conversa</h4>
               </div>
-              <div className="bg-muted/50 rounded p-3">
-                <p className="text-xs text-muted-foreground mb-1">Mensagens na conversa</p>
-                <p className="font-medium text-sm">{debugData.conversationContext.messageCount}</p>
-                <p className="text-xs text-muted-foreground mt-2 mb-1">Última mensagem do usuário</p>
-                <p className="text-sm italic">&ldquo;{debugData.conversationContext.lastUserMessage}&rdquo;</p>
+              <div className="bg-white/60 dark:bg-black/20 rounded p-3 space-y-3">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Mensagens na conversa</p>
+                  <p className="font-medium text-sm">{debugData.conversationContext.messageCount}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Última mensagem do usuário</p>
+                  <p className="text-sm italic">&ldquo;{debugData.conversationContext.lastUserMessage}&rdquo;</p>
+                </div>
               </div>
             </div>
           </CardContent>

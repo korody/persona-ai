@@ -4,7 +4,7 @@ async function checkSlug() {
   const supabase = await createAdminClient()
   
   const { data } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('title, slug, url')
     .ilike('title', '%segurar%ponta%')
     .limit(1)

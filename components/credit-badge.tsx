@@ -1,4 +1,4 @@
-// components/credit-badge.tsx
+﻿// components/credit-badge.tsx
 
 'use client'
 
