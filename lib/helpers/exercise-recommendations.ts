@@ -273,12 +273,12 @@ export async function formatExercisesContext(
     
     if (coursesWithSales.length === 1) {
       const [productInfo] = Array.from(coursesSalesInfo.values())
-      context += `"Caso você ainda não tenha acesso a esses exercícios do ${productInfo.productName}, `
+      context += `Caso você ainda não tenha acesso a esses exercícios do ${productInfo.productName}, `
       context += `você pode adquirir através deste link: ${productInfo.salesUrl}. `
-      context += `Caso tenha alguma dúvida sobre os produtos, fale com a Letícia do Comercial no Whatsapp: https://sendflow.pro/l/suporte-leticiawa"\n\n`
+      context += `Caso tenha alguma dúvida sobre os produtos, fale com a Letícia do Comercial no Whatsapp: https://sendflow.pro/l/suporte-leticiawa\n\n`
     } else {
-      context += `"Caso você ainda não tenha acesso a esses exercícios, você pode adquirir os cursos através dos links abaixo. `
-      context += `Caso tenha alguma dúvida sobre os produtos, fale com a Letícia do Comercial no Whatsapp: https://sendflow.pro/l/suporte-leticiawa"\n\n`
+      context += `Caso você ainda não tenha acesso a esses exercícios, você pode adquirir os cursos através dos links abaixo. `
+      context += `Caso tenha alguma dúvida sobre os produtos, fale com a Letícia do Comercial no Whatsapp: https://sendflow.pro/l/suporte-leticiawa\n\n`
       
       coursesSalesInfo.forEach((info, courseId) => {
         const courseExercises = exercisesByCourse.get(courseId) || []
