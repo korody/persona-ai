@@ -1,8 +1,8 @@
 ﻿import Link from 'next/link'
 
-export function LegalFooter() {
+export function LegalFooter({ className }: { className?: string }) {
   return (
-    <footer className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
+    <footer className={`border-t pt-6 text-center text-xs text-muted-foreground ${className || ''}`}>
       <div className="flex flex-wrap justify-center gap-4 mb-4">
         <Link href="/termos" className="hover:text-foreground transition-colors">
           Termos de Uso

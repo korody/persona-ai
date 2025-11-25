@@ -28,8 +28,6 @@ export async function middleware(request: NextRequest) {
   // ============================================
   const publicRoutes = [
     '/',
-    '/login',
-    '/signup',
     '/auth',
     '/api/auth',
     '/pricing',
@@ -67,7 +65,7 @@ export async function middleware(request: NextRequest) {
   try {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      process.env.NEXT_PUBLIC_SUPABASE_KEY!,
       {
         cookies: {
           getAll() {
@@ -95,16 +93,23 @@ export async function middleware(request: NextRequest) {
 
     console.log('[Middleware]', pathname, 'user:', !!user, 'error:', error?.message)
 
-    // Se não está logado (sem usuário OU com erro) e não é rota pública → redireciona pro login
+    // Redirecionar /login e /signup para /auth (nova rota unificada)
+    if (pathname === '/login' || pathname === '/signup') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/auth'
+      return NextResponse.redirect(url)
+    }
+
+    // Se não está logado (sem usuário OU com erro) e não é rota pública → redireciona pro auth
     if (!user) {
       const url = request.nextUrl.clone()
-      url.pathname = '/login'
+      url.pathname = '/auth'
       
       if (!pathname.startsWith('/api')) {
         url.searchParams.set('redirect', pathname)
       }
       
-      console.log('[Middleware] Redirecting to login from', pathname)
+      console.log('[Middleware] Redirecting to auth from', pathname)
       return NextResponse.redirect(url)
     }
 
@@ -125,8 +130,8 @@ export async function middleware(request: NextRequest) {
       }
     }
 
-    // Se está logado e tenta acessar login/signup → redireciona pro chat
-    if (user && (pathname === '/login' || pathname === '/signup')) {
+    // Se está logado e tenta acessar auth → redireciona pro chat
+    if (user && pathname === '/auth') {
       const url = request.nextUrl.clone()
       url.pathname = '/chat'
       console.log('[Middleware] Redirecting to chat from', pathname)
@@ -135,10 +140,10 @@ export async function middleware(request: NextRequest) {
   } catch (error) {
     console.error('[Middleware] Supabase error:', error)
     
-    // Em caso de erro, redireciona para login (mas não quebra a app)
+    // Em caso de erro, redireciona para auth (mas não quebra a app)
     if (!isPublicRoute && !isPublicApiRoute && !pathname.startsWith('/api')) {
       const url = request.nextUrl.clone()
-      url.pathname = '/login'
+      url.pathname = '/auth'
       url.searchParams.set('redirect', pathname)
       return NextResponse.redirect(url)
     }
@@ -154,6 +159,7 @@ export const config = {
     '/settings/:path*',
     '/admin/:path*',
     '/pricing',
+    '/auth',
     '/login',
     '/signup',
     '/api/:path*',
