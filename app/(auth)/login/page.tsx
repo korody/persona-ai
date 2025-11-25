@@ -55,8 +55,41 @@ function LoginForm() {
   }
 
   const handleMagicLink = async () => {
-    setError('Magic link temporariamente desabilitado devido a problemas de conexão')
-    return
+    if (!email) {
+      setError('Digite seu email primeiro')
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/auth/magic-link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          email,
+          redirectTo: redirect 
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || 'Erro ao enviar magic link')
+        setLoading(false)
+        return
+      }
+
+      setError('✅ Link mágico enviado! Verifique seu email')
+      setLoading(false)
+    } catch (err) {
+      console.error('Magic link error:', err)
+      setError('Erro de conexão com servidor')
+      setLoading(false)
+    }
   }
 
   return (
