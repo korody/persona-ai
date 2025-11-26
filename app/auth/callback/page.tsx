@@ -77,56 +77,48 @@ function CallbackContent() {
         return
       }
 
-      // 3. Verificar se tem code (pode ser PKCE flow OU magic link)
+      // 3. Verificar se tem code (pode ser PKCE flow OU magic link do Supabase)
       const code = searchParams.get('code')
       if (code) {
-        // Verificar se é PKCE (tem code_verifier) ou magic link
-        const isPKCE = window.location.hash.includes('code_verifier')
+        console.log('[callback] Code detected, attempting to exchange for session')
         
-        if (isPKCE) {
-          console.log('[callback] Processing PKCE flow (code with verifier)')
-          const { error } = await supabase.auth.exchangeCodeForSession(code)
+        // Simplesmente tentar trocar o code por sessão
+        // O Supabase vai determinar automaticamente se é válido
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
-          if (error) {
-            console.error('[callback] ❌ Error exchanging code:', error)
-            router.push(`/auth?error=auth_failed&redirect=${redirect}`)
-            return
-          }
-
-          console.log('[callback] ✅ Code exchanged successfully')
-          router.push(redirect)
-          return
-        } else {
-          // É um magic link code - usar verifyOtp
-          console.log('[callback] Processing magic link (code without verifier)')
+        if (error) {
+          console.error('[callback] ❌ Error exchanging code:', error)
+          console.log('[callback] Attempting alternative: session from URL')
           
-          // Tentar primeiro como email_change (pode ser o tipo correto)
-          const { error: emailError } = await supabase.auth.verifyOtp({
-            token_hash: code,
-            type: 'email',
-          })
-
-          if (emailError) {
-            console.log('[callback] Not email type, trying as magiclink...')
-            
-            // Se falhou, tentar como magiclink
-            const { error: magicError } = await supabase.auth.verifyOtp({
-              token_hash: code,
-              type: 'magiclink',
+          // Alternativa: Verificar se tem session tokens no hash
+          const hashParams = new URLSearchParams(window.location.hash.substring(1))
+          const accessToken = hashParams.get('access_token')
+          const refreshToken = hashParams.get('refresh_token')
+          
+          if (accessToken && refreshToken) {
+            const { error: sessionError } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
             })
-
-            if (magicError) {
-              console.error('[callback] ❌ Error verifying magic link code:', magicError)
-              console.error('[callback] Code value:', code.substring(0, 20) + '...')
+            
+            if (sessionError) {
+              console.error('[callback] ❌ Error setting session:', sessionError)
               router.push(`/auth?error=auth_failed&redirect=${redirect}`)
               return
             }
+            
+            console.log('[callback] ✅ Session set from hash')
+            router.push(redirect)
+            return
           }
-
-          console.log('[callback] ✅ Magic link code verified successfully')
-          router.push(redirect)
+          
+          router.push(`/auth?error=auth_failed&redirect=${redirect}`)
           return
         }
+
+        console.log('[callback] ✅ Code exchanged successfully')
+        router.push(redirect)
+        return
       }
 
       // Sem token nem code - erro
