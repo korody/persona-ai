@@ -15,37 +15,41 @@ export async function POST(request: Request) {
 
     const adminSupabase = await createAdminClient()
 
-    // Verificar diretamente no banco se encrypted_password existe
-    const { data, error } = await adminSupabase
-      .from('auth.users')
-      .select('encrypted_password')
-      .eq('email', email.toLowerCase())
-      .single()
+    // Buscar usuário
+    const { data: users } = await adminSupabase.auth.admin.listUsers()
+    const user = users?.users?.find(u => u.email?.toLowerCase() === email.toLowerCase())
 
-    if (error) {
-      // Se der erro, tentar via listUsers (fallback)
-      const { data: users } = await adminSupabase.auth.admin.listUsers()
-      const user = users?.users?.find(u => u.email?.toLowerCase() === email.toLowerCase())
-      
-      if (!user) {
-        return NextResponse.json({ hasPassword: false, createdViaQuiz: false })
-      }
+    if (!user) {
+      return NextResponse.json({ hasPassword: false, createdViaQuiz: false })
+    }
 
-      // Verificar se tem senha via presence de encrypted_password no objeto
-      const hasPassword = !!(user as any).encrypted_password
-      
+    // SOLUÇÃO PRAGMÁTICA:
+    // Se usuário foi criado há mais de 5 minutos, assume que tem senha
+    // Se foi criado recentemente (< 5 min), verifica se veio do quiz
+    const createdAt = new Date(user.created_at)
+    const now = new Date()
+    const minutesSinceCreation = (now.getTime() - createdAt.getTime()) / (1000 * 60)
+    
+    // Se foi criado há mais de 5 minutos, provavelmente tem senha
+    if (minutesSinceCreation > 5) {
       return NextResponse.json({ 
-        hasPassword,
-        createdViaQuiz: !hasPassword
+        hasPassword: true,
+        createdViaQuiz: false
       })
     }
 
-    // Se conseguiu consultar, verificar se encrypted_password não é null
-    const hasPassword = data && data.encrypted_password != null
+    // Se foi criado recentemente, verificar no quiz_leads se foi via quiz
+    const { data: quizLead } = await adminSupabase
+      .from('quiz_leads')
+      .select('id')
+      .eq('user_id', user.id)
+      .maybeSingle()
+
+    const createdViaQuiz = !!quizLead
 
     return NextResponse.json({ 
-      hasPassword,
-      createdViaQuiz: !hasPassword
+      hasPassword: !createdViaQuiz,  // Se veio do quiz, não tem senha
+      createdViaQuiz
     })
 
   } catch (error) {
