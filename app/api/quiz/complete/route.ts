@@ -212,17 +212,27 @@ export async function POST(request: Request) {
       },
     })
 
-    if (magicLinkError || !magicLinkData) {
+    if (magicLinkError) {
       console.error('[quiz/complete] Erro ao gerar magic link:', magicLinkError)
-      
+      console.error('[quiz/complete] Detalhes do erro:', JSON.stringify(magicLinkError, null, 2))
+    }
+    
+    if (!magicLinkData) {
+      console.error('[quiz/complete] magicLinkData está null/undefined')
+    } else {
+      console.log('[quiz/complete] magicLinkData recebido:', JSON.stringify(magicLinkData, null, 2))
+    }
+
+    if (magicLinkError || !magicLinkData) {
       // Mesmo com erro no magic link, retorna sucesso com URL simples
       // O usuário pode fazer login manualmente depois
       console.log('[quiz/complete] Retornando sem magic link - usuário criado com sucesso')
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://digital.mestreye.com'
       return NextResponse.json(
         { 
           success: true,
           userId,
-          redirectUrl: '/auth',
+          redirectUrl: `${baseUrl}/auth`,
           message: 'Usuário criado com sucesso. Faça login para continuar.',
           warning: 'Magic link não pôde ser gerado'
         },
@@ -239,19 +249,25 @@ export async function POST(request: Request) {
     console.log('[quiz/complete] Magic link gerado com sucesso')
 
     // 4. Extrair tokens do magic link
+    console.log('[quiz/complete] action_link:', magicLinkData.properties.action_link)
     const url = new URL(magicLinkData.properties.action_link)
     const token = url.searchParams.get('token')
     const tokenHash = url.searchParams.get('token_hash')
 
+    console.log('[quiz/complete] Token extraído:', token ? 'SIM (hash: ' + token.substring(0, 10) + '...)' : 'NÃO')
+    console.log('[quiz/complete] TokenHash extraído:', tokenHash ? 'SIM (hash: ' + tokenHash.substring(0, 10) + '...)' : 'NÃO')
+
     if (!token || !tokenHash) {
       console.error('[quiz/complete] Token não encontrado no magic link')
+      console.error('[quiz/complete] URL params:', Array.from(url.searchParams.entries()))
       
       // Retorna sucesso mesmo sem token
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://digital.mestreye.com'
       return NextResponse.json(
         { 
           success: true,
           userId,
-          redirectUrl: '/auth',
+          redirectUrl: `${baseUrl}/auth`,
           message: 'Usuário criado com sucesso. Faça login para continuar.',
           warning: 'Token de autenticação não disponível'
         },
@@ -271,7 +287,10 @@ export async function POST(request: Request) {
     console.log('[quiz/complete] Tokens extraídos com sucesso')
     
     // Construir URL de autenticação
-    const authUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://digital.mestreye.com'}/auth/callback?token_hash=${tokenHash}&type=magiclink&next=/chat`
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://digital.mestreye.com'
+    const authUrl = `${baseUrl}/auth/callback?token_hash=${tokenHash}&type=magiclink&next=/chat`
+
+    console.log('[quiz/complete] URL de autenticação:', authUrl)
 
     console.log('[quiz/complete] ====== SUCESSO ======')
     
