@@ -43,7 +43,8 @@ export async function middleware(request: NextRequest) {
     '/api/auth/callback',
     '/api/webhooks/stripe',
     '/api/stripe/webhook',
-    '/api/cron'
+    '/api/cron',
+    '/api/quiz/complete'  // Endpoint para auto-login do quiz MTC externo
   ]
 
   const isPublicApiRoute = publicApiRoutes.some(route => 
