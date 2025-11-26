@@ -227,12 +227,11 @@ export async function POST(request: Request) {
       // Mesmo com erro no magic link, retorna sucesso com URL simples
       // O usuário pode fazer login manualmente depois
       console.log('[quiz/complete] Retornando sem magic link - usuário criado com sucesso')
-      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://digital.mestreye.com'
       return NextResponse.json(
         { 
           success: true,
           userId,
-          redirectUrl: `${baseUrl}/auth`,
+          redirectUrl: '/auth',  // URL relativa - o quiz adiciona a base
           message: 'Usuário criado com sucesso. Faça login para continuar.',
           warning: 'Magic link não pôde ser gerado'
         },
@@ -262,12 +261,11 @@ export async function POST(request: Request) {
       console.error('[quiz/complete] URL params:', Array.from(url.searchParams.entries()))
       
       // Retorna sucesso mesmo sem token
-      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://digital.mestreye.com'
       return NextResponse.json(
         { 
           success: true,
           userId,
-          redirectUrl: `${baseUrl}/auth`,
+          redirectUrl: '/auth',  // URL relativa - o quiz adiciona a base
           message: 'Usuário criado com sucesso. Faça login para continuar.',
           warning: 'Token de autenticação não disponível'
         },
@@ -286,9 +284,8 @@ export async function POST(request: Request) {
     // A sessão será criada quando o usuário clicar no link
     console.log('[quiz/complete] Tokens extraídos com sucesso')
     
-    // Construir URL de autenticação
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://digital.mestreye.com'
-    const authUrl = `${baseUrl}/auth/callback?token_hash=${tokenHash}&type=magiclink&next=/chat`
+    // Construir URL de autenticação (relativa - o quiz adiciona a base)
+    const authUrl = `/auth/callback?token_hash=${tokenHash}&type=magiclink&next=/chat`
 
     console.log('[quiz/complete] URL de autenticação:', authUrl)
 
