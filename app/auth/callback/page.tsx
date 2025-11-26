@@ -35,53 +35,29 @@ function CallbackContent() {
         })
 
         if (error) {
-          console.error('[callback] Error verifying OTP:', error)
+          console.error('[callback] ❌ Error verifying OTP:', error)
           router.push(`/auth?error=auth_failed&redirect=${redirect}`)
           return
         }
 
-        console.log('[callback] OTP verified successfully')
+        console.log('[callback] ✅ OTP verified successfully')
         router.push(redirect)
         return
       }
 
-      // 2. Verificar se tem hash fragment (implicit grant - usado pelo quiz antigo)
-      const hashParams = new URLSearchParams(window.location.hash.substring(1))
-      const accessToken = hashParams.get('access_token')
-      const refreshToken = hashParams.get('refresh_token')
-
-      if (accessToken && refreshToken) {
-        console.log('[callback] Processing implicit grant (hash fragment)')
-        
-        const { error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        })
-
-        if (error) {
-          console.error('[callback] Error setting session:', error)
-          router.push(`/auth?error=auth_failed&redirect=${redirect}`)
-          return
-        }
-
-        console.log('[callback] Session set successfully')
-        router.push(redirect)
-        return
-      }
-
-      // 3. Verificar se tem code (PKCE flow)
+      // 2. Verificar se tem code (PKCE flow - mas SOMENTE se não tiver token)
       const code = searchParams.get('code')
       if (code) {
         console.log('[callback] Processing PKCE flow (code)')
         const { error } = await supabase.auth.exchangeCodeForSession(code)
 
         if (error) {
-          console.error('[callback] Error exchanging code:', error)
+          console.error('[callback] ❌ Error exchanging code:', error)
           router.push(`/auth?error=auth_failed&redirect=${redirect}`)
           return
         }
 
-        console.log('[callback] Code exchanged successfully')
+        console.log('[callback] ✅ Code exchanged successfully')
         router.push(redirect)
         return
       }
