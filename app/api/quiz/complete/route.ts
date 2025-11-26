@@ -3,7 +3,48 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 
+// Permitir CORS para requisições do quiz externo
+export async function OPTIONS(request: Request) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  })
+}
+
+// Handler GET para verificação (retorna 200 mas indica que deve usar POST)
+export async function GET(request: Request) {
+  return NextResponse.json(
+    { 
+      error: 'Use POST method',
+      message: 'This endpoint accepts POST requests only',
+      expectedPayload: {
+        email: 'string',
+        fullName: 'string', 
+        phone: 'string',
+        quizData: 'object (optional)'
+      }
+    },
+    { 
+      status: 405,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      }
+    }
+  )
+}
+
 export async function POST(request: Request) {
+  console.log('[quiz/complete] ====== REQUISIÇÃO RECEBIDA ======')
+  console.log('[quiz/complete] Método:', request.method)
+  console.log('[quiz/complete] URL:', request.url)
+  console.log('[quiz/complete] Headers:', Object.fromEntries(request.headers.entries()))
+  
   try {
     const data = await request.json()
     const { email, fullName, phone, quizData } = data
@@ -21,7 +62,14 @@ export async function POST(request: Request) {
       console.error('[quiz/complete] Validação falhou:', { email: !!email, fullName: !!fullName, phone: !!phone })
       return NextResponse.json(
         { error: 'Email, nome e telefone são obrigatórios' },
-        { status: 400 }
+        { 
+          status: 400,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          }
+        }
       )
     }
 
@@ -64,7 +112,14 @@ export async function POST(request: Request) {
         console.error('[quiz/complete] Erro ao criar usuário:', signupError)
         return NextResponse.json(
           { error: 'Erro ao criar usuário' },
-          { status: 500 }
+          { 
+            status: 500,
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'POST, OPTIONS',
+              'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            }
+          }
         )
       }
 
@@ -121,7 +176,14 @@ export async function POST(request: Request) {
       console.error('[quiz/complete] Erro ao gerar magic link:', magicLinkError)
       return NextResponse.json(
         { error: 'Erro ao criar sessão' },
-        { status: 500 }
+        { 
+          status: 500,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          }
+        }
       )
     }
 
@@ -136,7 +198,14 @@ export async function POST(request: Request) {
       console.error('[quiz/complete] Token não encontrado no magic link')
       return NextResponse.json(
         { error: 'Erro ao processar autenticação' },
-        { status: 500 }
+        { 
+          status: 500,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          }
+        }
       )
     }
 
@@ -152,7 +221,14 @@ export async function POST(request: Request) {
       console.error('[quiz/complete] Erro ao verificar OTP:', verifyError)
       return NextResponse.json(
         { error: 'Erro ao criar sessão' },
-        { status: 500 }
+        { 
+          status: 500,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          }
+        }
       )
     }
 
@@ -169,14 +245,27 @@ export async function POST(request: Request) {
     console.log('[quiz/complete] ====== SUCESSO ======')
     console.log('[quiz/complete] Resposta:', response)
 
-    return NextResponse.json(response)
+    return NextResponse.json(response, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    })
 
   } catch (error) {
     console.error('[quiz/complete] ====== ERRO ======')
     console.error('[quiz/complete] Erro interno:', error)
     return NextResponse.json(
       { error: 'Erro interno do servidor', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        }
+      }
     )
   }
 }
