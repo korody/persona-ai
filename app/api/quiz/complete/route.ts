@@ -46,11 +46,39 @@ export async function POST(request: Request) {
   console.log('[quiz/complete] Headers:', Object.fromEntries(request.headers.entries()))
   
   try {
-    const data = await request.json()
-    const { email, fullName, phone, quizData } = data
+    const rawData = await request.json()
+    console.log('[quiz/complete] Dados brutos recebidos:', JSON.stringify(rawData, null, 2))
+    
+    // Suportar múltiplos formatos de payload
+    // Formato 1: { email, fullName, phone, quizData }
+    // Formato 2: { lead: { EMAIL, NOME, CELULAR }, respostas, diagnostico }
+    let email: string
+    let fullName: string
+    let phone: string
+    let quizData: any
+    
+    if (rawData.lead) {
+      // Formato do quiz MTC
+      email = rawData.lead.EMAIL || rawData.lead.email
+      fullName = rawData.lead.NOME || rawData.lead.nome || rawData.lead.fullName
+      phone = rawData.lead.CELULAR || rawData.lead.celular || rawData.lead.phone || rawData.lead.telefone
+      quizData = {
+        elemento_principal: rawData.diagnostico?.elementoPrincipal || rawData.diagnostico?.elemento,
+        diagnostico_resumo: rawData.diagnostico?.resumo,
+        contagem_elementos: rawData.diagnostico?.contagemElementos,
+        intensidade_calculada: rawData.diagnostico?.intensidade,
+        respostas: rawData.respostas
+      }
+    } else {
+      // Formato direto
+      email = rawData.email
+      fullName = rawData.fullName || rawData.nome
+      phone = rawData.phone || rawData.telefone || rawData.celular
+      quizData = rawData.quizData
+    }
 
     console.log('[quiz/complete] ====== INÍCIO ======')
-    console.log('[quiz/complete] Dados recebidos:', { 
+    console.log('[quiz/complete] Dados processados:', { 
       email, 
       fullName, 
       phone: phone?.substring(0, 5) + '...',
@@ -59,9 +87,21 @@ export async function POST(request: Request) {
 
     // Validações
     if (!email || !fullName || !phone) {
-      console.error('[quiz/complete] Validação falhou:', { email: !!email, fullName: !!fullName, phone: !!phone })
+      console.error('[quiz/complete] Validação falhou:', { 
+        email: { exists: !!email, value: email }, 
+        fullName: { exists: !!fullName, value: fullName }, 
+        phone: { exists: !!phone, value: phone },
+        rawDataKeys: Object.keys(rawData)
+      })
       return NextResponse.json(
-        { error: 'Email, nome e telefone são obrigatórios' },
+        { 
+          error: 'Email, nome e telefone são obrigatórios',
+          received: {
+            email: !!email,
+            fullName: !!fullName,
+            phone: !!phone
+          }
+        },
         { 
           status: 400,
           headers: {
@@ -255,9 +295,17 @@ export async function POST(request: Request) {
 
   } catch (error) {
     console.error('[quiz/complete] ====== ERRO ======')
-    console.error('[quiz/complete] Erro interno:', error)
+    console.error('[quiz/complete] Tipo do erro:', error?.constructor?.name)
+    console.error('[quiz/complete] Mensagem:', error instanceof Error ? error.message : 'Unknown error')
+    console.error('[quiz/complete] Stack:', error instanceof Error ? error.stack : 'No stack trace')
+    console.error('[quiz/complete] Erro completo:', error)
+    
     return NextResponse.json(
-      { error: 'Erro interno do servidor', details: error instanceof Error ? error.message : 'Unknown error' },
+      { 
+        error: 'Erro interno do servidor', 
+        details: error instanceof Error ? error.message : 'Unknown error',
+        type: error?.constructor?.name || 'UnknownError'
+      },
       { 
         status: 500,
         headers: {
