@@ -2,6 +2,8 @@
 
 import { createBrowserClient } from '@supabase/ssr'
 
+let supabaseClient: ReturnType<typeof createBrowserClient> | null = null
+
 export function createClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabasePublicKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY
@@ -12,5 +14,19 @@ export function createClient() {
     return null as any
   }
 
-  return createBrowserClient(supabaseUrl, supabasePublicKey)
+  // Singleton para manter o mesmo cliente e preservar o code_verifier
+  if (supabaseClient) {
+    return supabaseClient
+  }
+
+  supabaseClient = createBrowserClient(supabaseUrl, supabasePublicKey, {
+    auth: {
+      flowType: 'pkce',
+      detectSessionInUrl: true,
+      persistSession: true,
+      storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+    },
+  })
+
+  return supabaseClient
 }
