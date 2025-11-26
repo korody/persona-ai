@@ -22,6 +22,7 @@ import {
   searchIntroductoryExercises,
   searchExercisesBySemantic
 } from '@/lib/helpers/exercise-recommendations'
+import { generateSmartTitle } from '@/lib/helpers/conversation-title'
 import type { QuizLead } from '@/lib/types/anamnese'
 import type { Exercise } from '@/lib/memberkit/types'
 
@@ -171,13 +172,19 @@ export async function POST(req: Request) {
     let finalConversationId = conversationId
 
     if (!conversationId) {
+      // Gerar título inteligente baseado na primeira mensagem
+      const userMessage = messages[messages.length - 1]
+      const userContent = userMessage.content || 
+                          (userMessage.parts ? userMessage.parts.map((p: any) => p.text).join('') : '')
+      const smartTitle = generateSmartTitle(userContent)
+      
       // Criar nova conversa
       const { data: newConv, error: convError } = await supabase
         .from('conversations')
         .insert({
           user_id: userId,
           avatar_id: avatar.id,
-          title: 'Nova Conversa',
+          title: smartTitle,
           total_credits_used: 1
         })
         .select()
