@@ -15,21 +15,37 @@ export async function POST(request: Request) {
 
     const adminSupabase = await createAdminClient()
 
-    // Buscar usuário pelo email
-    const { data: users } = await adminSupabase.auth.admin.listUsers()
-    const user = users?.users?.find(u => u.email?.toLowerCase() === email.toLowerCase())
+    // Verificar diretamente no banco se encrypted_password existe
+    const { data, error } = await adminSupabase
+      .from('auth.users')
+      .select('encrypted_password')
+      .eq('email', email.toLowerCase())
+      .single()
 
-    if (!user) {
-      return NextResponse.json({ hasPassword: false })
+    if (error) {
+      // Se der erro, tentar via listUsers (fallback)
+      const { data: users } = await adminSupabase.auth.admin.listUsers()
+      const user = users?.users?.find(u => u.email?.toLowerCase() === email.toLowerCase())
+      
+      if (!user) {
+        return NextResponse.json({ hasPassword: false, createdViaQuiz: false })
+      }
+
+      // Verificar se tem senha via presence de encrypted_password no objeto
+      const hasPassword = !!(user as any).encrypted_password
+      
+      return NextResponse.json({ 
+        hasPassword,
+        createdViaQuiz: !hasPassword
+      })
     }
 
-    // Verificar se usuário tem senha configurada
-    // Usuários criados apenas via magic link (quiz) não têm encrypted_password
-    const hasPassword = !!(user as any).encrypted_password
+    // Se conseguiu consultar, verificar se encrypted_password não é null
+    const hasPassword = data && data.encrypted_password != null
 
     return NextResponse.json({ 
       hasPassword,
-      createdViaQuiz: !hasPassword  // Indica se veio do quiz
+      createdViaQuiz: !hasPassword
     })
 
   } catch (error) {
