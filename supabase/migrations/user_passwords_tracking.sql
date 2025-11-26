@@ -16,6 +16,10 @@ CREATE INDEX IF NOT EXISTS idx_user_password_status_user_id ON public.user_passw
 -- RLS (Row Level Security)
 ALTER TABLE public.user_password_status ENABLE ROW LEVEL SECURITY;
 
+-- Dropar policies antigas se existirem
+DROP POLICY IF EXISTS "Users can view own password status" ON public.user_password_status;
+DROP POLICY IF EXISTS "Service role can manage password status" ON public.user_password_status;
+
 -- Policy: usuários podem ver seu próprio status
 CREATE POLICY "Users can view own password status"
   ON public.user_password_status

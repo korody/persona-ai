@@ -77,21 +77,43 @@ function CallbackContent() {
         return
       }
 
-      // 3. Verificar se tem code (PKCE flow)
+      // 3. Verificar se tem code (pode ser PKCE flow OU magic link)
       const code = searchParams.get('code')
       if (code) {
-        console.log('[callback] Processing PKCE flow (code)')
-        const { error } = await supabase.auth.exchangeCodeForSession(code)
+        // Verificar se é PKCE (tem code_verifier) ou magic link
+        const isPKCE = window.location.hash.includes('code_verifier')
+        
+        if (isPKCE) {
+          console.log('[callback] Processing PKCE flow (code with verifier)')
+          const { error } = await supabase.auth.exchangeCodeForSession(code)
 
-        if (error) {
-          console.error('[callback] ❌ Error exchanging code:', error)
-          router.push(`/auth?error=auth_failed&redirect=${redirect}`)
+          if (error) {
+            console.error('[callback] ❌ Error exchanging code:', error)
+            router.push(`/auth?error=auth_failed&redirect=${redirect}`)
+            return
+          }
+
+          console.log('[callback] ✅ Code exchanged successfully')
+          router.push(redirect)
+          return
+        } else {
+          // É um magic link code - usar verifyOtp
+          console.log('[callback] Processing magic link (code without verifier)')
+          const { error } = await supabase.auth.verifyOtp({
+            token_hash: code,
+            type: 'magiclink',
+          })
+
+          if (error) {
+            console.error('[callback] ❌ Error verifying magic link code:', error)
+            router.push(`/auth?error=auth_failed&redirect=${redirect}`)
+            return
+          }
+
+          console.log('[callback] ✅ Magic link code verified successfully')
+          router.push(redirect)
           return
         }
-
-        console.log('[callback] ✅ Code exchanged successfully')
-        router.push(redirect)
-        return
       }
 
       // Sem token nem code - erro
