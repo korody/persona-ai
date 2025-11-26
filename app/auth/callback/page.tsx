@@ -21,13 +21,45 @@ function CallbackContent() {
         return
       }
 
-      // 1. Verificar se tem token/token_hash (magic link do quiz)
+      console.log('[callback] === DEBUG INFO ===')
+      console.log('[callback] URL:', window.location.href)
+      console.log('[callback] Search params:', Object.fromEntries(searchParams.entries()))
+      console.log('[callback] Hash:', window.location.hash)
+
+      // 1. Verificar se tem token/token_hash no HASH (Supabase pode enviar assim)
+      if (window.location.hash) {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1))
+        const hashToken = hashParams.get('token')
+        const hashTokenHash = hashParams.get('token_hash')
+        const hashType = hashParams.get('type') || 'magiclink'
+
+        if (hashToken || hashTokenHash) {
+          console.log('[callback] Processing magic link from HASH fragment')
+          
+          const { error } = await supabase.auth.verifyOtp({
+            token_hash: hashTokenHash || hashToken || '',
+            type: hashType as any,
+          })
+
+          if (error) {
+            console.error('[callback] ❌ Error verifying OTP from hash:', error)
+            router.push(`/auth?error=auth_failed&redirect=${redirect}`)
+            return
+          }
+
+          console.log('[callback] ✅ OTP from hash verified successfully')
+          router.push(redirect)
+          return
+        }
+      }
+
+      // 2. Verificar se tem token/token_hash nos QUERY PARAMS
       const token = searchParams.get('token')
       const tokenHash = searchParams.get('token_hash')
       const type = searchParams.get('type') || 'magiclink'
       
       if (token || tokenHash) {
-        console.log('[callback] Processing magic link (token/token_hash)')
+        console.log('[callback] Processing magic link from query params')
         
         const { error } = await supabase.auth.verifyOtp({
           token_hash: tokenHash || token || '',
@@ -45,7 +77,7 @@ function CallbackContent() {
         return
       }
 
-      // 2. Verificar se tem code (PKCE flow - mas SOMENTE se não tiver token)
+      // 3. Verificar se tem code (PKCE flow)
       const code = searchParams.get('code')
       if (code) {
         console.log('[callback] Processing PKCE flow (code)')
