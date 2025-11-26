@@ -11,7 +11,7 @@ import { LegalFooter } from '@/components/legal-footer'
 import { WhatsAppSupport } from '@/components/whatsapp-support'
 import { parsePhoneNumber, type CountryCode } from 'libphonenumber-js'
 
-type AuthStep = 'email' | 'login' | 'signup'
+type AuthStep = 'email' | 'login' | 'signup' | 'reset-password'
 
 function AuthFlow() {
   const [step, setStep] = useState<AuthStep>('email')
@@ -25,8 +25,9 @@ function AuthFlow() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [magicLinkSent, setMagicLinkSent] = useState(false)
-  const [userHasPassword, setUserHasPassword] = useState<boolean>(true)  // Novo estado
-  const [createdViaQuiz, setCreatedViaQuiz] = useState<boolean>(false)  // Novo estado
+  const [resetLinkSent, setResetLinkSent] = useState(false)
+  const [userHasPassword, setUserHasPassword] = useState<boolean>(true)
+  const [createdViaQuiz, setCreatedViaQuiz] = useState<boolean>(false)
   
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -69,7 +70,7 @@ function AuthFlow() {
       const data = await response.json()
 
       if (!response.ok) {
-        setError(data.error || 'Erro ao verificar email')
+        setError(data.error || 'Erro ao verificar o email. Tente novamente.')
         setLoading(false)
         return
       }
@@ -116,7 +117,7 @@ function AuthFlow() {
       const data = await response.json()
 
       if (!response.ok) {
-        setError(data.error || 'Email ou senha incorretos')
+        setError(data.error || 'Email ou senha incorretos. Verifique seus dados e tente novamente.')
         setLoading(false)
         return
       }
@@ -130,7 +131,39 @@ function AuthFlow() {
     }
   }
 
-  // 3. Magic Link - usar cliente vanilla para PKCE funcionar com localStorage
+  // 3. Reset de senha
+  const handleResetPassword = async () => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const { createClient } = await import('@supabase/supabase-js')
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!
+      )
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      })
+
+      if (error) {
+        console.error('Reset password error:', error)
+        setError(error.message || 'Erro ao enviar email de recuperação. Tente novamente.')
+        setLoading(false)
+        return
+      }
+
+      setResetLinkSent(true)
+      setLoading(false)
+    } catch (err) {
+      console.error('Reset password error:', err)
+      setError('Erro de conexão. Verifique sua internet e tente novamente.')
+      setLoading(false)
+    }
+  }
+
+  // 4. Magic Link - usar cliente vanilla para PKCE funcionar com localStorage
   const handleMagicLink = async () => {
     setLoading(true)
     setError(null)
@@ -160,7 +193,7 @@ function AuthFlow() {
 
       if (error) {
         console.error('Magic link error:', error)
-        setError(error.message || 'Erro ao enviar link')
+        setError(error.message || 'Erro ao enviar o link de acesso. Tente novamente.')
         setLoading(false)
         return
       }
@@ -174,7 +207,7 @@ function AuthFlow() {
     }
   }
 
-  // 4. Signup
+  // 5. Signup
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -182,13 +215,13 @@ function AuthFlow() {
 
     // Validações
     if (password.length < 6) {
-      setError('A senha deve ter no mínimo 6 caracteres')
+      setError('A senha deve ter no mínimo 6 caracteres.')
       setLoading(false)
       return
     }
 
     if (!phone || phoneValid !== true) {
-      setError('Por favor, digite um celular válido')
+      setError('Por favor, digite um número de celular válido.')
       setLoading(false)
       return
     }
@@ -201,7 +234,7 @@ function AuthFlow() {
         phoneE164 = phoneNumber.format('E.164')
       }
     } catch {
-      setError('Telefone inválido')
+      setError('Número de telefone inválido. Verifique e tente novamente.')
       setLoading(false)
       return
     }
@@ -221,7 +254,7 @@ function AuthFlow() {
       const data = await response.json()
 
       if (!response.ok) {
-        setError(data.error || 'Erro ao criar conta')
+        setError(data.error || 'Erro ao criar sua conta. Tente novamente.')
         setLoading(false)
         return
       }
@@ -259,6 +292,7 @@ function AuthFlow() {
     setPhone('')
     setError(null)
     setMagicLinkSent(false)
+    setResetLinkSent(false)
   }
 
   return (
@@ -279,6 +313,7 @@ function AuthFlow() {
             {step === 'email' && 'Digite seu email para começar'}
             {step === 'login' && 'Que bom te ver novamente!'}
             {step === 'signup' && 'Vamos criar sua conta'}
+            {step === 'reset-password' && 'Recuperar senha'}
           </p>
         </div>
 
@@ -435,6 +470,14 @@ function AuthFlow() {
                             'Entrar'
                           )}
                         </Button>
+
+                        <button
+                          type="button"
+                          onClick={() => setStep('reset-password')}
+                          className="text-sm text-muted-foreground hover:text-foreground underline w-full text-center"
+                        >
+                          Esqueceu a senha?
+                        </button>
                       </form>
 
                       <div className="relative my-6">
@@ -460,7 +503,75 @@ function AuthFlow() {
                 </div>
               )}
 
-              {/* STEP 3: Signup */}
+              {/* STEP 3: Reset Password */}
+              {step === 'reset-password' && (
+                <div className="space-y-4">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={handleBack}
+                    className="mb-2 -mt-2"
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Voltar
+                  </Button>
+
+                  <div className="bg-muted border rounded-md p-3 mb-4">
+                    <p className="text-sm">
+                      <strong>{email}</strong>
+                    </p>
+                  </div>
+
+                  {resetLinkSent ? (
+                    <div className="text-center py-8">
+                      <div className="mb-4 text-6xl">🔐</div>
+                      <h3 className="text-xl font-semibold mb-2">Email enviado!</h3>
+                      <p className="text-gray-600 mb-6">
+                        Enviamos um link para <strong>{email}</strong>
+                        <br />
+                        Clique no link para redefinir sua senha.
+                      </p>
+                      <p className="text-sm text-muted-foreground mb-6">
+                        Não recebeu? Verifique a caixa de spam.
+                      </p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleBack}
+                        className="w-full"
+                      >
+                        Voltar para o login
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md p-4">
+                        <p className="text-sm text-blue-800 dark:text-blue-200">
+                          Você receberá um email com instruções para criar uma nova senha.
+                        </p>
+                      </div>
+
+                      <Button
+                        type="button"
+                        onClick={handleResetPassword}
+                        disabled={loading}
+                        className="w-full h-12 text-base"
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            Enviando...
+                          </>
+                        ) : (
+                          'Enviar email de recuperação'
+                        )}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* STEP 4: Signup */}
               {step === 'signup' && (
                 <div className="space-y-4">
                   <Button
