@@ -20,7 +20,8 @@ export async function POST(request: NextRequest) {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${request.nextUrl.origin}/api/auth/callback?redirect=${redirectTo || '/chat'}`,
+        emailRedirectTo: `${request.nextUrl.origin}/auth/callback?redirect=${redirectTo || '/chat'}`,
+        shouldCreateUser: false, // Não criar usuário se não existir
       },
     })
 
