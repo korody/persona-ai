@@ -104,27 +104,30 @@ function CallbackContent() {
         console.log('[callback] Code verifier exists:', !!codeVerifier)
         
         if (codeVerifier) {
-          // Fazer a troca manualmente via API
+          // Fazer a troca manualmente via API - formato correto do Supabase
           const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/token?grant_type=pkce`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'apikey': process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!,
+              'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!}`,
             },
             body: JSON.stringify({
               auth_code: code,
-              code_verifier: codeVerifier,
+              code_verifier: codeVerifier.replace(/"/g, ''), // Remover aspas se tiver
             }),
           })
           
-          if (response.ok) {
-            const data = await response.json()
+          const responseData = await response.json()
+          console.log('[callback] Token exchange response:', response.status, responseData)
+          
+          if (response.ok && responseData.access_token) {
             console.log('[callback] ✅ Token exchange successful')
             
             // Setar a sessão
             const { error: sessionError } = await supabase.auth.setSession({
-              access_token: data.access_token,
-              refresh_token: data.refresh_token,
+              access_token: responseData.access_token,
+              refresh_token: responseData.refresh_token,
             })
             
             if (sessionError) {
@@ -140,8 +143,7 @@ function CallbackContent() {
             router.push(redirect)
             return
           } else {
-            const errorData = await response.json()
-            console.error('[callback] ❌ Token exchange failed:', errorData)
+            console.error('[callback] ❌ Token exchange failed:', responseData)
           }
         }
         
