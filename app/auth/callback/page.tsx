@@ -13,7 +13,20 @@ function CallbackContent() {
 
   useEffect(() => {
     const handleCallback = async () => {
-      const supabase = createClient()
+      // Usar @supabase/supabase-js diretamente para acessar o code_verifier do localStorage
+      const { createClient } = await import('@supabase/supabase-js')
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!,
+        {
+          auth: {
+            flowType: 'pkce',
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+          }
+        }
+      )
       
       if (!supabase) {
         console.error('[callback] Supabase client not available')
@@ -25,6 +38,7 @@ function CallbackContent() {
       console.log('[callback] URL:', window.location.href)
       console.log('[callback] Search params:', Object.fromEntries(searchParams.entries()))
       console.log('[callback] Hash:', window.location.hash)
+      console.log('[callback] localStorage keys:', Object.keys(localStorage))
 
       // 1. Verificar se tem token/token_hash no HASH (Supabase pode enviar assim)
       if (window.location.hash) {

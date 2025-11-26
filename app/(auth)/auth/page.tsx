@@ -130,15 +130,26 @@ function AuthFlow() {
     }
   }
 
-  // 3. Magic Link - usar diretamente no cliente (gerencia PKCE automaticamente)
+  // 3. Magic Link - usar cliente vanilla para PKCE funcionar com localStorage
   const handleMagicLink = async () => {
     setLoading(true)
     setError(null)
 
     try {
-      // Importar dinamicamente o cliente Supabase
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
+      // Usar @supabase/supabase-js diretamente (não SSR) para localStorage funcionar
+      const { createClient } = await import('@supabase/supabase-js')
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!,
+        {
+          auth: {
+            flowType: 'pkce',
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+          }
+        }
+      )
 
       const { error } = await supabase.auth.signInWithOtp({
         email,
