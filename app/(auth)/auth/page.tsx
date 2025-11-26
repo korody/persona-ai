@@ -359,7 +359,7 @@ function AuthFlow() {
                           <p className="text-sm text-green-800 dark:text-green-200">
                             <strong>✨ Bem-vindo de volta!</strong>
                             <br />
-                            Você entrou pelo quiz. Vamos enviar um link de acesso para seu email.
+                            Vamos enviar um link de acesso para seu email.
                           </p>
                         </div>
                       )}
