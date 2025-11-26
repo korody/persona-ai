@@ -21,7 +21,31 @@ function CallbackContent() {
         return
       }
 
-      // Verificar se tem hash fragment (implicit grant - usado pelo quiz)
+      // 1. Verificar se tem token/token_hash (magic link do quiz)
+      const token = searchParams.get('token')
+      const tokenHash = searchParams.get('token_hash')
+      const type = searchParams.get('type') || 'magiclink'
+      
+      if (token || tokenHash) {
+        console.log('[callback] Processing magic link (token/token_hash)')
+        
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash || token || '',
+          type: type as any,
+        })
+
+        if (error) {
+          console.error('[callback] Error verifying OTP:', error)
+          router.push(`/auth?error=auth_failed&redirect=${redirect}`)
+          return
+        }
+
+        console.log('[callback] OTP verified successfully')
+        router.push(redirect)
+        return
+      }
+
+      // 2. Verificar se tem hash fragment (implicit grant - usado pelo quiz antigo)
       const hashParams = new URLSearchParams(window.location.hash.substring(1))
       const accessToken = hashParams.get('access_token')
       const refreshToken = hashParams.get('refresh_token')
@@ -45,7 +69,7 @@ function CallbackContent() {
         return
       }
 
-      // Verificar se tem code (PKCE flow)
+      // 3. Verificar se tem code (PKCE flow)
       const code = searchParams.get('code')
       if (code) {
         console.log('[callback] Processing PKCE flow (code)')

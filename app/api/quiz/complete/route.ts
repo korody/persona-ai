@@ -257,12 +257,16 @@ export async function POST(request: Request) {
     const url = new URL(magicLinkData.properties.action_link)
     const token = url.searchParams.get('token')
     const tokenHash = url.searchParams.get('token_hash')
+    
+    // Supabase pode retornar 'token' OU 'token_hash' dependendo da versão/config
+    const authToken = tokenHash || token
 
     console.log('[quiz/complete] Token extraído:', token ? 'SIM (hash: ' + token.substring(0, 10) + '...)' : 'NÃO')
     console.log('[quiz/complete] TokenHash extraído:', tokenHash ? 'SIM (hash: ' + tokenHash.substring(0, 10) + '...)' : 'NÃO')
+    console.log('[quiz/complete] Auth token final:', authToken ? 'SIM' : 'NÃO')
 
-    if (!token || !tokenHash) {
-      console.error('[quiz/complete] Token não encontrado no magic link')
+    if (!authToken) {
+      console.error('[quiz/complete] Nenhum token encontrado no magic link')
       console.error('[quiz/complete] URL params:', Array.from(url.searchParams.entries()))
       
       // Retorna sucesso mesmo sem token
@@ -289,13 +293,13 @@ export async function POST(request: Request) {
       )
     }
 
-    // 5. OPCIONAL: Verificar token e criar sessão
-    // Por enquanto, vamos pular isso para responder mais rápido
-    // A sessão será criada quando o usuário clicar no link
+    // 5. Construir URL de autenticação
     console.log('[quiz/complete] Tokens extraídos com sucesso')
     
-    // Construir URL de autenticação (relativa - o quiz adiciona a base)
-    const authUrl = `/auth/callback?token_hash=${tokenHash}&type=magiclink&next=/chat`
+    // Usar token_hash se disponível, senão usar token
+    const authUrl = tokenHash 
+      ? `/auth/callback?token_hash=${tokenHash}&type=magiclink&next=/chat`
+      : `/auth/callback?token=${authToken}&type=magiclink&next=/chat`
 
     console.log('[quiz/complete] URL de autenticação:', authUrl)
 
