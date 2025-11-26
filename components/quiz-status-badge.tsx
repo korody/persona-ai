@@ -144,7 +144,7 @@ export function QuizStatusBadge({ onSendDiagnosis }: QuizStatusBadgeProps = {}) 
             Faça sua Anamnese Express dos 5 Elementos da Medicina Tradicional Chinesa para ter respostas personalizadas, baseadas no seu elemento principal e diagnóstico individual.
           </p>
         </div>
-        <Link href="https://quiz.qigongbrasil.com/" target="_blank" rel="noopener noreferrer">
+        <Link href="https://anamnese.mestreye.com/" target="_blank" rel="noopener noreferrer">
           <Button size="sm" variant="outline">
             Fazer Avaliação →
           </Button>
