@@ -453,7 +453,7 @@ function AuthFlow() {
                         disabled={loading}
                         className="w-full h-12 text-base"
                       >
-                        Enviar link mágico por email
+                        📧 Enviar Link de Acesso Fácil por email
                       </Button>
                     </>
                   )}
