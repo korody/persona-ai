@@ -40,6 +40,17 @@ export async function POST(request: Request) {
 
     console.log('[signup] Usuário criado com sucesso:', data.user?.id)
 
+    // Marcar que usuário tem senha
+    if (data.user?.id) {
+      try {
+        await supabase.rpc('mark_user_has_password', { p_user_id: data.user.id })
+        console.log('[signup] Status de senha marcado')
+      } catch (err) {
+        console.error('[signup] Erro ao marcar status de senha:', err)
+        // Não bloqueia o signup se falhar
+      }
+    }
+
     // Se tem sessão, fazer login automático
     if (data.session) {
       console.log('[signup] Setando sessão no servidor...')

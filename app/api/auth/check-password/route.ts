@@ -15,41 +15,41 @@ export async function POST(request: Request) {
 
     const adminSupabase = await createAdminClient()
 
-    // Buscar usuário
-    const { data: users } = await adminSupabase.auth.admin.listUsers()
-    const user = users?.users?.find(u => u.email?.toLowerCase() === email.toLowerCase())
+    // Usar a função SQL que acessa auth.users.encrypted_password diretamente
+    const { data, error } = await adminSupabase
+      .rpc('check_user_has_password', { user_email: email })
+      .single()
 
-    if (!user) {
-      return NextResponse.json({ hasPassword: false, createdViaQuiz: false })
-    }
+    console.log('[check-password] Email:', email)
+    console.log('[check-password] RPC result:', { data, error })
 
-    // SOLUÇÃO PRAGMÁTICA:
-    // Se usuário foi criado há mais de 5 minutos, assume que tem senha
-    // Se foi criado recentemente (< 5 min), verifica se veio do quiz
-    const createdAt = new Date(user.created_at)
-    const now = new Date()
-    const minutesSinceCreation = (now.getTime() - createdAt.getTime()) / (1000 * 60)
-    
-    // Se foi criado há mais de 5 minutos, provavelmente tem senha
-    if (minutesSinceCreation > 5) {
+    if (error) {
+      console.error('[check-password] Error checking password:', error)
+      // Fallback: se erro, assume que não existe
       return NextResponse.json({ 
-        hasPassword: true,
-        createdViaQuiz: false
+        hasPassword: false, 
+        createdViaQuiz: false 
       })
     }
 
-    // Se foi criado recentemente, verificar no quiz_leads se foi via quiz
-    const { data: quizLead } = await adminSupabase
-      .from('quiz_leads')
-      .select('id')
-      .eq('user_id', user.id)
-      .maybeSingle()
+    if (!data) {
+      console.log('[check-password] No data returned (user not found)')
+      // Usuário não existe
+      return NextResponse.json({ 
+        hasPassword: false, 
+        createdViaQuiz: false 
+      })
+    }
 
-    const createdViaQuiz = !!quizLead
+    console.log('[check-password] Final result:', {
+      hasPassword: data.has_password,
+      createdViaQuiz: data.created_via_quiz
+    })
 
+    // Retornar resultado da função SQL
     return NextResponse.json({ 
-      hasPassword: !createdViaQuiz,  // Se veio do quiz, não tem senha
-      createdViaQuiz
+      hasPassword: data.has_password,
+      createdViaQuiz: data.created_via_quiz
     })
 
   } catch (error) {

@@ -357,9 +357,9 @@ function AuthFlow() {
                       {createdViaQuiz && (
                         <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-md p-4 mb-4">
                           <p className="text-sm text-green-800 dark:text-green-200">
-                            <strong>✨ Bem-vindo de volta!</strong>
+                            <strong>✨ Bem-vind@ de volta!</strong>
                             <br />
-                            Vamos enviar um link de acesso para seu email.
+                            Clique no botão para gerar seu Link de Acesso Fácil.
                           </p>
                         </div>
                       )}
@@ -377,7 +377,7 @@ function AuthFlow() {
                           </>
                         ) : (
                           <>
-                            📧 Enviar link de acesso
+                            📧 Enviar Link de Acesso Fácil por email
                           </>
                         )}
                       </Button>
