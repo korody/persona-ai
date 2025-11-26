@@ -96,23 +96,35 @@ function CallbackContent() {
       if (code) {
         console.log('[callback] Code detected, attempting to exchange for session')
         
-        // Simplesmente tentar trocar o code por sessão
-        // O Supabase vai determinar automaticamente se é válido
-        const { data, error } = await supabase.auth.exchangeCodeForSession(code)
-
-        if (error) {
-          console.error('[callback] ❌ Error exchanging code:', error)
-          console.log('[callback] Attempting alternative: session from URL')
+        // Buscar o code_verifier do localStorage manualmente
+        const codeVerifierKey = Object.keys(localStorage).find(key => key.includes('code-verifier'))
+        const codeVerifier = codeVerifierKey ? localStorage.getItem(codeVerifierKey) : null
+        
+        console.log('[callback] Code verifier key:', codeVerifierKey)
+        console.log('[callback] Code verifier exists:', !!codeVerifier)
+        
+        if (codeVerifier) {
+          // Fazer a troca manualmente via API
+          const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/token?grant_type=pkce`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!,
+            },
+            body: JSON.stringify({
+              auth_code: code,
+              code_verifier: codeVerifier,
+            }),
+          })
           
-          // Alternativa: Verificar se tem session tokens no hash
-          const hashParams = new URLSearchParams(window.location.hash.substring(1))
-          const accessToken = hashParams.get('access_token')
-          const refreshToken = hashParams.get('refresh_token')
-          
-          if (accessToken && refreshToken) {
+          if (response.ok) {
+            const data = await response.json()
+            console.log('[callback] ✅ Token exchange successful')
+            
+            // Setar a sessão
             const { error: sessionError } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken,
+              access_token: data.access_token,
+              refresh_token: data.refresh_token,
             })
             
             if (sessionError) {
@@ -121,11 +133,23 @@ function CallbackContent() {
               return
             }
             
-            console.log('[callback] ✅ Session set from hash')
+            // Limpar o code_verifier
+            if (codeVerifierKey) localStorage.removeItem(codeVerifierKey)
+            
+            console.log('[callback] ✅ Session set successfully')
             router.push(redirect)
             return
+          } else {
+            const errorData = await response.json()
+            console.error('[callback] ❌ Token exchange failed:', errorData)
           }
-          
+        }
+        
+        // Fallback: tentar o método padrão
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+
+        if (error) {
+          console.error('[callback] ❌ Error exchanging code:', error)
           router.push(`/auth?error=auth_failed&redirect=${redirect}`)
           return
         }
