@@ -130,22 +130,26 @@ function AuthFlow() {
     }
   }
 
-  // 3. Magic Link
+  // 3. Magic Link - usar diretamente no cliente (gerencia PKCE automaticamente)
   const handleMagicLink = async () => {
     setLoading(true)
     setError(null)
 
     try {
-      const response = await fetch('/api/auth/magic-link', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, redirectTo: redirect }),
+      // Importar dinamicamente o cliente Supabase
+      const { createClient } = await import('@/lib/supabase/client')
+      const supabase = createClient()
+
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?redirect=${redirect}`,
+        },
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        setError(data.error || 'Erro ao enviar link')
+      if (error) {
+        console.error('Magic link error:', error)
+        setError(error.message || 'Erro ao enviar link')
         setLoading(false)
         return
       }
