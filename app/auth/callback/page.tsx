@@ -124,14 +124,19 @@ function CallbackContent() {
           if (response.ok && responseData.access_token) {
             console.log('[callback] ✅ Token exchange successful')
             
-            // Setar a sessão
-            const { error: sessionError } = await supabase.auth.setSession({
-              access_token: responseData.access_token,
-              refresh_token: responseData.refresh_token,
+            // Setar a sessão via API do servidor (para cookies funcionarem)
+            const sessionResponse = await fetch('/api/auth/session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                access_token: responseData.access_token,
+                refresh_token: responseData.refresh_token,
+              }),
             })
             
-            if (sessionError) {
-              console.error('[callback] ❌ Error setting session:', sessionError)
+            if (!sessionResponse.ok) {
+              const sessionError = await sessionResponse.json()
+              console.error('[callback] ❌ Error setting session via API:', sessionError)
               router.push(`/auth?error=auth_failed&redirect=${redirect}`)
               return
             }
@@ -139,7 +144,7 @@ function CallbackContent() {
             // Limpar o code_verifier
             if (codeVerifierKey) localStorage.removeItem(codeVerifierKey)
             
-            console.log('[callback] ✅ Session set successfully')
+            console.log('[callback] ✅ Session set successfully via API')
             router.push(redirect)
             return
           } else {
