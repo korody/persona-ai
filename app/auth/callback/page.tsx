@@ -87,6 +87,14 @@ function CallbackContent() {
         }
 
         console.log('[callback] ✅ OTP verified successfully')
+        
+        // Se for recovery, redirecionar para reset-password
+        if (type === 'recovery') {
+          console.log('[callback] Recovery type detected, redirecting to reset-password')
+          router.push('/auth/reset-password')
+          return
+        }
+        
         router.push(redirect)
         return
       }
