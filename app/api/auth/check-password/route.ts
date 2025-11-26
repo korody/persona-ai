@@ -15,10 +15,10 @@ export async function POST(request: Request) {
 
     const adminSupabase = await createAdminClient()
 
-    // Usar a função SQL que acessa auth.users.encrypted_password diretamente
+    // Usar a função SQL que verifica se usuário tem senha via tabela dedicada
     const { data, error } = await adminSupabase
       .rpc('check_user_has_password', { user_email: email })
-      .single()
+      .single<{ has_password: boolean; created_via_quiz: boolean }>()
 
     console.log('[check-password] Email:', email)
     console.log('[check-password] RPC result:', { data, error })
