@@ -17,10 +17,10 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient()
     
+    // Usar signInWithOtp SEM emailRedirectTo para evitar PKCE flow
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${request.nextUrl.origin}/auth/callback?redirect=${redirectTo || '/chat'}`,
         shouldCreateUser: false, // Não criar usuário se não existir
       },
     })
