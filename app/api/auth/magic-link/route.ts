@@ -17,11 +17,14 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient()
     
-    // Usar signInWithOtp SEM emailRedirectTo para evitar PKCE flow
+    // Configurar redirect URL explicitamente
+    const redirectUrl = `${request.nextUrl.origin}/auth/callback`
+    
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        shouldCreateUser: false, // Não criar usuário se não existir
+        shouldCreateUser: false,
+        emailRedirectTo: redirectUrl,
       },
     })
 
@@ -32,6 +35,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    console.log('[magic-link] Email sent with redirect:', redirectUrl)
 
     return NextResponse.json({ 
       success: true,
