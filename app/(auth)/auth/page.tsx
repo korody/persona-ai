@@ -25,6 +25,8 @@ function AuthFlow() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [magicLinkSent, setMagicLinkSent] = useState(false)
+  const [userHasPassword, setUserHasPassword] = useState<boolean>(true)  // Novo estado
+  const [createdViaQuiz, setCreatedViaQuiz] = useState<boolean>(false)  // Novo estado
   
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -72,9 +74,24 @@ function AuthFlow() {
         return
       }
 
-      // Se email existe, vai para login
-      // Se não existe, vai para signup
-      setStep(data.exists ? 'login' : 'signup')
+      // Se email existe, verificar se tem senha
+      if (data.exists) {
+        const passwordCheckResponse = await fetch('/api/auth/check-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        })
+
+        const passwordData = await passwordCheckResponse.json()
+        setUserHasPassword(passwordData.hasPassword || false)
+        setCreatedViaQuiz(passwordData.createdViaQuiz || false)
+        
+        setStep('login')
+      } else {
+        // Novo usuário → signup
+        setStep('signup')
+      }
+      
       setLoading(false)
     } catch (err) {
       console.error('Check email error:', err)
@@ -334,57 +351,97 @@ function AuthFlow() {
                     </p>
                   </div>
 
-                  <form onSubmit={handleLogin} className="space-y-4">
-                    <div>
-                      <Label htmlFor="password" className="text-base">
-                        Senha
-                      </Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Digite sua senha"
-                        required
-                        autoFocus
-                        className="mt-1 h-12 text-base"
-                      />
-                    </div>
-
-                    <Button
-                      type="submit"
-                      disabled={loading || !password}
-                      className="w-full h-12 text-base"
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                          Entrando...
-                        </>
-                      ) : (
-                        'Entrar'
+                  {/* Se usuário NÃO tem senha (veio do quiz) */}
+                  {!userHasPassword ? (
+                    <div className="space-y-4">
+                      {createdViaQuiz && (
+                        <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-md p-4 mb-4">
+                          <p className="text-sm text-green-800 dark:text-green-200">
+                            <strong>✨ Bem-vindo de volta!</strong>
+                            <br />
+                            Você entrou pelo quiz. Vamos enviar um link de acesso para seu email.
+                          </p>
+                        </div>
                       )}
-                    </Button>
-                  </form>
 
-                  <div className="relative my-6">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t"></div>
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="px-2 bg-card text-muted-foreground">ou</span>
-                    </div>
-                  </div>
+                      <Button
+                        type="button"
+                        onClick={handleMagicLink}
+                        disabled={loading}
+                        className="w-full h-12 text-base"
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            Enviando...
+                          </>
+                        ) : (
+                          <>
+                            📧 Enviar link de acesso
+                          </>
+                        )}
+                      </Button>
 
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleMagicLink}
-                    disabled={loading}
-                    className="w-full h-12 text-base"
-                  >
-                    Enviar link mágico por email
-                  </Button>
+                      <p className="text-xs text-center text-muted-foreground">
+                        Você receberá um email com um link para entrar automaticamente
+                      </p>
+                    </div>
+                  ) : (
+                    /* Se usuário TEM senha */
+                    <>
+                      <form onSubmit={handleLogin} className="space-y-4">
+                        <div>
+                          <Label htmlFor="password" className="text-base">
+                            Senha
+                          </Label>
+                          <Input
+                            id="password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Digite sua senha"
+                            required
+                            autoFocus
+                            className="mt-1 h-12 text-base"
+                          />
+                        </div>
+
+                        <Button
+                          type="submit"
+                          disabled={loading || !password}
+                          className="w-full h-12 text-base"
+                        >
+                          {loading ? (
+                            <>
+                              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                              Entrando...
+                            </>
+                          ) : (
+                            'Entrar'
+                          )}
+                        </Button>
+                      </form>
+
+                      <div className="relative my-6">
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="w-full border-t"></div>
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                          <span className="px-2 bg-card text-muted-foreground">ou</span>
+                        </div>
+                      </div>
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleMagicLink}
+                        disabled={loading}
+                        className="w-full h-12 text-base"
+                      >
+                        Enviar link mágico por email
+                      </Button>
+                    </>
+                  )}
                 </div>
               )}
 
