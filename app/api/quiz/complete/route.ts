@@ -233,7 +233,12 @@ export async function POST(request: Request) {
           userId,
           redirectUrl: '/auth',  // URL relativa - o quiz adiciona a base
           message: 'Usuário criado com sucesso. Faça login para continuar.',
-          warning: 'Magic link não pôde ser gerado'
+          warning: 'Magic link não pôde ser gerado',
+          debug: {
+            hasMagicLinkError: !!magicLinkError,
+            errorMessage: magicLinkError?.message || null,
+            hasMagicLinkData: !!magicLinkData
+          }
         },
         {
           headers: {
@@ -267,7 +272,12 @@ export async function POST(request: Request) {
           userId,
           redirectUrl: '/auth',  // URL relativa - o quiz adiciona a base
           message: 'Usuário criado com sucesso. Faça login para continuar.',
-          warning: 'Token de autenticação não disponível'
+          warning: 'Token de autenticação não disponível',
+          debug: {
+            hasToken: !!token,
+            hasTokenHash: !!tokenHash,
+            actionLink: magicLinkData.properties.action_link
+          }
         },
         {
           headers: {
