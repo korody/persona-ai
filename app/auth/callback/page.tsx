@@ -99,15 +99,28 @@ function CallbackContent() {
         } else {
           // É um magic link code - usar verifyOtp
           console.log('[callback] Processing magic link (code without verifier)')
-          const { error } = await supabase.auth.verifyOtp({
+          
+          // Tentar primeiro como email_change (pode ser o tipo correto)
+          const { error: emailError } = await supabase.auth.verifyOtp({
             token_hash: code,
-            type: 'magiclink',
+            type: 'email',
           })
 
-          if (error) {
-            console.error('[callback] ❌ Error verifying magic link code:', error)
-            router.push(`/auth?error=auth_failed&redirect=${redirect}`)
-            return
+          if (emailError) {
+            console.log('[callback] Not email type, trying as magiclink...')
+            
+            // Se falhou, tentar como magiclink
+            const { error: magicError } = await supabase.auth.verifyOtp({
+              token_hash: code,
+              type: 'magiclink',
+            })
+
+            if (magicError) {
+              console.error('[callback] ❌ Error verifying magic link code:', magicError)
+              console.error('[callback] Code value:', code.substring(0, 20) + '...')
+              router.push(`/auth?error=auth_failed&redirect=${redirect}`)
+              return
+            }
           }
 
           console.log('[callback] ✅ Magic link code verified successfully')
