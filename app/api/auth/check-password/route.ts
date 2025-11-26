@@ -24,11 +24,31 @@ export async function POST(request: Request) {
     console.log('[check-password] RPC result:', { data, error })
 
     if (error) {
-      console.error('[check-password] Error checking password:', error)
-      // Fallback: se erro, assume que não existe
+      console.error('[check-password] ❌ Error calling RPC:', error)
+      
+      // FALLBACK: Se a função não existe, tentar lógica alternativa
+      console.log('[check-password] Using fallback logic (quiz_leads check)')
+      
+      const { data: users } = await adminSupabase.auth.admin.listUsers()
+      const user = users?.users?.find(u => u.email?.toLowerCase() === email.toLowerCase())
+      
+      if (!user) {
+        return NextResponse.json({ hasPassword: false, createdViaQuiz: false })
+      }
+      
+      // Verificar se está em quiz_leads
+      const { data: quizLead } = await adminSupabase
+        .from('quiz_leads')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle()
+      
+      const isFromQuiz = !!quizLead
+      
       return NextResponse.json({ 
-        hasPassword: false, 
-        createdViaQuiz: false 
+        hasPassword: !isFromQuiz,  // Se veio do quiz, não tem senha
+        createdViaQuiz: isFromQuiz,
+        fallback: true
       })
     }
 
