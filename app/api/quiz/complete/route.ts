@@ -214,10 +214,19 @@ export async function POST(request: Request) {
 
     if (magicLinkError || !magicLinkData) {
       console.error('[quiz/complete] Erro ao gerar magic link:', magicLinkError)
+      
+      // Mesmo com erro no magic link, retorna sucesso com URL simples
+      // O usuário pode fazer login manualmente depois
+      console.log('[quiz/complete] Retornando sem magic link - usuário criado com sucesso')
       return NextResponse.json(
-        { error: 'Erro ao criar sessão' },
         { 
-          status: 500,
+          success: true,
+          userId,
+          redirectUrl: '/auth',
+          message: 'Usuário criado com sucesso. Faça login para continuar.',
+          warning: 'Magic link não pôde ser gerado'
+        },
+        {
           headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -236,10 +245,17 @@ export async function POST(request: Request) {
 
     if (!token || !tokenHash) {
       console.error('[quiz/complete] Token não encontrado no magic link')
+      
+      // Retorna sucesso mesmo sem token
       return NextResponse.json(
-        { error: 'Erro ao processar autenticação' },
         { 
-          status: 500,
+          success: true,
+          userId,
+          redirectUrl: '/auth',
+          message: 'Usuário criado com sucesso. Faça login para continuar.',
+          warning: 'Token de autenticação não disponível'
+        },
+        {
           headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -249,40 +265,24 @@ export async function POST(request: Request) {
       )
     }
 
-    // 5. Verificar token e criar sessão
-    console.log('[quiz/complete] Verificando OTP...')
-    const supabase = await createClient()
-    const { data: sessionData, error: verifyError } = await supabase.auth.verifyOtp({
-      token_hash: tokenHash,
-      type: 'magiclink',
-    })
+    // 5. OPCIONAL: Verificar token e criar sessão
+    // Por enquanto, vamos pular isso para responder mais rápido
+    // A sessão será criada quando o usuário clicar no link
+    console.log('[quiz/complete] Tokens extraídos com sucesso')
+    
+    // Construir URL de autenticação
+    const authUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://digital.mestreye.com'}/auth/callback?token_hash=${tokenHash}&type=magiclink&next=/chat`
 
-    if (verifyError || !sessionData.session) {
-      console.error('[quiz/complete] Erro ao verificar OTP:', verifyError)
-      return NextResponse.json(
-        { error: 'Erro ao criar sessão' },
-        { 
-          status: 500,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-          }
-        }
-      )
-    }
-
-    console.log('[quiz/complete] Sessão criada com sucesso!')
-
+    console.log('[quiz/complete] ====== SUCESSO ======')
+    
     // Retornar sucesso com URL de redirect
     const response = {
       success: true,
       userId,
-      redirectUrl: '/chat',
-      message: 'Autenticação concluída com sucesso!',
+      redirectUrl: authUrl,
+      message: 'Autenticação preparada com sucesso!',
     }
 
-    console.log('[quiz/complete] ====== SUCESSO ======')
     console.log('[quiz/complete] Resposta:', response)
 
     return NextResponse.json(response, {
