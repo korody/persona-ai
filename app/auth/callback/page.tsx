@@ -46,6 +46,39 @@ function CallbackContent() {
         const hashToken = hashParams.get('token')
         const hashTokenHash = hashParams.get('token_hash')
         const hashType = hashParams.get('type') || 'magiclink'
+        const hashAccessToken = hashParams.get('access_token')
+        const hashRefreshToken = hashParams.get('refresh_token')
+
+        // Para recovery, Supabase envia access_token direto no hash
+        if (hashType === 'recovery' && hashAccessToken) {
+          console.log('[callback] Processing recovery with access_token from hash')
+          
+          const { error } = await supabase.auth.setSession({
+            access_token: hashAccessToken,
+            refresh_token: hashRefreshToken || '',
+          })
+          
+          if (error) {
+            console.error('[callback] ❌ Error setting session from hash:', error)
+            router.push(`/auth?error=auth_failed&redirect=${redirect}`)
+            return
+          }
+          
+          console.log('[callback] ✅ Session set from hash recovery')
+          
+          // Setar no servidor também
+          await fetch('/api/auth/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              access_token: hashAccessToken,
+              refresh_token: hashRefreshToken,
+            }),
+          })
+          
+          router.push('/auth/reset-password')
+          return
+        }
 
         if (hashToken || hashTokenHash) {
           console.log('[callback] Processing magic link from HASH fragment')
