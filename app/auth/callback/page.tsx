@@ -75,7 +75,7 @@ function CallbackContent() {
       if (token || tokenHash) {
         console.log('[callback] Processing magic link from query params')
         
-        const { error } = await supabase.auth.verifyOtp({
+        const { data, error } = await supabase.auth.verifyOtp({
           token_hash: tokenHash || token || '',
           type: type as any,
         })
@@ -86,7 +86,25 @@ function CallbackContent() {
           return
         }
 
-        console.log('[callback] ✅ OTP verified successfully')
+        console.log('[callback] ✅ OTP verified successfully', data)
+        
+        // Setar sessão no servidor via API
+        if (data?.session) {
+          const sessionResponse = await fetch('/api/auth/session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              access_token: data.session.access_token,
+              refresh_token: data.session.refresh_token,
+            }),
+          })
+          
+          if (!sessionResponse.ok) {
+            console.error('[callback] ❌ Error setting session via API')
+          } else {
+            console.log('[callback] ✅ Session set successfully via API')
+          }
+        }
         
         // Se for recovery, redirecionar para reset-password
         if (type === 'recovery') {
