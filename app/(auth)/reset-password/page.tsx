@@ -83,7 +83,17 @@ function ResetPasswordFlow() {
 
       if (updateError) {
         console.error('[reset-password] Update password error:', updateError)
-        setError(updateError.message || 'Erro ao atualizar senha. Tente novamente.')
+        
+        // Traduzir mensagens de erro comuns do Supabase
+        let errorMessage = updateError.message || 'Erro ao atualizar senha. Tente novamente.'
+        
+        if (errorMessage.includes('New password should be different from the old password')) {
+          errorMessage = 'A nova senha deve ser diferente da senha anterior.'
+        } else if (errorMessage.includes('Password should be at least')) {
+          errorMessage = 'A senha deve ter no mínimo 6 caracteres.'
+        }
+        
+        setError(errorMessage)
         setLoading(false)
         return
       }
