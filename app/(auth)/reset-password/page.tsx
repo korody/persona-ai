@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,8 +14,41 @@ function ResetPasswordFlow() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [checkingSession, setCheckingSession] = useState(true)
   
   const router = useRouter()
+
+  // Verificar se há sessão ativa ao carregar
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const { createClient } = await import('@supabase/supabase-js')
+        const supabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!
+        )
+        
+        const { data: { session }, error } = await supabase.auth.getSession()
+        
+        console.log('[reset-password] Session check:', { hasSession: !!session, error })
+        
+        if (!session && !error) {
+          console.error('[reset-password] No session found, redirecting to auth')
+          setError('Sessão expirada. Por favor, solicite um novo link de recuperação.')
+          setTimeout(() => {
+            router.push('/auth')
+          }, 3000)
+        }
+        
+        setCheckingSession(false)
+      } catch (err) {
+        console.error('[reset-password] Error checking session:', err)
+        setCheckingSession(false)
+      }
+    }
+    
+    checkSession()
+  }, [router])
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -42,17 +75,20 @@ function ResetPasswordFlow() {
         process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!
       )
 
+      console.log('[reset-password] Attempting to update password...')
+      
       const { error: updateError } = await supabase.auth.updateUser({
         password: password
       })
 
       if (updateError) {
-        console.error('Update password error:', updateError)
+        console.error('[reset-password] Update password error:', updateError)
         setError(updateError.message || 'Erro ao atualizar senha. Tente novamente.')
         setLoading(false)
         return
       }
 
+      console.log('[reset-password] ✅ Password updated successfully')
       setSuccess(true)
       setLoading(false)
 
@@ -63,10 +99,18 @@ function ResetPasswordFlow() {
       }, 2000)
 
     } catch (err) {
-      console.error('Reset password error:', err)
+      console.error('[reset-password] Reset password error:', err)
       setError('Erro de conexão. Verifique sua internet e tente novamente.')
       setLoading(false)
     }
+  }
+
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      </div>
+    )
   }
 
   return (

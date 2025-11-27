@@ -73,7 +73,7 @@ function CallbackContent() {
       const type = searchParams.get('type') || 'magiclink'
       
       if (token || tokenHash) {
-        console.log('[callback] Processing magic link from query params')
+        console.log('[callback] Processing magic link from query params, type:', type)
         
         const { data, error } = await supabase.auth.verifyOtp({
           token_hash: tokenHash || token || '',
@@ -106,9 +106,11 @@ function CallbackContent() {
           }
         }
         
-        // Se for recovery, redirecionar para reset-password
+        // Se for recovery, redirecionar para reset-password com access_token
         if (type === 'recovery') {
           console.log('[callback] Recovery type detected, redirecting to reset-password')
+          // Aguardar um pouco para garantir que a sessão foi setada
+          await new Promise(resolve => setTimeout(resolve, 500))
           router.push('/auth/reset-password')
           return
         }
