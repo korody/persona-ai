@@ -72,10 +72,31 @@ function ResetPasswordFlow() {
       const { createClient } = await import('@supabase/supabase-js')
       const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!,
+        {
+          auth: {
+            flowType: 'pkce',
+            persistSession: true,
+            autoRefreshToken: true,
+            storageKey: 'supabase-auth',
+          }
+        }
       )
 
       console.log('[reset-password] Attempting to update password...')
+      
+      // Verificar sessão antes de tentar atualizar
+      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      console.log('[reset-password] Current session:', { hasSession: !!currentSession })
+      
+      if (!currentSession) {
+        setError('Sessão expirada. Por favor, solicite um novo link de recuperação.')
+        setLoading(false)
+        setTimeout(() => {
+          router.push('/auth')
+        }, 3000)
+        return
+      }
       
       const { error: updateError } = await supabase.auth.updateUser({
         password: password
