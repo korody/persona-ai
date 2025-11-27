@@ -41,58 +41,22 @@ function CallbackContent() {
       console.log('[callback] Hash:', window.location.hash)
       console.log('[callback] localStorage keys:', Object.keys(localStorage))
 
-      const type = searchParams.get('type')
-      
-      // Para recovery, deixar o Supabase detectar a sessão da URL automaticamente
-      if (type === 'recovery') {
-        console.log('[callback] Recovery flow detected')
-        
-        // O Supabase já detectou e setou a sessão por causa de detectSessionInUrl: true
-        // Vamos apenas verificar se a sessão existe
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-        
-        if (sessionError || !session) {
-          console.error('[callback] ❌ No session after recovery detection:', sessionError)
-          router.push(`/auth?error=auth_failed&redirect=${redirect}`)
-          return
-        }
-        
-        console.log('[callback] ✅ Session detected from URL:', session)
-        
-        // Setar no servidor
-        const sessionResponse = await fetch('/api/auth/session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            access_token: session.access_token,
-            refresh_token: session.refresh_token,
-          }),
-        })
-        
-        if (!sessionResponse.ok) {
-          console.error('[callback] ❌ Error setting session on server')
-        } else {
-          console.log('[callback] ✅ Session set on server')
-        }
-        
-        // Aguardar um pouco
-        await new Promise(resolve => setTimeout(resolve, 500))
-        router.push('/reset-password')
-        return
-      }
-
-      // 1. Verificar se tem token/token_hash no HASH (Supabase pode enviar assim)
+      // Verificar se tem dados no hash primeiro (priority para recovery)
       if (window.location.hash) {
         const hashParams = new URLSearchParams(window.location.hash.substring(1))
-        const hashToken = hashParams.get('token')
-        const hashTokenHash = hashParams.get('token_hash')
-        const hashType = hashParams.get('type') || 'magiclink'
         const hashAccessToken = hashParams.get('access_token')
         const hashRefreshToken = hashParams.get('refresh_token')
+        const hashType = hashParams.get('type')
 
-        // Para recovery, Supabase envia access_token direto no hash
-        if (hashType === 'recovery' && hashAccessToken) {
-          console.log('[callback] Processing recovery with access_token from hash')
+        console.log('[callback] Hash params:', {
+          hasAccessToken: !!hashAccessToken,
+          hasRefreshToken: !!hashRefreshToken,
+          type: hashType
+        })
+
+        // Se tem access_token no hash, é recovery
+        if (hashAccessToken) {
+          console.log('[callback] Recovery flow - setting session from hash tokens')
           
           const { error } = await supabase.auth.setSession({
             access_token: hashAccessToken,
@@ -105,10 +69,10 @@ function CallbackContent() {
             return
           }
           
-          console.log('[callback] ✅ Session set from hash recovery')
+          console.log('[callback] ✅ Session set from hash')
           
           // Setar no servidor também
-          await fetch('/api/auth/session', {
+          const sessionResponse = await fetch('/api/auth/session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -117,9 +81,25 @@ function CallbackContent() {
             }),
           })
           
-          router.push('/auth/reset-password')
+          if (!sessionResponse.ok) {
+            console.error('[callback] ❌ Error setting session on server')
+          } else {
+            console.log('[callback] ✅ Session set on server')
+          }
+          
+          // Aguardar e redirecionar
+          await new Promise(resolve => setTimeout(resolve, 500))
+          router.push('/reset-password')
           return
         }
+      }
+
+      // 1. Verificar se tem token/token_hash no HASH (Supabase pode enviar assim)
+      if (window.location.hash) {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1))
+        const hashToken = hashParams.get('token')
+        const hashTokenHash = hashParams.get('token_hash')
+        const hashType = hashParams.get('type') || 'magiclink'
 
         if (hashToken || hashTokenHash) {
           console.log('[callback] Processing magic link from HASH fragment')
