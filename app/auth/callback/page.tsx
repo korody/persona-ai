@@ -24,6 +24,7 @@ function CallbackContent() {
             persistSession: true,
             autoRefreshToken: true,
             detectSessionInUrl: true,
+            storageKey: 'supabase-auth',
           }
         }
       )
@@ -39,6 +40,46 @@ function CallbackContent() {
       console.log('[callback] Search params:', Object.fromEntries(searchParams.entries()))
       console.log('[callback] Hash:', window.location.hash)
       console.log('[callback] localStorage keys:', Object.keys(localStorage))
+
+      const type = searchParams.get('type')
+      
+      // Para recovery, deixar o Supabase detectar a sessão da URL automaticamente
+      if (type === 'recovery') {
+        console.log('[callback] Recovery flow detected')
+        
+        // O Supabase já detectou e setou a sessão por causa de detectSessionInUrl: true
+        // Vamos apenas verificar se a sessão existe
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        
+        if (sessionError || !session) {
+          console.error('[callback] ❌ No session after recovery detection:', sessionError)
+          router.push(`/auth?error=auth_failed&redirect=${redirect}`)
+          return
+        }
+        
+        console.log('[callback] ✅ Session detected from URL:', session)
+        
+        // Setar no servidor
+        const sessionResponse = await fetch('/api/auth/session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
+          }),
+        })
+        
+        if (!sessionResponse.ok) {
+          console.error('[callback] ❌ Error setting session on server')
+        } else {
+          console.log('[callback] ✅ Session set on server')
+        }
+        
+        // Aguardar um pouco
+        await new Promise(resolve => setTimeout(resolve, 500))
+        router.push('/auth/reset-password')
+        return
+      }
 
       // 1. Verificar se tem token/token_hash no HASH (Supabase pode enviar assim)
       if (window.location.hash) {
