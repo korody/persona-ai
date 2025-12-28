@@ -6,9 +6,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const nextConfig: NextConfig = {
-  experimental: {
-    ppr: true,
-  },
   images: {
     remotePatterns: [
       {
