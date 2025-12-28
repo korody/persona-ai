@@ -1,10 +1,11 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { Brain, MessageSquare, Users, Settings, BarChart3 } from 'lucide-react'
 
 export default async function AdminPage() {
   const supabase = await createClient()
+  const adminClient = createAdminClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   
@@ -21,6 +22,22 @@ export default async function AdminPage() {
   if (!allowedAdminEmails.includes(user.email || '')) {
     redirect('/chat')
   }
+
+  // Buscar estatísticas
+  // Total de usuários (usando admin client para bypassar RLS)
+  const { count: totalUsers } = await adminClient
+    .from('users')
+    .select('*', { count: 'exact', head: true })
+
+  // Total de conversas (não apenas últimos 7 dias)
+  const { count: totalConversations } = await adminClient
+    .from('conversations')
+    .select('*', { count: 'exact', head: true })
+
+  // Total de mensagens
+  const { count: totalMessages } = await adminClient
+    .from('messages')
+    .select('*', { count: 'exact', head: true })
 
   return (
     <div className="min-h-screen bg-background">
@@ -48,7 +65,7 @@ export default async function AdminPage() {
               <Users className="h-5 w-5 text-blue-500" />
               <h3 className="font-semibold">Usuários Ativos</h3>
             </div>
-            <p className="text-3xl font-bold">-</p>
+            <p className="text-3xl font-bold">{totalUsers || 0}</p>
             <p className="text-sm text-muted-foreground mt-1">Total de usuários cadastrados</p>
           </div>
 
@@ -57,24 +74,24 @@ export default async function AdminPage() {
               <MessageSquare className="h-5 w-5 text-green-500" />
               <h3 className="font-semibold">Conversas</h3>
             </div>
-            <p className="text-3xl font-bold">-</p>
-            <p className="text-sm text-muted-foreground mt-1">Conversas nos últimos 7 dias</p>
+            <p className="text-3xl font-bold">{totalConversations || 0}</p>
+            <p className="text-sm text-muted-foreground mt-1">Total de conversas criadas</p>
           </div>
 
           <div className="bg-card border rounded-lg p-6">
             <div className="flex items-center gap-3 mb-2">
               <BarChart3 className="h-5 w-5 text-purple-500" />
-              <h3 className="font-semibold">Taxa de Satisfação</h3>
+              <h3 className="font-semibold">Mensagens</h3>
             </div>
-            <p className="text-3xl font-bold">-</p>
-            <p className="text-sm text-muted-foreground mt-1">Baseado em feedback dos usuários</p>
+            <p className="text-3xl font-bold">{totalMessages || 0}</p>
+            <p className="text-sm text-muted-foreground mt-1">Total de mensagens enviadas</p>
           </div>
         </div>
 
         {/* Action Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Treinamento do Avatar */}
-          <Link href="/admin/training" className="group">
+          <Link href="/admin/avatars/mestre-ye/train" className="group">
             <div className="bg-card border rounded-lg p-8 hover:shadow-lg transition-all hover:border-primary">
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-primary/10 rounded-lg">
@@ -99,7 +116,7 @@ export default async function AdminPage() {
           </Link>
 
           {/* Revisão de Conversas */}
-          <Link href="/admin/conversations" className="group">
+          <Link href="/admin/review" className="group">
             <div className="bg-card border rounded-lg p-8 hover:shadow-lg transition-all hover:border-primary">
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-green-500/10 rounded-lg">
@@ -110,13 +127,13 @@ export default async function AdminPage() {
                     Revisão de Conversas
                   </h2>
                   <p className="text-muted-foreground mb-4">
-                    Analise conversas dos usuários com o avatar para identificar melhorias e oportunidades.
+                    Controle de qualidade e análise detalhada das conversas dos usuários com o avatar.
                   </p>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Histórico completo de conversas</li>
-                    <li>• Filtros por usuário, data e tópico</li>
-                    <li>• Análise de qualidade das respostas</li>
-                    <li>• Exportação de dados e relatórios</li>
+                    <li>• Avaliação de qualidade das conversas</li>
+                    <li>• Sistema de notas e comentários</li>
+                    <li>• Identificação de melhorias</li>
+                    <li>• Análise de satisfação do usuário</li>
                   </ul>
                 </div>
               </div>

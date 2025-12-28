@@ -22,7 +22,7 @@ export default async function ConversationsPage() {
     redirect('/chat')
   }
 
-  // Buscar conversas
+  // Buscar conversas com contagem de mensagens
   const { data: conversations } = await supabase
     .from('conversations')
     .select(`
@@ -36,7 +36,38 @@ export default async function ConversationsPage() {
       )
     `)
     .order('updated_at', { ascending: false })
-    .limit(50)
+    .limit(100)
+
+  // Buscar contagem de mensagens para cada conversa
+  const conversationsWithCount = await Promise.all(
+    (conversations || []).map(async (conv) => {
+      const { count } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('conversation_id', conv.id)
+      
+      return {
+        ...conv,
+        messageCount: count || 0
+      }
+    })
+  )
+
+  // Calcular estatísticas
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  
+  const conversationsToday = conversationsWithCount.filter(
+    conv => new Date(conv.created_at) >= today
+  ).length
+
+  const totalMessages = conversationsWithCount.reduce(
+    (sum, conv) => sum + conv.messageCount, 0
+  )
+  
+  const avgMessages = conversationsWithCount.length > 0
+    ? Math.round(totalMessages / conversationsWithCount.length)
+    : 0
 
   return (
     <div className="min-h-screen bg-background">
@@ -98,7 +129,10 @@ export default async function ConversationsPage() {
                     Título
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Data
+                    Mensagens
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Última Atividade
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Ações
@@ -106,14 +140,20 @@ export default async function ConversationsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {conversations && conversations.length > 0 ? (
-                  conversations.map((conv: any) => (
+                {conversationsWithCount && conversationsWithCount.length > 0 ? (
+                  conversationsWithCount.map((conv: any) => (
                     <tr key={conv.id} className="hover:bg-muted/50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         {conv.users?.email || 'Usuário desconhecido'}
                       </td>
-                      <td className="px-6 py-4 text-sm">
-                        {conv.title || 'Nova conversa'}
+                      <td className="px-6 py-4 text-sm max-w-md">
+                        <div className="line-clamp-1">{conv.title || 'Nova conversa'}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <div className="flex items-center gap-2">
+                          <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                          <span>{conv.messageCount}</span>
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                         {new Date(conv.updated_at).toLocaleDateString('pt-BR', {
@@ -135,7 +175,7 @@ export default async function ConversationsPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="px-6 py-8 text-center text-muted-foreground">
+                    <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
                       Nenhuma conversa encontrada
                     </td>
                   </tr>
@@ -146,18 +186,22 @@ export default async function ConversationsPage() {
         </div>
 
         {/* Estatísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
           <div className="bg-card border rounded-lg p-6">
             <h3 className="text-sm font-medium text-muted-foreground mb-2">Total de Conversas</h3>
-            <p className="text-3xl font-bold">{conversations?.length || 0}</p>
+            <p className="text-3xl font-bold">{conversationsWithCount?.length || 0}</p>
           </div>
           <div className="bg-card border rounded-lg p-6">
             <h3 className="text-sm font-medium text-muted-foreground mb-2">Conversas Hoje</h3>
-            <p className="text-3xl font-bold">-</p>
+            <p className="text-3xl font-bold text-green-600">{conversationsToday}</p>
+          </div>
+          <div className="bg-card border rounded-lg p-6">
+            <h3 className="text-sm font-medium text-muted-foreground mb-2">Total de Mensagens</h3>
+            <p className="text-3xl font-bold text-blue-600">{totalMessages}</p>
           </div>
           <div className="bg-card border rounded-lg p-6">
             <h3 className="text-sm font-medium text-muted-foreground mb-2">Média de Mensagens</h3>
-            <p className="text-3xl font-bold">-</p>
+            <p className="text-3xl font-bold text-purple-600">{avgMessages}</p>
           </div>
         </div>
       </main>

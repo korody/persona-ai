@@ -87,9 +87,9 @@ export function Header() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <a 
-                      href="https://wa.me/5511963982121?text=Olá!%20Preciso%20de%20Suporte%20Técnico%20com%20o%20Mestre%20Ye%20Digital" 
-                      target="_blank" 
+                    <a
+                      href="https://wa.me/5511950879456?text=Olá!%20Preciso%20de%20Suporte%20Técnico%20com%20o%20Mestre%20Ye%20Digital"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="cursor-pointer"
                     >

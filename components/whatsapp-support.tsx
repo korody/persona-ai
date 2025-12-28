@@ -4,7 +4,7 @@ import { MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export function WhatsAppSupport() {
-  const whatsappNumber = '5511963982121' // Número no formato internacional sem símbolos
+  const whatsappNumber = '5511950879456' // Número no formato internacional sem símbolos
   const message = encodeURIComponent('Olá! Preciso de Suporte Técnico com o Mestre Ye Digital')
 
   const openWhatsApp = () => {

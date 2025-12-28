@@ -126,7 +126,7 @@ export const APP_CONFIG = {
   description: 'Converse com o Mestre Ye 24/7 sobre Medicina Tradicional Chinesa',
   defaultAvatar: 'mestre-ye',
   supportEmail: 'suporte@qigongbrasil.com',
-  whatsapp: '+5511999999999', // TODO: Substituir com número real
+  whatsapp: '+5511950879456',
   company: {
     name: 'Qigong Brasil',
     website: 'https://qigongbrasil.com'
