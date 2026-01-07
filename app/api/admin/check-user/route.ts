@@ -58,8 +58,8 @@ export async function POST(request: NextRequest) {
       .eq('id', authUser.id)
       .single()
 
-    // 3. Verificar se tem senha
-    const hasPassword = authUser.encrypted_password && authUser.encrypted_password.length > 0
+    // 3. Verificar se tem senha (via identities - se tem email/password identity)
+    const hasPassword = authUser.identities?.some(i => i.provider === 'email') || false
 
     return NextResponse.json({
       found: true,
