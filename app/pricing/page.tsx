@@ -35,7 +35,6 @@ interface Plan {
 export default function PricingPage() {
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
-  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null)
   const [user, setUser] = useState<any>(null)
   const [currentPlanSlug, setCurrentPlanSlug] = useState<string | null>(null)
   const router = useRouter()
@@ -85,52 +84,31 @@ export default function PricingPage() {
   }, [])
 
   // Função para selecionar plano
-  async function handleSelectPlan(planSlug: string) {
+  function handleSelectPlan(planSlug: string) {
     const plan = plans.find(p => p.slug === planSlug)
     if (!plan) return
 
-    // Plano FREE - redirecionar para signup
+    // Plano FREE - redirecionar para auth/signup
     if (plan.slug === 'free') {
-      router.push('/signup')
+      router.push('/auth')
       return
     }
 
-    // Verificar autenticação
-    if (!user) {
-      router.push('/login?redirect=/pricing')
-      return
+    // Para planos pagos, redirecionar para WhatsApp
+    const whatsappNumber = '5511950879456'
+
+    // Mensagens personalizadas para cada plano
+    const messages: Record<string, string> = {
+      'discipulo': `Olá! Tenho interesse no plano *Discípulo* (R$ ${plan.price_brl.toFixed(2).replace('.', ',')}/mês - ${plan.credits_monthly} créditos). Gostaria de fazer a assinatura.`,
+      'mestre': `Olá! Tenho interesse no plano *Mestre* (R$ ${plan.price_brl.toFixed(2).replace('.', ',')}/mês - ${plan.credits_monthly} créditos). Gostaria de fazer a assinatura.`,
     }
 
-    // Iniciar checkout
-    setCheckoutLoading(plan.slug)
+    const message = messages[plan.slug] || `Olá! Tenho interesse no plano *${plan.name}* (R$ ${plan.price_brl.toFixed(2).replace('.', ',')}/mês). Gostaria de mais informações.`
+    const encodedMessage = encodeURIComponent(message)
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`
 
-    try {
-      const response = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          planId: plan.id,
-          userId: user.id,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (data.error) {
-        alert(data.error)
-        return
-      }
-
-      // Redirecionar para Stripe Checkout
-      if (data.url) {
-        window.location.href = data.url
-      }
-    } catch (error) {
-      console.error('Erro ao criar checkout:', error)
-      alert('Erro ao processar pagamento. Tente novamente.')
-    } finally {
-      setCheckoutLoading(null)
-    }
+    // Abrir WhatsApp em nova aba
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
   }
 
   if (loading) {
@@ -144,14 +122,14 @@ export default function PricingPage() {
   const plansToDisplay = plans.map(plan => ({
     id: plan.slug,
     name: plan.name,
-    priceDisplay: plan.price_brl === 0 
-      ? 'Grátis' 
+    priceDisplay: plan.price_brl === 0
+      ? 'Grátis'
       : `R$ ${plan.price_brl.toFixed(2).replace('.', ',')}`,
     description: plan.description || '',
     features: Array.isArray(plan.features) ? plan.features : [],
     estimatedConversations: plan.estimated_conversations || '',
     popular: plan.popular || false,
-    ctaText: plan.slug === 'free' ? 'Começar Grátis' : 'Assinar Agora',
+    ctaText: plan.slug === 'free' ? 'Começar Grátis' : 'Falar com Suporte',
   }))
 
   return (
@@ -196,16 +174,24 @@ export default function PricingPage() {
                 key={plan.id}
                 plan={plan}
                 onSelect={handleSelectPlan}
-                loading={checkoutLoading === plan.id}
+                loading={false}
                 currentPlan={currentPlanSlug === plan.id}
               />
             ))}
           </div>
 
-          {/* Garantia de 7 dias */}
-          <div className="mt-12 text-center">
-            <p className="text-sm text-muted-foreground">
-              💚 <strong>Garantia de 7 dias</strong> no primeiro pagamento. 
+          {/* Informação sobre pagamento via WhatsApp */}
+          <div className="mt-12 max-w-2xl mx-auto space-y-4">
+            <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4 text-center">
+              <p className="text-sm text-green-800 dark:text-green-200">
+                📱 <strong>Atendimento Personalizado</strong><br/>
+                Ao clicar em "Falar com Suporte", você será direcionado para nosso WhatsApp
+                para receber atendimento personalizado e concluir sua assinatura.
+              </p>
+            </div>
+
+            <p className="text-sm text-muted-foreground text-center">
+              💚 <strong>Garantia de 7 dias</strong> no primeiro pagamento.
               Não gostou? Devolvemos 100% do valor.
             </p>
           </div>
