@@ -192,7 +192,7 @@ function LoginForm() {
           <p className="text-center text-sm text-muted-foreground">
             Não tem uma conta?{' '}
             <Link
-              href="/signup"
+              href="/auth"
               className="font-semibold text-primary hover:underline"
             >
               Crie grátis

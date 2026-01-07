@@ -16,10 +16,10 @@ export default function HomePage() {
           
           <div className="flex items-center gap-4">
             <Button variant="ghost" asChild>
-              <Link href="/login">Entrar</Link>
+              <Link href="/auth">Entrar</Link>
             </Button>
             <Button asChild>
-              <Link href="/signup">Começar Grátis</Link>
+              <Link href="/auth">Começar Grátis</Link>
             </Button>
           </div>
         </div>
@@ -42,7 +42,7 @@ export default function HomePage() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <Button size="lg" asChild className="text-lg px-8 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900">
-                <Link href="/signup">
+                <Link href="/auth">
                   Começar Grátis
                   <Sparkles className="ml-2 h-5 w-5" />
                 </Link>
@@ -127,7 +127,7 @@ export default function HomePage() {
             com a orientação do Mestre Ye.
           </p>
           <Button size="lg" asChild className="text-lg px-8 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900">
-            <Link href="/signup">
+            <Link href="/auth">
               Criar Conta Grátis
             </Link>
           </Button>

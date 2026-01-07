@@ -96,9 +96,11 @@ export async function middleware(request: NextRequest) {
     console.log('[Middleware]', pathname, 'user:', !!user, 'error:', error?.message)
 
     // Redirecionar /login e /signup para /auth (nova rota unificada)
+    // Mantém os parâmetros de query (como redirect)
     if (pathname === '/login' || pathname === '/signup') {
       const url = request.nextUrl.clone()
       url.pathname = '/auth'
+      // Preservar query params existentes
       return NextResponse.redirect(url)
     }
 

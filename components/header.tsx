@@ -127,10 +127,10 @@ export function Header() {
           {!user && !isLoading && (
             <div className="flex items-center gap-2">
               <Button variant="ghost" asChild>
-                <Link href="/login">Entrar</Link>
+                <Link href="/auth">Entrar</Link>
               </Button>
               <Button asChild>
-                <Link href="/signup">Começar Grátis</Link>
+                <Link href="/auth">Começar Grátis</Link>
               </Button>
             </div>
           )}
