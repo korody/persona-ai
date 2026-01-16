@@ -4,8 +4,8 @@
  */
 
 import { fetchCourses, fetchCourseDetails } from './api'
-import { upsertExercise } from '../exercicios/repository'
-import { createClient } from '@/lib/supabase/server'
+import { upsertExercise, bulkUpsertExercises } from '../exercicios/repository'
+import { createAdminClient } from '@/lib/supabase/server'
 import type {
   ExercisesMetadataMap,
   ExerciseInsert,
@@ -46,51 +46,47 @@ function generateCourseSlug(courseName: string): string {
 }
 
 /**
- * Sincronizar cursos do Memberkit para a tabela hub_courses
+ * Sincronizar cursos do Memberkit para a tabela hub_courses em massa
  */
-async function syncCourses(courses: MemberkitCourse[]): Promise<void> {
-  console.log('\n📚 Sincronizando cursos para hub_courses...')
-  const supabase = await createClient()
+async function syncCoursesBulk(coursesWithDetails: any[]): Promise<void> {
+  console.log('\n📚 Sincronizando cursos para hub_courses (Massa)...')
+  const supabase = createAdminClient()
 
-  for (const course of courses) {
-    try {
-      const courseDetails = await fetchCourseDetails(Number(course.id))
-      const slug = generateCourseSlug(course.name)
-      
-      // Calcular totais
-      const totalLessons = courseDetails.sections?.reduce(
-        (acc, section) => acc + (section.lessons?.length || 0),
-        0
-      ) || 0
-      const totalSections = courseDetails.sections?.length || 0
+  const coursesToUpsert = coursesWithDetails.map(details => {
+    const slug = generateCourseSlug(details.name)
 
-      const { error } = await supabase
-        .from('hub_courses')
-        .upsert({
-          memberkit_course_id: Number(course.id),
-          memberkit_course_slug: slug,
-          course_name: course.name,
-          description: courseDetails.description || null,
-          course_url: `https://memberkitapp.com/course/${course.id}`,
-          thumbnail_url: courseDetails.thumbnail_url || null,
-          total_lessons: totalLessons,
-          total_sections: totalSections,
-          is_published: courseDetails.is_published ?? true,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'memberkit_course_id'
-        })
+    // Calcular totais
+    const totalLessons = details.sections?.reduce(
+      (acc: number, section: any) => acc + (section.lessons?.length || 0),
+      0
+    ) || 0
+    const totalSections = details.sections?.length || 0
 
-      if (error) {
-        console.error(`❌ Erro ao sincronizar curso ${course.name}:`, error)
-      } else {
-        console.log(`✅ Curso sincronizado: ${course.name} (${totalLessons} aulas)`)
-      }
-    } catch (error) {
-      console.error(`❌ Erro ao processar curso ${course.name}:`, error)
+    return {
+      memberkit_course_id: Number(details.id),
+      memberkit_course_slug: slug,
+      course_name: details.name,
+      description: details.description || null,
+      course_url: `https://memberkitapp.com/course/${details.id}`,
+      thumbnail_url: details.thumbnail_url || null,
+      total_lessons: totalLessons,
+      total_sections: totalSections,
+      is_published: details.is_published ?? true,
+      updated_at: new Date().toISOString()
     }
+  })
+
+  const { error } = await supabase
+    .from('hub_courses')
+    .upsert(coursesToUpsert, {
+      onConflict: 'memberkit_course_id'
+    })
+
+  if (error) {
+    console.error(`❌ Erro ao sincronizar cursos em massa:`, error)
+  } else {
+    console.log(`✅ ${coursesToUpsert.length} cursos sincronizados com sucesso`)
   }
-  console.log('✅ Sincronização de cursos concluída\n')
 }
 
 /**
@@ -102,7 +98,7 @@ async function syncCourses(courses: MemberkitCourse[]): Promise<void> {
 export async function syncExercises(
   metadataMap: ExercisesMetadataMap
 ): Promise<SyncResult> {
-  console.log('\n🔄 INICIANDO SINCRONIZAÇÃO MEMBERKIT → SUPABASE\n')
+  console.log('\n🔄 INICIANDO SINCRONIZAÇÃO OTIMIZADA MEMBERKIT → SUPABASE\n')
   console.log('='.repeat(70))
 
   const result: SyncResult = {
@@ -113,73 +109,79 @@ export async function syncExercises(
 
   try {
     // 1. Buscar todos os cursos
-    console.log('\n📚 Buscando cursos...')
+    console.log('\n📚 Buscando cursos do Memberkit...')
     const courses = await fetchCourses()
     console.log(`✅ ${courses.length} curso(s) encontrado(s)\n`)
 
-    // 2. Sincronizar cursos para hub_courses
-    await syncCourses(courses)
-
-    // 3. Processar cada curso
+    // 2. Buscar detalhes de TODOS os cursos (Sequencial mas rápido)
+    const coursesWithDetails = []
+    console.log('📖 Carregando detalhes dos cursos...')
     for (const course of courses) {
-      console.log(`\n📖 Curso: ${course.name} (ID: ${course.id})`)
-      console.log('-'.repeat(70))
-
       try {
-        // 3. Buscar detalhes do curso (com sections e lessons)
-        const courseDetails = await fetchCourseDetails(Number(course.id))
-        
-        if (!courseDetails.sections || courseDetails.sections.length === 0) {
-          console.log('   ⚠️  Curso sem seções, pulando...\n')
-          continue
-        }
+        const details = await fetchCourseDetails(Number(course.id))
+        coursesWithDetails.push(details)
+        process.stdout.write('.') // Progresso visual simples
+      } catch (err) {
+        console.error(`\n❌ Erro ao carregar detalhes do curso ${course.name}:`, err)
+      }
+    }
+    console.log(`\n✅ Detalhes de ${coursesWithDetails.length} cursos carregados\n`)
 
-        // 4. Processar cada seção
-        for (const section of courseDetails.sections) {
-          console.log(`\n   📂 Seção: ${section.name}`)
-          
-          if (!section.lessons || section.lessons.length === 0) {
-            console.log('      ⚠️  Seção sem aulas, pulando...')
-            continue
-          }
+    // 3. Sincronizar cursos para hub_courses em massa
+    await syncCoursesBulk(coursesWithDetails)
 
-          // 5. Processar cada lesson
-          for (const lesson of section.lessons) {
-            result.total++
+    // 4. Processar exercícios de todos os cursos
+    const allExercisesToUpsert: ExerciseInsert[] = []
 
-            try {
-              // Criar objeto Exercicio
-              const exercicio = createExerciseFromLesson(
-                lesson,
-                courseDetails,
-                section.id,
-                metadataMap
-              )
+    for (const courseDetails of coursesWithDetails) {
+      if (!courseDetails.sections || courseDetails.sections.length === 0) continue
 
-              // Fazer upsert no banco
-              await upsertExercise(exercicio)
+      for (const section of courseDetails.sections) {
+        if (!section.lessons || section.lessons.length === 0) continue
 
-              result.sucesso++
-              console.log(`      ✅ ${lesson.position}. ${lesson.title}`)
-
-            } catch (error) {
-              const errorMessage = error instanceof Error ? error.message : String(error)
-              
-              result.erros.push({
-                lessonId: lesson.id,
-                titulo: lesson.title,
-                erro: errorMessage,
-              })
-
-              console.log(`      ❌ ${lesson.position}. ${lesson.title}`)
-              console.log(`         Erro: ${errorMessage}`)
-            }
+        for (const lesson of section.lessons) {
+          result.total++
+          try {
+            const exercicio = createExerciseFromLesson(
+              lesson,
+              courseDetails,
+              section.id,
+              metadataMap
+            )
+            allExercisesToUpsert.push(exercicio)
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            result.erros.push({
+              lessonId: lesson.id,
+              titulo: lesson.title,
+              erro: errorMessage,
+            })
           }
         }
+      }
+    }
 
+    // 5. Upsert em massa dos exercícios (em lotes de 100 para segurança)
+    console.log(`\n🚀 Preparando upsert de ${allExercisesToUpsert.length} exercícios...`)
+    const batchSize = 100
+    for (let i = 0; i < allExercisesToUpsert.length; i += batchSize) {
+      const batch = allExercisesToUpsert.slice(i, i + batchSize)
+      try {
+        await bulkUpsertExercises(batch)
+        result.sucesso += batch.length
+        console.log(`   ✅ Lote ${Math.floor(i / batchSize) + 1} enviado (${batch.length} exercícios)`)
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error)
-        console.log(`   ❌ Erro ao processar curso: ${errorMessage}\n`)
+        console.error(`   ❌ Erro no lote ${Math.floor(i / batchSize) + 1}:`, errorMessage)
+
+        // Se o lote falhar, o resumo refletirá a falta desses itens na contagem de sucesso
+        batch.forEach(ex => {
+          result.erros.push({
+            lessonId: ex.memberkit_lesson_id,
+            titulo: ex.title,
+            erro: 'Falha no upsert em massa: ' + errorMessage
+          })
+        })
       }
     }
 
@@ -191,20 +193,10 @@ export async function syncExercises(
 
   // Resumo final
   console.log('\n' + '='.repeat(70))
-  console.log('\n📊 RESUMO DA SINCRONIZAÇÃO:\n')
+  console.log('\n📊 RESUMO DA SINCRONIZAÇÃO OTIMIZADA:\n')
   console.log(`   📦 Total de exercícios: ${result.total}`)
   console.log(`   ✅ Sincronizados com sucesso: ${result.sucesso}`)
   console.log(`   ❌ Erros: ${result.erros.length}`)
-
-  if (result.erros.length > 0) {
-    console.log('\n⚠️  ERROS DETALHADOS:\n')
-    result.erros.forEach((erro, i) => {
-      console.log(`   ${i + 1}. ${erro.titulo} (${erro.lessonId})`)
-      console.log(`      ${erro.erro}\n`)
-    })
-  }
-
-  console.log('\n' + '='.repeat(70) + '\n')
 
   return result
 }
@@ -250,8 +242,8 @@ function createExerciseFromLesson(
     organs: metadata.organs || null,
 
     // Detalhes do exercício (vem do metadata ou da lesson)
-    duration_minutes: metadata.duration_minutes || 
-                     (lesson.duration_seconds ? Math.ceil(lesson.duration_seconds / 60) : null),
+    duration_minutes: metadata.duration_minutes ||
+      (lesson.duration_seconds ? Math.ceil(lesson.duration_seconds / 60) : null),
     level: metadata.level || null,
 
     // Tags e busca (vem do metadata)
@@ -259,9 +251,6 @@ function createExerciseFromLesson(
     benefits: metadata.benefits || null,
     indications: metadata.indications || null,
     contraindications: metadata.contraindications || null,
-
-    // Embedding (será gerado posteriormente)
-    embedding: null,
 
     // Controle
     is_active: lesson.is_published ?? true,

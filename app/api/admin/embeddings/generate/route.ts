@@ -1,39 +1,31 @@
 ﻿import { NextResponse } from 'next/server'
-import { exec } from 'child_process'
-import { promisify } from 'util'
-
-const execAsync = promisify(exec)
+import { runBatchGenerateEmbeddings } from '@/lib/ai/actions'
 
 export async function POST() {
   try {
-    // Run the embeddings generation command
-    const { stdout, stderr } = await execAsync('pnpm generate-embeddings', {
-      cwd: process.cwd(),
-      env: process.env
-    })
+    console.log('🚀 Starting batch embedding generation via API...')
 
-    // Parse the output
-    const output = stdout + stderr
-    const successMatch = output.match(/✅ Sucesso: (\d+)/)
-    const skippedMatch = output.match(/⏭️ Pulados: (\d+)/)
-    const errorMatch = output.match(/❌ Erros: (\d+)/)
+    const result = await runBatchGenerateEmbeddings()
 
-    const generated = successMatch ? parseInt(successMatch[1]) : 0
-    const skipped = skippedMatch ? parseInt(skippedMatch[1]) : 0
-    const errors = errorMatch ? parseInt(errorMatch[1]) : 0
+    // Format output string for the UI
+    let output = `✅ SEMANTIZAÇÃO CONCLUÍDA!\n\n`
+    output += `   Gerados: ${result.generated}\n`
+    output += `   Pulados: ${result.skipped}\n`
+    output += `   Erros: ${result.errors}\n`
+    output += `   Total: ${result.total}\n`
 
     return NextResponse.json({
-      success: errors === 0,
-      generated,
-      skipped,
-      errors,
+      success: result.errors === 0,
+      generated: result.generated,
+      skipped: result.skipped,
+      errors: result.errors,
       output
     })
   } catch (error) {
     console.error('Error generating embeddings:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to generate embeddings',
         details: error instanceof Error ? error.message : String(error)
       },

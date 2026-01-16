@@ -44,7 +44,7 @@ export async function upsertExercise(
 ): Promise<Exercise> {
   const supabase = getSupabase()
   const { data: result, error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .upsert(data, {
       onConflict: 'memberkit_lesson_id',
       ignoreDuplicates: false,
@@ -60,13 +60,32 @@ export async function upsertExercise(
 }
 
 /**
+ * Bulk upsert de exercícios
+ */
+export async function bulkUpsertExercises(
+  data: ExerciseInsert[]
+): Promise<void> {
+  const supabase = getSupabase()
+  const { error } = await supabase
+    .from('hub_exercises')
+    .upsert(data, {
+      onConflict: 'memberkit_lesson_id',
+      ignoreDuplicates: false,
+    })
+
+  if (error) {
+    throw new Error(`Erro ao fazer upsert em massa de exercícios: ${error.message}`)
+  }
+}
+
+/**
  * Buscar exercícios por tag em indicações
  * Ex: "anxiety", "insomnia", "back_pain"
  */
 export async function searchByIndication(tag: string): Promise<Exercise[]> {
   const supabase = getSupabase()
   const { data, error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('*')
     .contains('indications', [tag])
     .eq('is_active', true)
@@ -88,7 +107,7 @@ export async function searchByElement(
 ): Promise<Exercise[]> {
   const supabase = getSupabase()
   const { data, error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('*')
     .eq('element', element)
     .eq('is_active', true)
@@ -108,7 +127,7 @@ export async function searchByElement(
 export async function listAll(): Promise<Exercise[]> {
   const supabase = getSupabase()
   const { data, error } = await supabase
-    .from('exercises')
+    .from('hub_exercises')
     .select('*')
     .eq('is_active', true)
     .order('position', { ascending: true })

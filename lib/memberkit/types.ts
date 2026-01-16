@@ -59,19 +59,19 @@ export enum MTCOrgan {
   // Metal
   PULMÃO = 'PULMÃO',
   INTESTINO_GROSSO = 'INTESTINO_GROSSO',
-  
+
   // Água
   RIM = 'RIM',
   BEXIGA = 'BEXIGA',
-  
+
   // Madeira
   FÍGADO = 'FÍGADO',
   VESÍCULA_BILIAR = 'VESÍCULA_BILIAR',
-  
+
   // Fogo
   CORAÇÃO = 'CORAÇÃO',
   INTESTINO_DELGADO = 'INTESTINO_DELGADO',
-  
+
   // Terra
   BAÇO = 'BAÇO',
   ESTÔMAGO = 'ESTÔMAGO'
@@ -83,40 +83,40 @@ export enum MTCOrgan {
 
 export interface Exercise {
   id: string
-  
+
   // Memberkit data (source)
   memberkit_course_id: string
   memberkit_course_slug: string
   memberkit_section_id: string
   memberkit_lesson_id: string
-  
+
   // Basic information
   title: string
   description: string | null
   slug: string
   url: string
-  
+
   // MTC classification
   element: MTCElement | null
   organs: MTCOrgan[] | null
-  
+
   // Exercise details
   duration_minutes: number | null
   level: ExerciseLevel | null
-  
+
   // Tags and search
   tags: string[] | null
   benefits: string[] | null
   indications: string[] | null
   contraindications: string[] | null
-  
+
   // Embedding for semantic search
-  embedding: number[] | null
-  
+  embedding?: number[] | null
+
   // Control
   is_active: boolean
   position: number
-  
+
   // Timestamps
   created_at: string
   updated_at: string
@@ -136,11 +136,11 @@ export interface ExerciseMetadata {
   // MTC classification
   element?: MTCElement
   organs?: MTCOrgan[]
-  
+
   // Details
   duration_minutes?: number
   level?: ExerciseLevel
-  
+
   // Descriptive tags
   tags?: string[]
   benefits?: string[]
