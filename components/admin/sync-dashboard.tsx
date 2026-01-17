@@ -5,9 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { 
-  RefreshCw, 
-  Database, 
+import {
+  RefreshCw,
+  Database,
   CheckCircle2,
   Sparkles
 } from 'lucide-react'
@@ -35,6 +35,7 @@ export function SyncDashboard() {
   const [loading, setLoading] = useState(false)
   const [syncing, setSyncing] = useState(false)
   const [generating, setGenerating] = useState(false)
+  const [categorizing, setCategorizing] = useState(false)
 
   useEffect(() => {
     loadStats()
@@ -61,7 +62,7 @@ export function SyncDashboard() {
         method: 'POST'
       })
       const result = await response.json()
-      
+
       if (result.success) {
         toast.success(`✅ Sincronizados: ${result.synced} | ❌ Erros: ${result.errors}`)
         await loadStats()
@@ -83,7 +84,7 @@ export function SyncDashboard() {
         method: 'POST'
       })
       const result = await response.json()
-      
+
       if (result.success) {
         toast.success(`✅ Gerados: ${result.generated} | ⏭️ Pulados: ${result.skipped}`)
         await loadStats()
@@ -94,6 +95,28 @@ export function SyncDashboard() {
       toast.error('Erro ao gerar embeddings')
     } finally {
       setGenerating(false)
+    }
+  }
+
+  const runCategorization = async () => {
+    setCategorizing(true)
+    toast.info('Categorizando exercícios...')
+    try {
+      const response = await fetch('/api/admin/exercises/categorize', {
+        method: 'POST'
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        toast.success(`✅ Categorizados: ${result.categorized} | ❌ Erros: ${result.errors}`)
+        await loadStats()
+      } else {
+        toast.error('Erro ao categorizar exercícios')
+      }
+    } catch (error) {
+      toast.error('Erro ao categorizar exercícios')
+    } finally {
+      setCategorizing(false)
     }
   }
 
@@ -173,8 +196,8 @@ export function SyncDashboard() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex gap-3">
-          <Button 
-            onClick={runSync} 
+          <Button
+            onClick={runSync}
             disabled={syncing}
             variant="default"
             className="gap-2"
@@ -192,8 +215,8 @@ export function SyncDashboard() {
             )}
           </Button>
 
-          <Button 
-            onClick={generateEmbeddings} 
+          <Button
+            onClick={generateEmbeddings}
             disabled={generating}
             variant="secondary"
             className="gap-2"
@@ -211,8 +234,27 @@ export function SyncDashboard() {
             )}
           </Button>
 
-          <Button 
-            onClick={loadStats} 
+          <Button
+            onClick={runCategorization}
+            disabled={categorizing}
+            variant="secondary"
+            className="gap-2"
+          >
+            {categorizing ? (
+              <>
+                <RefreshCw className="h-4 w-4 animate-spin" />
+                Categorizando...
+              </>
+            ) : (
+              <>
+                <Database className="h-4 w-4" />
+                Categorizar Exercícios
+              </>
+            )}
+          </Button>
+
+          <Button
+            onClick={loadStats}
             variant="outline"
             className="gap-2"
           >
