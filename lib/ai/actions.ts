@@ -26,11 +26,11 @@ export async function runBatchGenerateEmbeddings(): Promise<EmbeddingsResult> {
         total: 0
     }
 
-    // 1. Fetch exercises with metadata (element not null)
+    // 1. Fetch active exercises (even without metadata)
     const { data: exercises, error } = await supabase
         .from('hub_exercises')
         .select('*')
-        .not('element', 'is', null)
+        .eq('is_active', true)
         .order('memberkit_lesson_id')
 
     if (error) throw error
