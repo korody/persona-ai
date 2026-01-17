@@ -52,8 +52,31 @@ async function syncCoursesBulk(coursesWithDetails: any[]): Promise<void> {
   console.log('\n📚 Sincronizando cursos para hub_courses (Massa)...')
   const supabase = createAdminClient()
 
+  // 1. Fetch existing courses to preserve is_published status
+  const { data: existingCourses } = await supabase
+    .from('hub_courses')
+    .select('memberkit_course_id, is_published, course_name')
+
+  console.log(`📊 Encontrados ${existingCourses?.length || 0} cursos existentes no banco para verificação de status.`)
+
+  const existingStatusMap = new Map<number, boolean>()
+  existingCourses?.forEach(c => {
+    if (c.memberkit_course_id !== null) {
+      existingStatusMap.set(Number(c.memberkit_course_id), !!c.is_published)
+    }
+  })
+
   const coursesToUpsert = coursesWithDetails.map(details => {
     const slug = generateCourseSlug(details.name)
+    const courseId = Number(details.id)
+
+    // Preserve local status if it exists, otherwise use Memberkit value
+    const localStatus = existingStatusMap.get(courseId)
+    const isPublished = localStatus !== undefined ? localStatus : (details.is_published ?? true)
+
+    if (localStatus !== undefined && localStatus !== (details.is_published ?? true)) {
+      console.log(`ℹ️  Preservando status local para curso "${details.name}" (${courseId}): ${localStatus} (Memberkit diz: ${details.is_published ?? 'true'})`)
+    }
 
     // Calcular totais
     const totalLessons = details.sections?.reduce(
@@ -63,7 +86,7 @@ async function syncCoursesBulk(coursesWithDetails: any[]): Promise<void> {
     const totalSections = details.sections?.length || 0
 
     return {
-      memberkit_course_id: Number(details.id),
+      memberkit_course_id: courseId,
       memberkit_course_slug: slug,
       course_name: details.name,
       description: details.description || null,
@@ -71,7 +94,7 @@ async function syncCoursesBulk(coursesWithDetails: any[]): Promise<void> {
       thumbnail_url: details.thumbnail_url || null,
       total_lessons: totalLessons,
       total_sections: totalSections,
-      is_published: details.is_published ?? true,
+      is_published: isPublished,
       updated_at: new Date().toISOString()
     }
   })

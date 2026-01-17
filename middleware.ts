@@ -11,9 +11,27 @@ export async function middleware(request: NextRequest) {
   // TODO: Reabilitar quando voltar WiFi
   // ============================================
   const isDev5GMode = false
-  
+
   if (isDev5GMode) {
     return NextResponse.next()
+  }
+
+  // ============================================
+  // AUTO-REDIRECT MAGIC LOGIN (code in URL)
+  // Se houver um code mas não estiver no callback, redireciona para processar
+  // ============================================
+  const code = request.nextUrl.searchParams.get('code')
+  if (code && !pathname.startsWith('/auth/callback') && !pathname.startsWith('/api/auth/callback')) {
+    console.log('[Middleware] 🔑 Code detected in URL:', pathname)
+    console.log('[Middleware] 🚀 Redirecting to /auth/callback with code')
+
+    // Construir URL de callback preservando todos os parâmetros
+    const callbackUrl = new URL('/auth/callback', request.url)
+    request.nextUrl.searchParams.forEach((value, key) => {
+      callbackUrl.searchParams.set(key, value)
+    })
+
+    return NextResponse.redirect(callbackUrl)
   }
 
   // ============================================
@@ -35,7 +53,7 @@ export async function middleware(request: NextRequest) {
     '/privacidade'
   ]
 
-  const isPublicRoute = publicRoutes.some(route => 
+  const isPublicRoute = publicRoutes.some(route =>
     pathname === route || pathname.startsWith(route + '/')
   )
 
@@ -48,7 +66,7 @@ export async function middleware(request: NextRequest) {
     '/api/quiz/test'       // Endpoint de teste para debug
   ]
 
-  const isPublicApiRoute = publicApiRoutes.some(route => 
+  const isPublicApiRoute = publicApiRoutes.some(route =>
     pathname.startsWith(route)
   )
 
@@ -108,11 +126,11 @@ export async function middleware(request: NextRequest) {
     if (!user) {
       const url = request.nextUrl.clone()
       url.pathname = '/auth'
-      
+
       if (!pathname.startsWith('/api')) {
         url.searchParams.set('redirect', pathname)
       }
-      
+
       console.log('[Middleware] Redirecting to auth from', pathname)
       return NextResponse.redirect(url)
     }
@@ -125,7 +143,7 @@ export async function middleware(request: NextRequest) {
         'marko@persona.cx',
         'admin@qigongbrasil.com'
       ]
-      
+
       if (!allowedAdminEmails.includes(user.email || '')) {
         console.log('[Middleware] Access denied to admin area for:', user.email)
         const url = request.nextUrl.clone()
@@ -143,7 +161,7 @@ export async function middleware(request: NextRequest) {
     }
   } catch (error) {
     console.error('[Middleware] Supabase error:', error)
-    
+
     // Em caso de erro, redireciona para auth (mas não quebra a app)
     if (!isPublicRoute && !isPublicApiRoute && !pathname.startsWith('/api')) {
       const url = request.nextUrl.clone()
