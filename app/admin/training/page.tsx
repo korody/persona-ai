@@ -23,29 +23,7 @@ export default async function TrainingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center gap-4">
-            <Link href="/admin">
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-            </Link>
-            <div className="flex items-center gap-3">
-              <Brain className="h-8 w-8 text-primary" />
-              <div>
-                <h1 className="text-2xl font-bold">Treinamento do Avatar</h1>
-                <p className="text-muted-foreground">Mestre Ye Digital</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-8">
           <p className="text-sm text-yellow-800 dark:text-yellow-200">
             🚧 <strong>Em Desenvolvimento</strong> - Esta funcionalidade estará disponível em breve.
@@ -114,6 +92,5 @@ export default async function TrainingPage() {
           </div>
         </div>
       </main>
-    </div>
   )
 }

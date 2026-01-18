@@ -40,24 +40,7 @@ export default async function AdminPage() {
     .select('*', { count: 'exact', head: true })
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-2xl">M</span>
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold">Painel de Administração</h1>
-              <p className="text-muted-foreground">Avatar: Mestre Ye Digital</p>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-card border rounded-lg p-6">
@@ -190,14 +173,6 @@ export default async function AdminPage() {
             </div>
           </Link>
         </div>
-
-        {/* Footer Info */}
-        <div className="mt-8 p-4 bg-muted/50 rounded-lg border">
-          <p className="text-sm text-muted-foreground text-center">
-            Logado como: <strong>{user.email}</strong> | Acesso: Administrador
-          </p>
-        </div>
       </main>
-    </div>
-  )
+    )
 }

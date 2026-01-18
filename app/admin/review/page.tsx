@@ -89,41 +89,7 @@ export default async function ReviewPage() {
   }, {})
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/admin">
-                <Button variant="ghost" size="icon">
-                  <ArrowLeft className="h-5 w-5" />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-2xl font-bold">Revisão de Conversas</h1>
-                <p className="text-sm text-muted-foreground">Controle de qualidade e análise</p>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Badge variant="outline" className="gap-2">
-                <CheckCircle className="h-4 w-4 text-green-500" />
-                0 Aprovadas
-              </Badge>
-              <Badge variant="outline" className="gap-2">
-                <Clock className="h-4 w-4 text-yellow-500" />
-                {conversations?.length || 0} Pendentes
-              </Badge>
-              <Badge variant="outline" className="gap-2">
-                <AlertCircle className="h-4 w-4 text-red-500" />
-                0 Requerem Atenção
-              </Badge>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Filtros */}
         <div className="bg-card border rounded-lg p-4 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -327,6 +293,5 @@ export default async function ReviewPage() {
           </div>
         </div>
       </div>
-    </div>
   )
 }
