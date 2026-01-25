@@ -52,14 +52,16 @@ export default async function AdminPage() {
             <p className="text-sm text-muted-foreground mt-1">Total de usuários cadastrados</p>
           </div>
 
-          <div className="bg-card border rounded-lg p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <MessageSquare className="h-5 w-5 text-green-500" />
-              <h3 className="font-semibold">Conversas</h3>
+          <Link href="/admin/conversations" className="block group">
+            <div className="bg-card border rounded-lg p-6 group-hover:border-primary transition-colors">
+              <div className="flex items-center gap-3 mb-2">
+                <MessageSquare className="h-5 w-5 text-green-500" />
+                <h3 className="font-semibold">Conversas</h3>
+              </div>
+              <p className="text-3xl font-bold">{totalConversations || 0}</p>
+              <p className="text-sm text-muted-foreground mt-1">Total de conversas criadas</p>
             </div>
-            <p className="text-3xl font-bold">{totalConversations || 0}</p>
-            <p className="text-sm text-muted-foreground mt-1">Total de conversas criadas</p>
-          </div>
+          </Link>
 
           <div className="bg-card border rounded-lg p-6">
             <div className="flex items-center gap-3 mb-2">
@@ -99,10 +101,10 @@ export default async function AdminPage() {
           </Link>
 
           {/* Revisão de Conversas */}
-          <Link href="/admin/review" className="group">
-            <div className="bg-card border rounded-lg p-8 hover:shadow-lg transition-all hover:border-primary">
+          <Link href="/admin/review" className="group block">
+            <div className="bg-card border rounded-lg p-8 hover:shadow-lg transition-all hover:border-primary h-full">
               <div className="flex items-start gap-4">
-                <div className="p-3 bg-green-500/10 rounded-lg">
+                <div className="p-3 bg-green-500/10 rounded-lg shrink-0">
                   <MessageSquare className="h-8 w-8 text-green-500" />
                 </div>
                 <div className="flex-1">

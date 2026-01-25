@@ -1,34 +1,85 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import Link from 'next/link'
-import { ArrowLeft, Users } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+'use client'
 
-export default async function UsersPage() {
-  const supabase = await createClient()
-  
-  const { data: { user } } = await supabase.auth.getUser()
-  
-  if (!user) {
-    redirect('/auth?redirect=/admin/users')
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { ArrowLeft, Users, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { UserTable } from '@/components/admin/user-table'
+import { UserDetailModal } from '@/components/admin/user-detail-modal'
+import { getUsers } from '@/lib/admin/actions'
+
+export default function UsersPage() {
+  const [users, setUsers] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [selectedUser, setSelectedUser] = useState<any>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  useEffect(() => {
+    loadUsers()
+  }, [])
+
+  async function loadUsers() {
+    try {
+      setLoading(true)
+      const data = await getUsers()
+      setUsers(data || [])
+    } catch (error) {
+      console.error('Failed to load users:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const allowedAdminEmails = [
-    'marko@persona.cx',
-    'admin@qigongbrasil.com'
-  ]
-  
-  if (!allowedAdminEmails.includes(user.email || '')) {
-    redirect('/chat')
+  const handleOpenModal = (user: any) => {
+    setSelectedUser(user)
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedUser(null)
+    loadUsers() // Reload to get updated credits
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-        <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-          <p className="text-sm text-yellow-800 dark:text-yellow-200">
-            🚧 <strong>Em Desenvolvimento</strong> - Esta funcionalidade estará disponível em breve.
-          </p>
+    <div className="min-h-screen bg-background flex flex-col">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <Link href="/admin">
+              <Button variant="ghost" size="icon">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            </Link>
+            <div className="flex items-center gap-3">
+              <Users className="h-8 w-8 text-blue-500" />
+              <div>
+                <h1 className="text-2xl font-bold">Gestão de Usuários</h1>
+                <p className="text-muted-foreground">Visualize e gerencie os usuários da plataforma.</p>
+              </div>
+            </div>
+          </div>
+          
+          <Button onClick={loadUsers} variant="outline" disabled={loading}>
+             {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+             Atualizar Lista
+          </Button>
         </div>
+
+        {loading && users.length === 0 ? (
+          <div className="flex items-center justify-center h-64">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          <UserTable users={users} onViewDetails={handleOpenModal} />
+        )}
+
+        <UserDetailModal 
+          user={selectedUser} 
+          isOpen={isModalOpen} 
+          onClose={handleCloseModal} 
+        />
       </main>
+    </div>
   )
 }
