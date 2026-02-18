@@ -53,7 +53,7 @@ Navegue para: `/admin/avatars/mestre-ye/marketing`
 Nome: Imersão de Qi Gong - Janeiro 2026
 Descrição: Retiro de 3 dias focado em práticas respiratórias avançadas
 CTA: Garanta sua vaga agora!
-URL: https://qigongbrasil.com/imersao-janeiro
+URL: https://qigongbrasil.com/imersao-janeiro?utm_source=digital-mestre-ye
 Início: 2026-01-01
 Término: 2026-01-15
 Prioridade: 10 (alta)
@@ -69,7 +69,7 @@ Nome: Curso Completo de Qi Gong Respiratório
 Tipo: curso
 Descrição: 12 semanas de treinamento guiado
 Preço: R$ 497,00
-URL: https://qigongbrasil.com/curso-completo
+URL: https://qigongbrasil.com/curso-completo?utm_source=digital-mestre-ye
 Tags: respiração, iniciante, online
 Elemento: METAL (opcional - se for específico para Metal)
 Recomendado para: Pessoas com ansiedade, estresse e problemas respiratórios
@@ -94,7 +94,7 @@ A IA recebe automaticamente:
 Retiro de 3 dias focado em práticas respiratórias avançadas
 
 CTA: Garanta sua vaga agora!
-LINK: https://qigongbrasil.com/imersao-janeiro
+LINK: https://qigongbrasil.com/imersao-janeiro?utm_source=digital-mestre-ye
 
 Público-alvo: Praticantes intermediários e avançados
 Quando mencionar: Quando usuário perguntar sobre eventos presenciais
@@ -105,7 +105,7 @@ Quando mencionar: Quando usuário perguntar sobre eventos presenciais
    12 semanas de treinamento guiado
    Benefícios: Reduz ansiedade, melhora capacidade pulmonar
    Valor: R$ 497,00
-   Link: https://qigongbrasil.com/curso-completo
+   Link: https://qigongbrasil.com/curso-completo?utm_source=digital-mestre-ye
 
 INSTRUÇÕES: Mencione de forma natural quando o contexto for apropriado.
 ```

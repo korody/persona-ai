@@ -158,7 +158,7 @@ export default function HomePage() {
             <div>
               <h4 className="font-semibold mb-4">Empresa</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="https://qigongbrasil.com">Qigong Brasil</a></li>
+                <li><a href="https://qigongbrasil.com?utm_source=digital-mestre-ye">Qigong Brasil</a></li>
                 <li><a href="#">Sobre o Mestre Ye</a></li>
               </ul>
             </div>

@@ -129,7 +129,7 @@ export const APP_CONFIG = {
   whatsapp: '+5511950879456',
   company: {
     name: 'Qigong Brasil',
-    website: 'https://qigongbrasil.com'
+    website: 'https://qigongbrasil.com?utm_source=digital-mestre-ye'
   }
 } as const
 

@@ -37,7 +37,7 @@ CREATE TABLE avatar_products (
 
 | Campo | Descrição | Exemplo | Quando Usar |
 |-------|-----------|---------|-------------|
-| `product_url` | URL da página de vendas | `https://qigongbrasil.com/curso-qigong` | Quando usuário NÃO tem acesso |
+| `product_url` | URL da página de vendas | `https://qigongbrasil.com/curso-qigong?utm_source=digital-mestre-ye` | Quando usuário NÃO tem acesso |
 | `memberkit_url` | URL do Memberkit | `https://memberkit.com/curso-qigong` | Quando usuário JÁ tem acesso |
 | `memberkit_product_id` | ID do produto no Memberkit | `QIG`, `ADC`, `MAR` | Para verificar acesso do usuário |
 
@@ -78,13 +78,13 @@ CREATE TABLE avatar_products (
 ```
 Produto: Saúde & Longevidade Qi Gong
 Status: 🔒 USUÁRIO NÃO TEM ACESSO - Use link da página de vendas
-Link: https://qigongbrasil.com/curso-qigong
+Link: https://qigongbrasil.com/curso-qigong?utm_source=digital-mestre-ye
 ```
 
 **IA responde:**
 > "Para aprender Qi Gong de forma estruturada, recomendo nosso curso completo: **Saúde & Longevidade Qi Gong**. 
 > 
-> Você pode conhecer todos os detalhes aqui: https://qigongbrasil.com/curso-qigong"
+> Você pode conhecer todos os detalhes aqui: https://qigongbrasil.com/curso-qigong?utm_source=digital-mestre-ye"
 
 ---
 
@@ -204,7 +204,7 @@ export async function getMarketingContext(
    Benefícios: Eliminar dores lombares crônicas
    Valor: R$ 29,00
    🔒 USUÁRIO NÃO TEM ACESSO - Use link da página de vendas
-   Link: https://qigongbrasil.com/ebook-lombar
+   Link: https://qigongbrasil.com/ebook-lombar?utm_source=digital-mestre-ye
 
 INSTRUÇÕES IMPORTANTES SOBRE LINKS:
 - Se o usuário JÁ TEM ACESSO (✅): use o link do Memberkit para ele acessar o conteúdo diretamente
