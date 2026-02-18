@@ -15,8 +15,9 @@ WHERE campaign_url IS NOT NULL
   AND campaign_url LIKE '%qigongbrasil.com%'
   AND campaign_url NOT LIKE '%utm_source%';
 
--- Atualizar URLs de produtos (avatar_products - product_url)
-UPDATE avatar_products
+-- Atualizar URLs de produtos (avatar_portfolio - product_url)
+-- Nota: Tabela foi renomeada de avatar_products para avatar_portfolio
+UPDATE avatar_portfolio
 SET product_url = CASE
   WHEN product_url LIKE '%qigongbrasil.com%' AND product_url NOT LIKE '%utm_source%'
   THEN CONCAT(product_url, '?utm_source=digital-mestre-ye')
@@ -33,6 +34,6 @@ SELECT 'Campanhas atualizadas:' as tipo, COUNT(*) as total
 FROM avatar_campaigns
 WHERE campaign_url LIKE '%utm_source=digital-mestre-ye%';
 
-SELECT 'Produtos atualizados:' as tipo, COUNT(*) as total
-FROM avatar_products
+SELECT 'Produtos atualizados (avatar_portfolio):' as tipo, COUNT(*) as total
+FROM avatar_portfolio
 WHERE product_url LIKE '%utm_source=digital-mestre-ye%';
