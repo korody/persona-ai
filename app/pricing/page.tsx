@@ -90,7 +90,11 @@ export default function PricingPage() {
 
     // Plano FREE - redirecionar para auth/signup
     if (plan.slug === 'free') {
-      router.push('/auth')
+      if (user) {
+        window.location.href = 'https://digital.mestreye.com/chat'
+      } else {
+        router.push('/auth')
+      }
       return
     }
 
@@ -229,15 +233,23 @@ export default function PricingPage() {
             com a orientação do Mestre Ye.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild>
-              <Link href="/auth">
-                Começar Grátis
-              </Link>
+            <Button size="lg" onClick={() => {
+              if (user) {
+                window.location.href = 'https://digital.mestreye.com/chat'
+              } else {
+                router.push('/auth')
+              }
+            }}>
+              Começar Grátis
             </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/auth">
-                Já tenho conta
-              </Link>
+            <Button size="lg" variant="outline" onClick={() => {
+              if (user) {
+                window.location.href = 'https://digital.mestreye.com/chat'
+              } else {
+                router.push('/auth')
+              }
+            }}>
+              Já tenho conta
             </Button>
           </div>
         </div>

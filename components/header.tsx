@@ -126,11 +126,28 @@ export function Header() {
 
           {!user && !isLoading && (
             <div className="flex items-center gap-2">
-              <Button variant="ghost" asChild>
-                <Link href="/auth">Entrar</Link>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  if (user) {
+                    window.location.href = 'https://digital.mestreye.com/chat'
+                  } else {
+                    router.push('/auth')
+                  }
+                }}
+              >
+                Entrar
               </Button>
-              <Button asChild>
-                <Link href="/auth">Começar Grátis</Link>
+              <Button
+                onClick={() => {
+                  if (user) {
+                    window.location.href = 'https://digital.mestreye.com/chat'
+                  } else {
+                    router.push('/auth')
+                  }
+                }}
+              >
+                Começar Grátis
               </Button>
             </div>
           )}

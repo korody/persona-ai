@@ -43,7 +43,7 @@ export function UserInteractionsModal({ user, isOpen, onClose }: UserInteraction
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[80vh] flex flex-col">
+      <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Interações de {user?.full_name || user?.email}</DialogTitle>
           <DialogDescription>
@@ -51,13 +51,13 @@ export function UserInteractionsModal({ user, isOpen, onClose }: UserInteraction
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-hidden min-h-[400px]">
+        <div className="flex-1 min-h-0">
           {loading ? (
-            <div className="flex h-full items-center justify-center">
+            <div className="flex h-full items-center justify-center py-20">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
           ) : interactions.length === 0 ? (
-            <div className="flex h-full flex-col items-center justify-center text-muted-foreground">
+            <div className="flex h-full flex-col items-center justify-center text-muted-foreground py-20">
               <MessageSquare className="h-12 w-12 mb-2 opacity-20" />
               <p>Nenhuma interação encontrada.</p>
             </div>
@@ -87,12 +87,12 @@ export function UserInteractionsModal({ user, isOpen, onClose }: UserInteraction
                                 <Bot className="h-3 w-3 text-primary" />
                               </div>
                             )}
-                            <div className={`rounded-lg px-3 py-2 max-w-[80%] text-sm ${
+                            <div className={`rounded-lg px-3 py-2 max-w-[85%] text-sm ${
                               msg.role === 'user' 
                                 ? 'bg-primary text-primary-foreground' 
                                 : 'bg-muted'
                             }`}>
-                              {msg.content}
+                              <p className="whitespace-pre-wrap break-words">{msg.content}</p>
                             </div>
                             {msg.role === 'user' && (
                               <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center shrink-0 mt-1">

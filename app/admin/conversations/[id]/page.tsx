@@ -24,7 +24,8 @@ export default async function ConversationDetailPage({ params }: ConversationDet
 
   const allowedAdminEmails = [
     'marko@persona.cx',
-    'equipe@qigongbrasil.com'
+    'equipe@qigongbrasil.com',
+    'yexin828@hotmail.com'
   ]
   
   if (!allowedAdminEmails.includes(user.email || '')) {

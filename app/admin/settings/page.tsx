@@ -15,7 +15,8 @@ export default async function SettingsPage() {
 
   const allowedAdminEmails = [
     'marko@persona.cx',
-    'admin@qigongbrasil.com'
+    'admin@qigongbrasil.com',
+    'yexin828@hotmail.com'
   ]
   
   if (!allowedAdminEmails.includes(user.email || '')) {

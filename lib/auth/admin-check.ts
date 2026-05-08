@@ -4,7 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 
 const ALLOWED_ADMIN_EMAILS = [
   'marko@persona.cx',
-  'admin@qigongbrasil.com'
+  'admin@qigongbrasil.com',
+  'yexin828@hotmail.com'
 ]
 
 export async function isAdmin(): Promise<boolean> {

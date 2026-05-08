@@ -46,7 +46,7 @@ WHERE table_name = 'quiz_leads' AND column_name = 'user_id';
 3. Complete quiz
 4. Deve:
    ✅ Ver "Usuário criado!" no quiz
-   ✅ Redirecionar para persona-ai.com/chat
+  ✅ Redirecionar para persona-ai.com/chat
    ✅ Já estar logado
    ✅ Ter 20 créditos
    ✅ Quiz vinculado ao user_id

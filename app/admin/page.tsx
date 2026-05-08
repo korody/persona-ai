@@ -16,7 +16,8 @@ export default async function AdminPage() {
   // Verificar se é admin
   const allowedAdminEmails = [
     'marko@persona.cx',
-    'admin@qigongbrasil.com'
+    'admin@qigongbrasil.com',
+    'yexin828@hotmail.com'
   ]
   
   if (!allowedAdminEmails.includes(user.email || '')) {

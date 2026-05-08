@@ -2,9 +2,21 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { useUser } from '@/hooks/use-user'
+import { useRouter } from 'next/navigation'
 import { MessageSquare, Sparkles, Clock, Shield } from 'lucide-react'
 
 export default function HomePage() {
+  const { user, isLoading } = useUser()
+  const router = useRouter()
+
+  function handleAuthClick() {
+    if (user) {
+      window.location.href = 'https://digital.mestreye.com/chat'
+    } else {
+      router.push('/auth')
+    }
+  }
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header */}
@@ -14,12 +26,12 @@ export default function HomePage() {
             <span className="font-bold text-lg">Mestre Ye Digital</span>
           </div>
           
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" asChild>
-              <Link href="/auth">Entrar</Link>
+            <div className="flex items-center gap-4">
+            <Button variant="ghost" onClick={handleAuthClick}>
+              Entrar
             </Button>
-            <Button asChild>
-              <Link href="/auth">Começar Grátis</Link>
+            <Button onClick={handleAuthClick}>
+              Começar Grátis
             </Button>
           </div>
         </div>
@@ -41,11 +53,9 @@ export default function HomePage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Button size="lg" asChild className="text-lg px-8 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900">
-                <Link href="/auth">
-                  Começar Grátis
-                  <Sparkles className="ml-2 h-5 w-5" />
-                </Link>
+              <Button size="lg" className="text-lg px-8 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900" onClick={handleAuthClick}>
+                Começar Grátis
+                <Sparkles className="ml-2 h-5 w-5" />
               </Button>
               <Button size="lg" variant="outline" asChild className="text-lg px-8">
                 <Link href="/pricing">

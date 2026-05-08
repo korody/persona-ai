@@ -23,6 +23,7 @@ import {
   searchIntroductoryExercises,
   searchExercisesBySemantic
 } from '@/lib/helpers/exercise-recommendations'
+import { baseInstructions } from '@/lib/ai/prompts'
 import type { QuizLead } from '@/lib/types/anamnese'
 import type { Exercise } from '@/lib/memberkit/types'
 
@@ -196,16 +197,7 @@ ${marketingSection}
 
 ${examplesContext}
 
-??????????????????????????????????????????????????
-
-INSTRU��ES IMPORTANTES:
-1. Use o conhecimento acima quando relevante para a pergunta
-2. Cite as fontes numeradas quando usar informa��es espec�ficas
-3. Mantenha o tom e estilo dos exemplos de conversa
-4. Se houver exerc�cios recomendados, mencione-os naturalmente na resposta
-5. Sempre inclua os links dos exerc�cios quando mencion�-los
-6. Se n�o houver conhecimento relevante, use seu conhecimento geral mas mencione isso
-7. Seja sempre emp�tico, educativo e pr�tico
+${baseInstructions}
 `
 
   return {

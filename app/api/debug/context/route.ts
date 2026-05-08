@@ -11,6 +11,7 @@ import {
   formatExamples
 } from '@/lib/rag'
 import { buildAnamneseContext, buildNoAnamneseContext } from '@/lib/helpers/anamnese-helpers'
+import { baseInstructions } from '@/lib/ai/prompts'
 import type { QuizLead } from '@/lib/types/anamnese'
 
 export const runtime = 'nodejs'
@@ -118,14 +119,7 @@ ${knowledgeContext}
 
 ${examplesContext}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-INSTRUÇÕES IMPORTANTES:
-1. Use o conhecimento acima quando relevante para a pergunta
-2. Cite as fontes numeradas quando usar informações específicas
-3. Mantenha o tom e estilo dos exemplos de conversa
-4. Se não houver conhecimento relevante, use seu conhecimento geral mas mencione isso
-5. Seja sempre empático, educativo e prático
+${baseInstructions}
 `
 
     // Retornar análise completa

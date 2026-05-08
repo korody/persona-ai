@@ -23,6 +23,7 @@ import {
   searchExercisesBySemantic
 } from '@/lib/helpers/exercise-recommendations'
 import { generateSmartTitle } from '@/lib/helpers/conversation-title'
+import { baseInstructions } from '@/lib/ai/prompts'
 import type { QuizLead } from '@/lib/types/anamnese'
 import type { Exercise } from '@/lib/memberkit/types'
 
@@ -338,16 +339,7 @@ ${exercisesContext}
 
 ${examplesContext}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-INSTRUÇÕES IMPORTANTES:
-1. Use o conhecimento acima quando relevante para a pergunta
-2. Cite as fontes numeradas quando usar informações específicas
-3. Mantenha o tom e estilo dos exemplos de conversa
-4. Se houver exercícios recomendados, mencione-os naturalmente na resposta
-5. Sempre inclua os links dos exercícios quando mencioná-los
-6. Se não houver conhecimento relevante, use seu conhecimento geral mas mencione isso
-7. Seja sempre empático, educativo e prático
+${baseInstructions}
 `
 
     // Converter mensagens do formato UI para formato do modelo

@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
     }
 
-    const allowedAdmins = ['marko@persona.cx', 'admin@qigongbrasil.com']
+    const allowedAdmins = ['marko@persona.cx', 'admin@qigongbrasil.com', 'yexin828@hotmail.com']
     if (!allowedAdmins.includes(user.email || '')) {
       return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }

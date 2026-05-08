@@ -17,7 +17,8 @@ export default async function ReviewPage() {
 
   const allowedAdminEmails = [
     'marko@persona.cx',
-    'admin@qigongbrasil.com'
+    'admin@qigongbrasil.com',
+    'yexin828@hotmail.com'
   ]
   
   if (!allowedAdminEmails.includes(user.email || '')) {

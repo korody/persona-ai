@@ -19,13 +19,6 @@ const comparisonData = [
     mestre: '600',
   },
   {
-    feature: 'Bônus de boas-vindas',
-    free: '50 interações',
-    aprendiz: '-',
-    discipulo: '-',
-    mestre: '-',
-  },
-  {
     feature: 'Histórico de conversas',
     free: '7 dias',
     aprendiz: '30 dias',

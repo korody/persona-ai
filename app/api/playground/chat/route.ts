@@ -27,6 +27,7 @@ import {
   searchIntroductoryExercises,
   searchExercisesBySemantic
 } from '@/lib/helpers/exercise-recommendations'
+import { baseInstructions } from '@/lib/ai/prompts'
 import type { QuizLead } from '@/lib/types/anamnese'
 import type { Exercise } from '@/lib/memberkit/types'
 
@@ -208,7 +209,10 @@ ${marketingSection}
 
 ${examplesContext}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${baseInstructions}
+`
 
     // Formatar mensagens
     const formattedMessages = messages.map((m: any) => ({
