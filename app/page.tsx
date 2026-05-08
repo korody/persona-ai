@@ -1,4 +1,6 @@
-﻿// app/page.tsx
+﻿
+"use client"
+// app/page.tsx
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
