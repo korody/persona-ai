@@ -1,4 +1,4 @@
-﻿/**
+/**
  * API Route: Playground Chat (sem debitar créditos)
  * POST /api/playground/chat
  * 
@@ -222,7 +222,7 @@ ${baseInstructions}
 
     // Stream
     const result = streamText({
-      model: anthropic('claude-sonnet-4-20250514'),
+      model: anthropic('claude-sonnet-4-6'),
       system: systemPrompt,
       messages: formattedMessages as any,
       temperature: 0.7,

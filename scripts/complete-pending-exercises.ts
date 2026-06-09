@@ -49,7 +49,7 @@ async function completePendingExercises() {
 				console.log(`${progress} 🔄 ${exercise.title.substring(0, 60)}...`)
 
 				const { text } = await generateText({
-					model: anthropic('claude-sonnet-4-20250514'),
+					model: anthropic('claude-sonnet-4-6'),
 					prompt: `Analise este exercício de Qi Gong e retorne APENAS JSON:
 
 Título: ${exercise.title}

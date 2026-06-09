@@ -68,7 +68,7 @@ async function categorizeExercise(exercise: any): Promise<CategorizationResult |
       .replace('{organs}', exercise.organs || 'Não informado')
 
     const { text } = await generateText({
-      model: anthropic('claude-sonnet-4-20250514'),
+      model: anthropic('claude-sonnet-4-6'),
       prompt,
       temperature: 0.3,
     })

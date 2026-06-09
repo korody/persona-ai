@@ -1,4 +1,4 @@
-﻿// app/api/chat/route.ts
+// app/api/chat/route.ts
 
 import { anthropic } from '@ai-sdk/anthropic'
 import { streamText, convertToCoreMessages } from 'ai'
@@ -346,7 +346,7 @@ ${baseInstructions}
     const coreMessages = convertToCoreMessages(messages)
 
     const result = streamText({
-      model: anthropic('claude-sonnet-4-20250514'),
+      model: anthropic('claude-sonnet-4-6'),
       system: systemPrompt,
       messages: coreMessages,
       temperature: 0.7,
