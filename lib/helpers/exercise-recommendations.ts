@@ -15,21 +15,26 @@ export async function searchExercisesByAnamnese(
   quizLead: QuizLead,
   options: {
     matchCount?: number
+    courseId?: number
   } = {}
 ): Promise<Exercise[]> {
-  const { matchCount = 3 } = options
-  
+  const { matchCount = 3, courseId } = options
+
   const supabase = await createAdminClient()
-  
-  // Buscar por elemento principal
-  const { data: exercises, error } = await supabase
+
+  let query = supabase
     .from('hub_exercises')
     .select('*')
     .eq('is_active', true)
-    
     .eq('element', quizLead.elemento_principal.toUpperCase())
     .order('position', { ascending: true })
     .limit(matchCount)
+
+  if (courseId) {
+    query = query.eq('memberkit_course_id', courseId.toString())
+  }
+
+  const { data: exercises, error } = await query
   
   if (error) {
     console.error('Error searching exercises by anamnese:', error)
@@ -46,20 +51,25 @@ export async function searchExercisesBySymptoms(
   symptoms: string[],
   options: {
     matchCount?: number
+    courseId?: number
   } = {}
 ): Promise<Exercise[]> {
-  const { matchCount = 3 } = options
-  
+  const { matchCount = 3, courseId } = options
+
   const supabase = await createAdminClient()
-  
-  // Buscar exercícios que contenham qualquer dos sintomas nas indicações
-  const { data: exercises, error } = await supabase
+
+  let query = supabase
     .from('hub_exercises')
     .select('*')
     .eq('is_active', true)
-    
     .overlaps('indications', symptoms)
     .limit(matchCount)
+
+  if (courseId) {
+    query = query.eq('memberkit_course_id', courseId.toString())
+  }
+
+  const { data: exercises, error } = await query
   
   if (error) {
     console.error('Error searching exercises by symptoms:', error)
@@ -116,35 +126,43 @@ export async function searchExercisesBySemantic(
   options: {
     matchCount?: number
     matchThreshold?: number
+    courseId?: number
   } = {}
 ): Promise<Exercise[]> {
-  const { matchCount = 5, matchThreshold = 0.7 } = options
-  
+  const { matchCount = 5, matchThreshold = 0.7, courseId } = options
+
   try {
     console.log(`🧠 Generating embedding for query: "${query}"`)
     const supabase = await createAdminClient()
-    
-    // 1. Gerar embedding da query do usuário
+
     const queryEmbedding = await generateQueryEmbedding(query)
     console.log(`✅ Embedding generated (${queryEmbedding.length} dimensions)`)
-    
-    // 2. Buscar exercícios similares usando RPC do Supabase
+
     const { data: exercises, error } = await supabase.rpc('match_exercises', {
       query_embedding: queryEmbedding,
       match_threshold: matchThreshold,
-      match_count: matchCount,
+      match_count: courseId ? matchCount * 3 : matchCount, // Busca mais para filtrar depois
     })
-    
+
     if (error) {
       console.error('❌ Error searching exercises by semantic:', error)
-      throw error // Re-throw para o catch externo logar mais detalhes
+      throw error
     }
-    
-    console.log(`✅ Semantic search returned ${exercises?.length || 0} exercises`)
-    if (exercises && exercises.length > 0) {
-      console.log(`   Top result: ${exercises[0].title} (${(exercises[0].similarity * 100).toFixed(1)}%)`)
+
+    let results = exercises || []
+
+    // Filtrar por curso após busca semântica (RPC não suporta filtro direto)
+    if (courseId && results.length > 0) {
+      results = results
+        .filter((e: Exercise) => e.memberkit_course_id === courseId.toString())
+        .slice(0, matchCount)
     }
-    return exercises || []
+
+    console.log(`✅ Semantic search returned ${results.length} exercises${courseId ? ` (filtered by course ${courseId})` : ''}`)
+    if (results.length > 0) {
+      console.log(`   Top result: ${results[0].title}`)
+    }
+    return results
   } catch (error) {
     console.error('Error in semantic search:', error)
     return []
@@ -475,29 +493,40 @@ export function isGenericExerciseRequest(message: string): boolean {
 export async function searchIntroductoryExercises(
   options: {
     matchCount?: number
+    courseId?: number
   } = {}
 ): Promise<Exercise[]> {
-  const { matchCount = 3 } = options
-  
+  const { matchCount = 3, courseId } = options
+
   const supabase = await createAdminClient()
-  
-  // Buscar primeiro por exercícios com indication prática_diária
-  let { data: exercises, error } = await supabase
+
+  let baseQuery = supabase
     .from('hub_exercises')
     .select('*')
     .eq('is_active', true)
-    
+
+  if (courseId) {
+    baseQuery = baseQuery.eq('memberkit_course_id', courseId.toString()) as any
+  }
+
+  // Buscar primeiro por exercícios com indication prática_diária
+  let { data: exercises, error } = await (baseQuery as any)
     .contains('indications', ['prática_diária'])
     .order('position', { ascending: true })
     .limit(matchCount)
-  
+
   // Se não encontrou, buscar sequências completas ou introduções
   if (!exercises || exercises.length === 0) {
-    const result = await supabase
+    let fallbackQuery = supabase
       .from('hub_exercises')
       .select('*')
       .eq('is_active', true)
-      
+
+    if (courseId) {
+      fallbackQuery = fallbackQuery.eq('memberkit_course_id', courseId.toString()) as any
+    }
+
+    const result = await (fallbackQuery as any)
       .or('title.ilike.%sequência completa%,title.ilike.%introdução%')
       .limit(matchCount)
     

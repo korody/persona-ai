@@ -13,8 +13,8 @@ import {
   formatExamples
 } from '@/lib/rag'
 import { buildAnamneseContext, buildNoAnamneseContext } from '@/lib/helpers/anamnese-helpers'
-import { 
-  searchExercisesByAnamnese, 
+import {
+  searchExercisesByAnamnese,
   searchExercisesBySymptoms,
   extractSymptomsFromMessage,
   formatExercisesContext,
@@ -22,6 +22,7 @@ import {
   searchIntroductoryExercises,
   searchExercisesBySemantic
 } from '@/lib/helpers/exercise-recommendations'
+import { detectCourseIntent, formatCourseContext } from '@/lib/helpers/course-intent-detection'
 import { generateSmartTitle } from '@/lib/helpers/conversation-title'
 import { baseInstructions } from '@/lib/ai/prompts'
 import type { QuizLead } from '@/lib/types/anamnese'
@@ -32,7 +33,9 @@ export const maxDuration = 60
 
 export async function POST(req: Request) {
   try {
-    const { messages, conversationId, avatarSlug = 'mestre-ye' } = await req.json()
+    const body = await req.json()
+    console.log('Parsed API Request Body:', JSON.stringify(body, null, 2))
+    const { messages, conversationId, avatarSlug = 'mestre-ye' } = body
 
     // Pegar token de autorização
     const authHeader = req.headers.get('authorization')
@@ -271,31 +274,42 @@ export async function POST(req: Request) {
     
     console.log(`✅ Found ${relevantExamples.length} conversation examples`)
 
-    // 8. BUSCAR EXERCÍCIOS RELEVANTES
+    // 8. DETECTAR INTENÇÃO DE CURSO + BUSCAR EXERCÍCIOS RELEVANTES
+    console.log('🎓 Detecting course intent...')
+    const detectedCourse = await detectCourseIntent(userContent)
+
+    if (detectedCourse) {
+      console.log(`✅ Course detected: "${detectedCourse.courseName}" (id: ${detectedCourse.courseId}, confidence: ${detectedCourse.confidence})`)
+    } else {
+      console.log('ℹ️  No specific course detected in message')
+    }
+
+    const courseId = detectedCourse?.courseId
+
     console.log('🧘 Searching for relevant exercises...')
-    
     let exercises: Exercise[] = []
-    
+
     // Primeiro, tentar buscar por sintomas mencionados na mensagem
     const symptoms = extractSymptomsFromMessage(userContent)
     if (symptoms.length > 0) {
       console.log(`🎯 Found symptoms in message: ${symptoms.join(', ')}`)
-      exercises = await searchExercisesBySymptoms(symptoms, { matchCount: 3 })
+      exercises = await searchExercisesBySymptoms(symptoms, { matchCount: 3, courseId })
     }
-    
+
     // Se não encontrou por sintomas, verificar se é pedido genérico de exercícios
     if (exercises.length === 0 && isGenericExerciseRequest(userContent)) {
       console.log('📚 Generic exercise request detected, showing introductory exercises')
-      exercises = await searchIntroductoryExercises({ matchCount: 3 })
+      exercises = await searchIntroductoryExercises({ matchCount: 3, courseId })
     }
-    
+
     // Se ainda não encontrou, tentar busca semântica (OpenAI embeddings)
     if (exercises.length === 0) {
       console.log('🧠 Trying semantic search with OpenAI embeddings...')
       try {
-        exercises = await searchExercisesBySemantic(userContent, { 
+        exercises = await searchExercisesBySemantic(userContent, {
           matchCount: 3,
-          matchThreshold: 0.5  // Threshold reduzido para aceitar mais resultados
+          matchThreshold: 0.5,
+          courseId
         })
         if (exercises.length > 0) {
           console.log(`✅ Semantic search found ${exercises.length} relevant exercises`)
@@ -304,13 +318,19 @@ export async function POST(req: Request) {
         console.error('❌ Semantic search failed:', error)
       }
     }
-    
+
     // Se ainda não encontrou e tem anamnese, buscar por elemento
     if (exercises.length === 0 && hasQuiz && quizLead) {
       console.log(`🌳 Searching exercises by element: ${quizLead.elemento_principal}`)
-      exercises = await searchExercisesByAnamnese(quizLead, { matchCount: 3 })
+      exercises = await searchExercisesByAnamnese(quizLead, { matchCount: 3, courseId })
     }
-    
+
+    // Se especificou curso mas não encontrou nada, tentar sem filtro de curso como fallback
+    if (exercises.length === 0 && courseId) {
+      console.log(`⚠️  No exercises found for course ${courseId}, trying without course filter...`)
+      exercises = await searchExercisesBySemantic(userContent, { matchCount: 3, matchThreshold: 0.5 })
+    }
+
     const exercisesContext = await formatExercisesContext(exercises, quizLead || undefined, avatarSlug)
     
     if (exercises.length > 0) {
@@ -323,7 +343,9 @@ export async function POST(req: Request) {
     console.log('🤖 Calling Claude API with enhanced context...')
     
     // Montar prompt do sistema com TUDO
-    const systemPrompt = `${avatar.system_prompt}${quizContext}
+    const courseContext = detectedCourse ? formatCourseContext(detectedCourse) : ''
+
+    const systemPrompt = `${avatar.system_prompt}${quizContext}${courseContext}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📚 BASE DE CONHECIMENTO DISPONÍVEL
@@ -342,8 +364,22 @@ ${examplesContext}
 ${baseInstructions}
 `
 
-    // Converter mensagens do formato UI para formato do modelo
-    const coreMessages = convertToCoreMessages(messages)
+    // Converter mensagens do formato UI para formato do modelo de forma robusta
+    const coreMessages = messages.map((m: any) => {
+      let textContent = ''
+      if (typeof m.content === 'string' && m.content.length > 0) {
+        textContent = m.content
+      } else if (m.parts && Array.isArray(m.parts)) {
+        textContent = m.parts
+          .filter((part: any) => part.type === 'text')
+          .map((part: any) => part.text)
+          .join('')
+      }
+      return {
+        role: m.role,
+        content: textContent
+      }
+    })
 
     const result = streamText({
       model: anthropic('claude-sonnet-4-6'),
