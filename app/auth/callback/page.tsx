@@ -54,9 +54,9 @@ function CallbackContent() {
           type: hashType
         })
 
-        // Se tem access_token no hash, é recovery
+        // Tokens no hash: pode ser recovery OU magic link (fluxo implicit)
         if (hashAccessToken) {
-          console.log('[callback] Recovery flow - setting session from hash tokens')
+          console.log('[callback] Hash tokens detected, type:', hashType)
           
           const { error } = await supabase.auth.setSession({
             access_token: hashAccessToken,
@@ -87,9 +87,11 @@ function CallbackContent() {
             console.log('[callback] ✅ Session set on server')
           }
           
-          // Aguardar e redirecionar
+          // Aguardar e redirecionar — só recovery vai para troca de senha,
+          // magic link segue para o destino pedido (antes ia sempre p/ reset)
           await new Promise(resolve => setTimeout(resolve, 500))
-          router.push('/reset-password')
+          router.push(hashType === 'recovery' ? '/reset-password' : redirect)
+          router.refresh()
           return
         }
       }
@@ -117,6 +119,7 @@ function CallbackContent() {
 
           console.log('[callback] ✅ OTP from hash verified successfully')
           router.push(redirect)
+          router.refresh()
           return
         }
       }
@@ -170,6 +173,7 @@ function CallbackContent() {
         }
         
         router.push(redirect)
+        router.refresh()
         return
       }
 
@@ -228,6 +232,7 @@ function CallbackContent() {
             
             console.log('[callback] ✅ Session set successfully via API')
             router.push(redirect)
+            router.refresh()
             return
           } else {
             console.error('[callback] ❌ Token exchange failed:', responseData)
@@ -245,6 +250,7 @@ function CallbackContent() {
 
         console.log('[callback] ✅ Code exchanged successfully')
         router.push(redirect)
+        router.refresh()
         return
       }
 
