@@ -1,4 +1,4 @@
-﻿import { createClient } from '@/lib/supabase/server'
+﻿import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
@@ -15,8 +15,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = await createClient()
-    
+    // Cliente sem PKCE: o SSR client usa flowType 'pkce' por padrão, o que faz
+    // o Supabase gerar um token prefixado `pkce_` — rejeitado pelo verifyOtp de
+    // /auth/confirm e resgatável apenas no navegador que pediu o link.
+    const supabase = createClient(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_PUBLIC_KEY!,
+      { auth: { flowType: 'implicit', persistSession: false, autoRefreshToken: false } }
+    )
+
     // Configurar redirect URL explicitamente
     const redirectUrl = `${request.nextUrl.origin}/auth/callback`
     

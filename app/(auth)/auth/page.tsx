@@ -169,17 +169,20 @@ function AuthFlow() {
     setError(null)
 
     try {
-      // Usar @supabase/supabase-js diretamente (não SSR) para localStorage funcionar
+      // flowType 'implicit' é essencial: com 'pkce' o Supabase gera um token
+      // prefixado `pkce_`, que o verifyOtp de /auth/confirm rejeita, e que só
+      // pode ser resgatado no mesmo navegador (code_verifier no localStorage).
+      // Aqui só disparamos o email — a sessão é criada server-side no confirm.
       const { createClient } = await import('@supabase/supabase-js')
       const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!,
         {
           auth: {
-            flowType: 'pkce',
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true,
+            flowType: 'implicit',
+            persistSession: false,
+            autoRefreshToken: false,
+            detectSessionInUrl: false,
           }
         }
       )
