@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Brain, MessageSquare, Users, Settings, LogOut } from 'lucide-react'
+import { LayoutDashboard, Brain, MessageSquare, Users, Settings, LogOut, BarChart3 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
@@ -23,6 +23,11 @@ const navItems = [
     title: 'Revisão',
     href: '/admin/review',
     icon: MessageSquare,
+  },
+  {
+    title: 'Uso',
+    href: '/admin/usage',
+    icon: BarChart3,
   },
   {
     title: 'Usuários',
