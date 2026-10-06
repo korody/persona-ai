@@ -345,7 +345,12 @@ export async function POST(req: Request) {
     // Montar prompt do sistema com TUDO
     const courseContext = detectedCourse ? formatCourseContext(detectedCourse) : ''
 
-    const systemPrompt = `${avatar.system_prompt}${quizContext}${courseContext}
+    // Parte estável (persona + anamnese do usuário): igual em todas as mensagens
+    // da conversa, por isso vai em cache no Anthropic (prompt caching)
+    const stableSystemPrompt = `${avatar.system_prompt}${quizContext}`
+
+    // Parte dinâmica: muda a cada mensagem conforme a busca (RAG)
+    const dynamicSystemPrompt = `${courseContext}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📚 BASE DE CONHECIMENTO DISPONÍVEL
@@ -383,11 +388,25 @@ ${baseInstructions}
 
     const result = streamText({
       model: anthropic('claude-sonnet-4-6'),
-      system: systemPrompt,
-      messages: coreMessages,
+      messages: [
+        {
+          role: 'system',
+          content: stableSystemPrompt,
+          providerOptions: {
+            anthropic: { cacheControl: { type: 'ephemeral' } },
+          },
+        },
+        { role: 'system', content: dynamicSystemPrompt },
+        ...coreMessages,
+      ],
       temperature: 0.7,
-      onFinish: async ({ text }) => {
-        console.log('Claude response finished, saving to DB...')
+      onFinish: async ({ text, usage, providerMetadata }) => {
+        console.log('Claude response finished, saving to DB...', {
+          inputTokens: usage.inputTokens,
+          outputTokens: usage.outputTokens,
+          cacheReadTokens: providerMetadata?.anthropic?.cacheReadInputTokens,
+          cacheWriteTokens: providerMetadata?.anthropic?.cacheCreationInputTokens,
+        })
         // Salvar resposta do assistente
         await supabase.from('messages').insert({
           conversation_id: finalConversationId,
