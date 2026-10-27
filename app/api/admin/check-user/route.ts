@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/server'
+import { findAuthUserIdByEmail } from '@/lib/supabase/find-user'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -30,18 +31,21 @@ export async function POST(request: NextRequest) {
 
     const adminClient = createAdminClient()
 
-    // 1. Buscar no auth.users via Admin API
-    const { data: listData, error: listError } = await adminClient.auth.admin.listUsers()
+    // 1. Buscar no auth.users pelo e-mail
+    const authUserId = await findAuthUserIdByEmail(adminClient, email)
+    const { data: userData, error: getError } = authUserId
+      ? await adminClient.auth.admin.getUserById(authUserId)
+      : { data: { user: null }, error: null }
 
-    if (listError) {
-      console.error('Error listing users:', listError)
+    if (getError) {
+      console.error('Error fetching user:', getError)
       return NextResponse.json({
         error: 'Erro ao buscar usuários',
-        details: listError.message
+        details: getError.message
       }, { status: 500 })
     }
 
-    const authUser = listData?.users.find(u => u.email?.toLowerCase() === email.toLowerCase())
+    const authUser = userData.user
 
     if (!authUser) {
       return NextResponse.json({

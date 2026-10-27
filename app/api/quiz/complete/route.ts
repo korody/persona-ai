@@ -1,5 +1,6 @@
 // app/api/quiz/complete/route.ts
 import { createClient, createAdminClient } from '@/lib/supabase/server'
+import { findAuthUserIdByEmail } from '@/lib/supabase/find-user'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 
@@ -117,25 +118,13 @@ export async function POST(request: Request) {
 
     // 1. Verificar se usuário já existe
     console.log('[quiz/complete] Verificando se usuário existe...')
-    const { data: existingUsers } = await adminSupabase.auth.admin.listUsers()
-    const existingUser = existingUsers?.users?.find(
-      u => u.email?.toLowerCase() === email.toLowerCase()
-    )
+    let userId = await findAuthUserIdByEmail(adminSupabase, email)
+    let isNewUser = false
 
-    let userId: string
-
-    if (existingUser) {
-      // Usuário já existe - apenas atualizar dados
-      console.log('[quiz/complete] Usuário já existe:', existingUser.id)
-      userId = existingUser.id
-
-      // Atualizar metadata se necessário
-      await adminSupabase.auth.admin.updateUserById(userId, {
-        user_metadata: {
-          full_name: fullName,
-          phone: phone,
-        },
-      })
+    if (userId) {
+      // Conta já existe. Não mexe nos dados dela: esta rota é pública e qualquer
+      // um pode mandar o e-mail de outra pessoa.
+      console.log('[quiz/complete] Usuário já existe:', userId)
     } else {
       // Criar novo usuário
       console.log('[quiz/complete] Criando novo usuário...')
@@ -148,7 +137,16 @@ export async function POST(request: Request) {
         },
       })
 
-      if (signupError || !newUser.user) {
+      if (signupError?.code === 'email_exists') {
+        // Criada entre a busca e agora (duas anamneses quase ao mesmo tempo)
+        userId = await findAuthUserIdByEmail(adminSupabase, email)
+      } else if (newUser?.user) {
+        userId = newUser.user.id
+        isNewUser = true
+        console.log('[quiz/complete] Usuário criado:', userId)
+      }
+
+      if (!userId) {
         console.error('[quiz/complete] Erro ao criar usuário:', signupError)
         return NextResponse.json(
           { error: 'Erro ao criar usuário' },
@@ -162,9 +160,6 @@ export async function POST(request: Request) {
           }
         )
       }
-
-      userId = newUser.user.id
-      console.log('[quiz/complete] Usuário criado:', userId)
     }
 
     // 2. Salvar dados do quiz (se fornecidos)
@@ -202,6 +197,28 @@ export async function POST(request: Request) {
       }
     }
 
+    // Login automático só para a conta que acabou de nascer aqui. Conta que já
+    // existia entra pela tela de login (senha ou link no e-mail dela); senão
+    // qualquer pessoa entraria na conta de outra só sabendo o e-mail.
+    if (!isNewUser) {
+      return NextResponse.json(
+        {
+          success: true,
+          userId,
+          existingUser: true,
+          redirectUrl: '/login',
+          message: 'Conta já existe. Faça login para continuar.',
+        },
+        {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          },
+        }
+      )
+    }
+
     // 3. Criar sessão via magic link
     console.log('[quiz/complete] Gerando magic link...')
     const { data: magicLinkData, error: magicLinkError } = await adminSupabase.auth.admin.generateLink({
@@ -219,8 +236,6 @@ export async function POST(request: Request) {
     
     if (!magicLinkData) {
       console.error('[quiz/complete] magicLinkData está null/undefined')
-    } else {
-      console.log('[quiz/complete] magicLinkData recebido:', JSON.stringify(magicLinkData, null, 2))
     }
 
     if (magicLinkError || !magicLinkData) {
@@ -253,7 +268,6 @@ export async function POST(request: Request) {
     console.log('[quiz/complete] Magic link gerado com sucesso')
 
     // 4. Extrair tokens do magic link
-    console.log('[quiz/complete] action_link:', magicLinkData.properties.action_link)
     const url = new URL(magicLinkData.properties.action_link)
     const token = url.searchParams.get('token')
     const tokenHash = url.searchParams.get('token_hash')
@@ -280,7 +294,6 @@ export async function POST(request: Request) {
           debug: {
             hasToken: !!token,
             hasTokenHash: !!tokenHash,
-            actionLink: magicLinkData.properties.action_link
           }
         },
         {
@@ -301,8 +314,6 @@ export async function POST(request: Request) {
       ? `/auth/callback?token_hash=${tokenHash}&type=magiclink&next=/chat`
       : `/auth/callback?token=${authToken}&type=magiclink&next=/chat`
 
-    console.log('[quiz/complete] URL de autenticação:', authUrl)
-
     console.log('[quiz/complete] ====== SUCESSO ======')
     
     // Retornar sucesso com URL de redirect
@@ -312,8 +323,6 @@ export async function POST(request: Request) {
       redirectUrl: authUrl,
       message: 'Autenticação preparada com sucesso!',
     }
-
-    console.log('[quiz/complete] Resposta:', response)
 
     return NextResponse.json(response, {
       headers: {

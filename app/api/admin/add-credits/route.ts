@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/server'
 import { requireAdmin } from '@/lib/auth/admin-check'
+import { findAuthUserIdByEmail } from '@/lib/supabase/find-user'
 import { NextRequest } from 'next/server'
 
 export const runtime = 'edge'
@@ -23,17 +24,10 @@ export async function POST(req: NextRequest) {
     const supabase = await createAdminClient()
 
     // Buscar usuário pelo email
-    const { data: user, error: userError } = await supabase
-      .from('auth.users')
-      .select('id, email')
-      .eq('email', email)
-      .single()
+    {
+      const foundId = await findAuthUserIdByEmail(supabase, email)
+      const foundUser = foundId ? { id: foundId, email } : null
 
-    if (userError || !user) {
-      // Tentar via auth.getUser se não encontrar na tabela
-      const { data: { users }, error: authError } = await supabase.auth.admin.listUsers()
-      const foundUser = users?.find(u => u.email === email)
-      
       if (!foundUser) {
         return new Response(
           JSON.stringify({ error: 'Usuário não encontrado' }),

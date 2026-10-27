@@ -1,5 +1,6 @@
 // app/api/auth/check-password/route.ts
 import { createAdminClient } from '@/lib/supabase/server'
+import { findAuthUserIdByEmail } from '@/lib/supabase/find-user'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
@@ -29,9 +30,9 @@ export async function POST(request: Request) {
       // FALLBACK: Se a função não existe, tentar lógica alternativa
       console.log('[check-password] Using fallback logic (quiz_leads check)')
       
-      const { data: users } = await adminSupabase.auth.admin.listUsers()
-      const user = users?.users?.find(u => u.email?.toLowerCase() === email.toLowerCase())
-      
+      const userId = await findAuthUserIdByEmail(adminSupabase, email)
+      const user = userId ? { id: userId } : null
+
       if (!user) {
         return NextResponse.json({ hasPassword: false, createdViaQuiz: false })
       }
