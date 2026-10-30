@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import { useChat } from '@ai-sdk/react'
@@ -14,13 +14,20 @@ import { useConversations } from '@/hooks/use-conversations'
 import { createClient } from '@/lib/supabase/client'
 import { MessageSquare, Volume2, VolumeX } from 'lucide-react'
 
-// Helper para extrair texto de uma UIMessage
+// Helper para extrair texto de uma UIMessage (suporta parts e content)
 function getMessageText(message: any): string {
-  if (!message?.parts) return ''
-  return message.parts
-    .filter((part: any) => part.type === 'text')
-    .map((part: any) => part.text)
-    .join('')
+  // Tentar parts primeiro (formato AI SDK v5)
+  if (message?.parts && message.parts.length > 0) {
+    const textParts = message.parts.filter((part: any) => part.type === 'text')
+    if (textParts.length > 0) {
+      return textParts.map((part: any) => part.text).join('')
+    }
+  }
+  // Fallback para message.content (formato text stream)
+  if (typeof message?.content === 'string' && message.content.length > 0) {
+    return message.content
+  }
+  return ''
 }
 
 export default function ChatPage() {
@@ -56,7 +63,7 @@ export default function ChatPage() {
   })
 
   const messages = chat.messages
-  const isLoading = chat.status === 'submitted'
+  const isLoading = chat.status === 'submitted' || chat.status === 'streaming'
   const error = chat.error
 
   // Autoscroll quando houver novas mensagens ou durante streaming
