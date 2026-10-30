@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { ArrowLeft, Search, Filter, Star, MessageSquare, Calendar, User, CheckCircle, AlertCircle, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -8,6 +8,9 @@ import { Input } from '@/components/ui/input'
 
 export default async function ReviewPage() {
   const supabase = await createClient()
+  // Leitura do painel com a chave de servidor (a página já é só de admin): as políticas admin_view_* abertas
+  // para todo mundo foram removidas do banco.
+  const db = createAdminClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   
@@ -26,7 +29,7 @@ export default async function ReviewPage() {
   }
 
   // Buscar conversas do próprio usuário ou todas (dependendo da permissão)
-  const { data: conversations, error: conversationsError } = await supabase
+  const { data: conversations, error: conversationsError } = await db
     .from('conversations')
     .select('*')
     .order('started_at', { ascending: false })
@@ -38,7 +41,7 @@ export default async function ReviewPage() {
   let allMessages: any[] | null = null
   
   if (conversationIds.length > 0) {
-    const { data } = await supabase
+    const { data } = await db
       .from('messages')
       .select('conversation_id, role, content, created_at')
       .in('conversation_id', conversationIds)
@@ -53,7 +56,7 @@ export default async function ReviewPage() {
   let usersData: any[] | null = null
   
   if (userIds.length > 0) {
-    const { data } = await supabase
+    const { data } = await db
       .from('users')
       .select('id, email, full_name')
       .in('id', userIds)

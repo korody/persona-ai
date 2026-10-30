@@ -1,5 +1,5 @@
 // app/api/auth/check-email/route.ts
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
@@ -15,7 +15,8 @@ export async function POST(request: Request) {
       )
     }
 
-    const supabase = await createClient()
+    // Chave de servidor: a tabela users não é mais legível sem login (a política admin_view_users foi removida).
+    const supabase = createAdminClient()
 
     // Estratégia: Verificar na tabela users (pública)
     // Esta tabela é criada automaticamente quando um usuário se cadastra

@@ -1,11 +1,14 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { ArrowLeft, MessageSquare, Search, Filter, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default async function ConversationsPage() {
   const supabase = await createClient()
+  // Leitura do painel com a chave de servidor (a página já é só de admin): as políticas admin_view_* abertas
+  // para todo mundo foram removidas do banco.
+  const db = createAdminClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   
@@ -24,7 +27,7 @@ export default async function ConversationsPage() {
   }
 
   // Buscar conversas com contagem de mensagens
-  const { data: conversations } = await supabase
+  const { data: conversations } = await db
     .from('conversations')
     .select(`
       id,
@@ -42,7 +45,7 @@ export default async function ConversationsPage() {
   // Buscar contagem de mensagens para cada conversa
   const conversationsWithCount = await Promise.all(
     (conversations || []).map(async (conv) => {
-      const { count } = await supabase
+      const { count } = await db
         .from('messages')
         .select('*', { count: 'exact', head: true })
         .eq('conversation_id', conv.id)

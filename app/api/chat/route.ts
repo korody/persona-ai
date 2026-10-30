@@ -34,7 +34,6 @@ export const maxDuration = 60
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    console.log('Parsed API Request Body:', JSON.stringify(body, null, 2))
     const { messages, conversationId, avatarSlug = 'mestre-ye' } = body
 
     // Pegar token de autorização
@@ -53,6 +52,21 @@ export async function POST(req: Request) {
     }
 
     const userId = user.id
+
+    // A conversa informada tem de ser da própria pessoa (a rota usa a chave de servidor, então a RLS não protege).
+    let existingConversation: { id: string; total_credits_used: number | null } | null = null
+    if (conversationId) {
+      const { data: owned } = await supabase
+        .from('conversations')
+        .select('id, total_credits_used')
+        .eq('id', conversationId)
+        .eq('user_id', userId)
+        .maybeSingle()
+      if (!owned) {
+        return new Response('Conversation not found', { status: 404 })
+      }
+      existingConversation = owned
+    }
 
     // 1. VERIFICAR CRÉDITOS
     const { data: credits, error: creditsError } = await supabase
@@ -206,7 +220,7 @@ export async function POST(req: Request) {
         .from('conversations')
         .update({
           last_message_at: new Date().toISOString(),
-          total_credits_used: supabase.rpc('increment', { x: 1 })
+          total_credits_used: (existingConversation?.total_credits_used ?? 0) + 1
         })
         .eq('id', conversationId)
     }

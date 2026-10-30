@@ -75,6 +75,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Chamadas de servidor com token (a AcadeMY repassa o chat da aluna com o login dela): estas rotas
+  // conferem o token Bearer por conta própria, então o middleware não exige o cookie deste domínio.
+  const bearerApiRoutes = ['/api/chat', '/api/conversations', '/api/credits']
+  if (
+    request.headers.get('authorization')?.startsWith('Bearer ') &&
+    bearerApiRoutes.some(route => pathname === route || pathname.startsWith(route + '/'))
+  ) {
+    return NextResponse.next()
+  }
+
   // ============================================
   // SUPABASE AUTH (apenas para rotas protegidas)
   // ============================================

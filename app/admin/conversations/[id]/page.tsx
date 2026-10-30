@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { ArrowLeft, Clock, User, MessageSquare, ThumbsUp, ThumbsDown, Flag, Download, Brain, Star, CheckCircle, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -15,6 +15,9 @@ interface ConversationDetailPageProps {
 export default async function ConversationDetailPage({ params }: ConversationDetailPageProps) {
   const { id } = await params
   const supabase = await createClient()
+  // Leitura do painel com a chave de servidor (a página já é só de admin): as políticas admin_view_* abertas
+  // para todo mundo foram removidas do banco.
+  const db = createAdminClient()
   
   const { data: { user } } = await supabase.auth.getUser()
   
@@ -33,7 +36,7 @@ export default async function ConversationDetailPage({ params }: ConversationDet
   }
 
   // Buscar conversa específica
-  const { data: conversation, error: convError } = await supabase
+  const { data: conversation, error: convError } = await db
     .from('conversations')
     .select('*')
     .eq('id', id)
@@ -59,7 +62,7 @@ export default async function ConversationDetailPage({ params }: ConversationDet
   }
 
   // Buscar informações do usuário
-  const { data: userData } = await supabase
+  const { data: userData } = await db
     .from('users')
     .select('email, full_name')
     .eq('id', conversation.user_id)
@@ -68,7 +71,7 @@ export default async function ConversationDetailPage({ params }: ConversationDet
   const userEmail = userData?.email || 'Usuário desconhecido'
 
   // Buscar mensagens da conversa
-  const { data: messages } = await supabase
+  const { data: messages } = await db
     .from('messages')
     .select('*')
     .eq('conversation_id', id)
