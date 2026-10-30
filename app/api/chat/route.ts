@@ -23,6 +23,7 @@ import {
   searchExercisesBySemantic
 } from '@/lib/helpers/exercise-recommendations'
 import { detectCourseIntent, formatCourseContext } from '@/lib/helpers/course-intent-detection'
+import { linkExercisesToAcademy } from '@/lib/helpers/academy-links'
 import { generateSmartTitle } from '@/lib/helpers/conversation-title'
 import { baseInstructions } from '@/lib/ai/prompts'
 import type { QuizLead } from '@/lib/types/anamnese'
@@ -35,6 +36,8 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
     const { messages, conversationId, avatarSlug = 'mestre-ye' } = body
+    // De onde vem a pergunta: 'academy' quando a AcadeMY repassa o chat (aí os links indicados são os de lá).
+    const origin: 'digital' | 'academy' = body.origin === 'academy' ? 'academy' : 'digital'
 
     // Pegar token de autorização
     const authHeader = req.headers.get('authorization')
@@ -345,7 +348,10 @@ export async function POST(req: Request) {
       exercises = await searchExercisesBySemantic(userContent, { matchCount: 3, matchThreshold: 0.5 })
     }
 
-    const exercisesContext = await formatExercisesContext(exercises, quizLead || undefined, avatarSlug)
+    if (origin === 'academy') {
+      exercises = await linkExercisesToAcademy(exercises, userId)
+    }
+    const exercisesContext = await formatExercisesContext(exercises, quizLead || undefined, avatarSlug, origin)
     
     if (exercises.length > 0) {
       console.log(`✅ Found ${exercises.length} relevant exercises to recommend`)

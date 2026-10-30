@@ -177,10 +177,12 @@ export async function searchExercisesBySemantic(
  * Agora inclui informação de aquisição dos cursos via avatar_portfolio
  */
 export async function formatExercisesContext(
-  exercises: Exercise[],
+  exercises: (Exercise & { academy_locked?: boolean })[],
   quizLead?: QuizLead,
-  avatarSlug?: string
+  avatarSlug?: string,
+  origin: 'digital' | 'academy' = 'digital'
 ): Promise<string> {
+  const fromAcademy = origin === 'academy'
   if (exercises.length === 0) {
     return ''
   }
@@ -210,7 +212,8 @@ export async function formatExercisesContext(
   // Buscar informações de vendas dos cursos do avatar_portfolio
   const coursesSalesInfo = new Map<string, { productName: string, salesUrl: string }>()
   
-  if (avatarSlug && uniqueCourseIds.size > 0) {
+  // Na AcadeMY não há links de venda externos: o próprio link do curso mostra como liberar.
+  if (avatarSlug && uniqueCourseIds.size > 0 && !fromAcademy) {
     try {
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
@@ -264,6 +267,10 @@ export async function formatExercisesContext(
       context += `   - Descrição: ${exercise.description}\n`
     }
     
+    if (fromAcademy && exercise.academy_locked) {
+      context += `   - Acesso: a aluna AINDA NÃO TEM este curso liberado na AcadeMY (o link mostra como liberar)\n`
+    }
+
     // Link clicável que abre em nova aba
     context += `   - 🔗 <a href="${exercise.url}" target="_blank" rel="noopener noreferrer">Acessar vídeo</a>\n\n`
     exerciseIndex++
@@ -275,6 +282,9 @@ export async function formatExercisesContext(
   context += 'SEMPRE que recomendar ou mencionar um exercício da lista acima:\n'
   context += '1. INCLUA o link do vídeo usando o formato: 🔗 [Nome do Exercício](URL_DO_VIDEO)\n'
   context += '2. Use o link EXATO fornecido acima (não invente URLs)\n'
+  if (fromAcademy) {
+    context += '   A aluna está usando o Mestre Ye Digital DENTRO DA ACADEMY (academy.mestreye.com): use só os links da AcadeMY acima, NUNCA links do MemberKit (memberkit.com.br). Quando o curso ainda não estiver liberado para ela, diga com delicadeza que está disponível na AcadeMY e que o link mostra como liberar.\n'
+  }
   context += '3. Explique brevemente por que o exercício é adequado para o caso\n'
   context += '4. Mencione duração e nível de dificuldade quando relevante\n\n'
   
