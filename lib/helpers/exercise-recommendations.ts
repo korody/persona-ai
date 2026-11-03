@@ -45,7 +45,56 @@ export async function searchExercisesByAnamnese(
 }
 
 /**
- * Busca exercícios por sintomas/indicações específicas
+ * Sintomas de uma parte do corpo → etiquetas usadas em hub_exercises.indications.
+ * As etiquetas foram cadastradas com nomes variados (dor_joelho, dor_joelhos, joelho_fraco...),
+ * então cada sintoma busca todas as variações.
+ */
+const BODY_PART_TAGS: Record<string, string[]> = {
+  dor_joelho: ['dor_joelho', 'dor_joelhos', 'joelho_fraco'],
+  dor_lombar: [
+    'dor_lombar', 'dor_coluna', 'dor_costas', 'dor_lateral_costas', 'rigidez_costas',
+    'rigidez_coluna', 'rigidez_lombar', 'tensão_lombar', 'tensão_costas', 'má_postura',
+  ],
+  dor_pescoço: ['dor_pescoço', 'dor_cervical', 'tensão_cervical', 'tensão_pescoço'],
+  dor_ombro: ['dor_ombro', 'dor_ombros', 'tensão_ombros'],
+  dor_quadril: ['dor_quadril', 'rigidez_quadril'],
+  dor_braços: [
+    'dor_braços', 'dor_mãos', 'dor_punhos', 'túnel_carpo', 'tendinite', 'fraqueza_mãos', 'fraqueza_braços',
+  ],
+  dor_cabeça: ['dor_cabeça'],
+}
+
+/** Variações de etiqueta para os demais sintomas */
+const SYMPTOM_TAG_ALIASES: Record<string, string[]> = {
+  ansiedade: ['ansiedade', 'estresse', 'nervosismo', 'agitação', 'preocupação', 'ansiedade_grave', 'ansiedade_extrema', 'pânico'],
+  insônia: [
+    'insônia', 'insônia_crônica', 'insônia_grave', 'dificuldade_dormir', 'sono_leve',
+    'sono_interrompido', 'despertar_noturno', 'sono_não_reparador',
+  ],
+  fadiga: ['fadiga', 'cansaço', 'fadiga_crônica', 'fadiga_extrema', 'esgotamento', 'falta_energia'],
+  energia_baixa: ['energia_baixa', 'falta_energia', 'falta_vontade'],
+  digestão: ['digestão', 'má_digestão', 'digestão_fraca', 'gases', 'constipação'],
+  pressão_alta: ['pressão_alta', 'hipertensão', 'palpitação'],
+  zumbido: ['zumbido', 'labirintite', 'tontura', 'vertigem', 'audição_fraca'],
+  respiração: ['respiração', 'respiração_curta', 'asma', 'asma_leve', 'bronquite', 'tosse', 'pulmão_fraco'],
+  tristeza: ['tristeza', 'melancolia', 'depressão'],
+  raiva: ['raiva', 'irritação', 'impaciência'],
+  falta_foco: ['falta_foco', 'falta_concentração', 'dispersão', 'mente_agitada', 'memória_fraca'],
+  imunidade: ['imunidade', 'imunidade_baixa'],
+  desequilíbrio_hormonal: ['menopausa', 'menstruação'],
+}
+
+/** Sintomas genéricos: só desempatam, nunca passam na frente de uma queixa específica */
+const GENERIC_SYMPTOMS = new Set(['rigidez', 'fadiga', 'energia_baixa', 'prática_diária'])
+
+function tagsForSymptom(symptom: string): string[] {
+  return BODY_PART_TAGS[symptom] ?? SYMPTOM_TAG_ALIASES[symptom] ?? [symptom]
+}
+
+/**
+ * Busca exercícios por sintomas/indicações específicas, ordenados por relevância.
+ * Se a mensagem cita uma parte do corpo, só entram exercícios dessa parte
+ * (um exercício de costas marcado com "rigidez" não serve para "joelho duro").
  */
 export async function searchExercisesBySymptoms(
   symptoms: string[],
@@ -58,25 +107,49 @@ export async function searchExercisesBySymptoms(
 
   const supabase = await createAdminClient()
 
+  const bodySymptoms = symptoms.filter(s => s in BODY_PART_TAGS)
+  const bodyTags = new Set(bodySymptoms.flatMap(tagsForSymptom))
+  const specificTags = new Set(
+    symptoms.filter(s => !(s in BODY_PART_TAGS) && !GENERIC_SYMPTOMS.has(s)).flatMap(tagsForSymptom)
+  )
+  const genericTags = new Set(symptoms.filter(s => GENERIC_SYMPTOMS.has(s)).flatMap(tagsForSymptom))
+  const allTags = [...new Set([...bodyTags, ...specificTags, ...genericTags])]
+
   let query = supabase
     .from('hub_exercises')
     .select('*')
     .eq('is_active', true)
-    .overlaps('indications', symptoms)
-    .limit(matchCount)
+    .overlaps('indications', allTags)
+    .order('position', { ascending: true })
+    .limit(200)
 
   if (courseId) {
     query = query.eq('memberkit_course_id', courseId.toString())
   }
 
   const { data: exercises, error } = await query
-  
+
   if (error) {
     console.error('Error searching exercises by symptoms:', error)
     return []
   }
-  
-  return exercises || []
+
+  const count = (tags: string[], set: Set<string>) => tags.filter(t => set.has(t)).length
+
+  return (exercises || [])
+    .map((exercise: Exercise) => {
+      const tags = exercise.indications ?? []
+      const bodyMatches = count(tags, bodyTags)
+      return {
+        exercise,
+        bodyMatches,
+        score: bodyMatches * 10 + count(tags, specificTags) * 3 + count(tags, genericTags),
+      }
+    })
+    .filter(r => (bodyTags.size > 0 ? r.bodyMatches > 0 : r.score > 0))
+    .sort((a, b) => b.score - a.score) // sort estável: empates mantêm a ordem por position
+    .slice(0, matchCount)
+    .map(r => r.exercise)
 }
 
 /**
@@ -286,7 +359,10 @@ export async function formatExercisesContext(
     context += '   A aluna está usando o Mestre Ye Digital DENTRO DA ACADEMY (academy.mestreye.com): use só os links da AcadeMY acima, NUNCA links do MemberKit (memberkit.com.br). Quando o curso ainda não estiver liberado para ela, diga com delicadeza que está disponível na AcadeMY e que o link mostra como liberar.\n'
   }
   context += '3. Explique brevemente por que o exercício é adequado para o caso\n'
-  context += '4. Mencione duração e nível de dificuldade quando relevante\n\n'
+  context += '4. Mencione duração e nível de dificuldade quando relevante\n'
+  context += '5. Só recomende um exercício se as "Indicações" dele correspondem à queixa da pessoa, inclusive à parte do corpo citada (joelho, costas, pescoço, ombro...). '
+  context += 'NUNCA justifique um exercício de outra parte do corpo inventando ligações (meridianos, órgãos, elementos) que não estão na descrição dele. '
+  context += 'Se nenhum exercício da lista servir para a queixa, diga com honestidade que não há um exercício específico indicado aqui e oriente de forma geral.\n\n'
   
   // Adicionar informação de aquisição por curso
   if (coursesSalesInfo.size > 0) {
@@ -473,9 +549,15 @@ export function extractSymptomsFromMessage(message: string): string[] {
   
   const lowerMessage = message.toLowerCase()
   const foundSymptoms: string[] = []
-  
+
+  // Palavra inteira (aceitando plural): "dura" não casa com "durante", "joelho" casa com "joelhos"
+  const matches = (keyword: string) => {
+    const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    return new RegExp(`(?<!\\p{L})${escaped}s?(?!\\p{L})`, 'u').test(lowerMessage)
+  }
+
   for (const [symptom, keywords] of Object.entries(symptomMap)) {
-    if (keywords.some(keyword => lowerMessage.includes(keyword))) {
+    if (keywords.some(matches)) {
       foundSymptoms.push(symptom)
     }
   }

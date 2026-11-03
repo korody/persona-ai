@@ -306,17 +306,22 @@ export async function POST(req: Request) {
     console.log('🧘 Searching for relevant exercises...')
     let exercises: Exercise[] = []
 
+    // Na AcadeMY, exercícios sem aula/curso correspondente saem da lista depois;
+    // por isso buscamos mais candidatos e cortamos em 3 só no final.
+    const EXERCISES_TO_SHOW = 3
+    const exerciseCandidates = origin === 'academy' ? 10 : EXERCISES_TO_SHOW
+
     // Primeiro, tentar buscar por sintomas mencionados na mensagem
     const symptoms = extractSymptomsFromMessage(userContent)
     if (symptoms.length > 0) {
       console.log(`🎯 Found symptoms in message: ${symptoms.join(', ')}`)
-      exercises = await searchExercisesBySymptoms(symptoms, { matchCount: 3, courseId })
+      exercises = await searchExercisesBySymptoms(symptoms, { matchCount: exerciseCandidates, courseId })
     }
 
     // Se não encontrou por sintomas, verificar se é pedido genérico de exercícios
     if (exercises.length === 0 && isGenericExerciseRequest(userContent)) {
       console.log('📚 Generic exercise request detected, showing introductory exercises')
-      exercises = await searchIntroductoryExercises({ matchCount: 3, courseId })
+      exercises = await searchIntroductoryExercises({ matchCount: exerciseCandidates, courseId })
     }
 
     // Se ainda não encontrou, tentar busca semântica (OpenAI embeddings)
@@ -324,7 +329,7 @@ export async function POST(req: Request) {
       console.log('🧠 Trying semantic search with OpenAI embeddings...')
       try {
         exercises = await searchExercisesBySemantic(userContent, {
-          matchCount: 3,
+          matchCount: exerciseCandidates,
           matchThreshold: 0.5,
           courseId
         })
@@ -339,18 +344,19 @@ export async function POST(req: Request) {
     // Se ainda não encontrou e tem anamnese, buscar por elemento
     if (exercises.length === 0 && hasQuiz && quizLead) {
       console.log(`🌳 Searching exercises by element: ${quizLead.elemento_principal}`)
-      exercises = await searchExercisesByAnamnese(quizLead, { matchCount: 3, courseId })
+      exercises = await searchExercisesByAnamnese(quizLead, { matchCount: exerciseCandidates, courseId })
     }
 
     // Se especificou curso mas não encontrou nada, tentar sem filtro de curso como fallback
     if (exercises.length === 0 && courseId) {
       console.log(`⚠️  No exercises found for course ${courseId}, trying without course filter...`)
-      exercises = await searchExercisesBySemantic(userContent, { matchCount: 3, matchThreshold: 0.5 })
+      exercises = await searchExercisesBySemantic(userContent, { matchCount: exerciseCandidates, matchThreshold: 0.5 })
     }
 
     if (origin === 'academy') {
       exercises = await linkExercisesToAcademy(exercises, userId)
     }
+    exercises = exercises.slice(0, EXERCISES_TO_SHOW)
     const exercisesContext = await formatExercisesContext(exercises, quizLead || undefined, avatarSlug, origin)
     
     if (exercises.length > 0) {
