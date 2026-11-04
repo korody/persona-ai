@@ -1,7 +1,7 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { stripe } from '@/lib/stripe/stripe-helpers'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import Stripe from 'stripe'
 
 // Desabilitar body parsing do Next.js para webhooks
@@ -37,7 +37,8 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const supabase = await createClient()
+  // Webhook do Stripe não tem sessão: grava com a service role (RLS não libera escrita em user_subscriptions)
+  const supabase = await createAdminClient()
 
   try {
     switch (event.type) {

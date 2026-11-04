@@ -11,15 +11,13 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
-export const runtime = 'edge'
+export const maxDuration = 60
 
+// A função devolve só a contagem por plano (devolver ~31 mil linhas pesava e,
+// com o loop por usuário, estourava o statement_timeout).
 type ResetRow = {
-  user_id: string
-  email: string
   plan_slug: string
-  credits_set: number
-  previous_balance: number
-  new_balance: number
+  users_reset: number
 }
 
 export async function GET(req: Request) {
@@ -43,21 +41,18 @@ export async function GET(req: Request) {
 
     const rows = (data ?? []) as ResetRow[]
 
-    const breakdown = rows.reduce<Record<string, number>>((acc, r) => {
-      acc[r.plan_slug] = (acc[r.plan_slug] ?? 0) + 1
-      return acc
-    }, {})
+    const breakdown = Object.fromEntries(rows.map(r => [r.plan_slug, Number(r.users_reset)]))
+    const usersReset = rows.reduce((sum, r) => sum + Number(r.users_reset), 0)
 
     console.log(
-      `[cron/reset-credits] ${rows.length} users reset`,
+      `[cron/reset-credits] ${usersReset} users reset`,
       JSON.stringify(breakdown)
     )
 
     return NextResponse.json({
       success: true,
-      users_reset: rows.length,
+      users_reset: usersReset,
       breakdown,
-      users: rows,
     })
   } catch (err) {
     console.error('[cron/reset-credits] unexpected error:', err)
