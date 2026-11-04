@@ -1,14 +1,18 @@
-// app/auth/confirm/route.ts
+// app/auth/confirm/entrar/route.ts
 //
-// Verificação de magic link / recovery 100% server-side.
+// Verificação de magic link / recovery 100% server-side, só no POST.
 //
-// Diferente de /auth/callback (que usa PKCE e depende do code_verifier guardado
-// no localStorage do navegador que PEDIU o link), esta rota usa token_hash —
-// que não depende de nada no cliente. Isso faz o link funcionar mesmo quando o
-// usuário abre o email em outro dispositivo, outro navegador, ou na WebView do
-// app de email (Gmail/Outlook), que era o caso que quebrava.
+// O link do e-mail abre /auth/confirm, que mostra um botão "Entrar" e envia o
+// formulário para cá. Por que não verificar no GET: o Microsoft Safe Links
+// (Hotmail/Outlook/Live) e outros verificadores abrem sozinhos os links dos
+// e-mails. Se o GET chamasse verifyOtp, essa visita gastaria o token (o mesmo do
+// código de 6 números) e a aluna receberia "código incorreto ou vencido". O
+// verificador abre a página mas não envia o formulário.
 //
-// O template de email do Supabase precisa apontar para cá:
+// Usa token_hash (não PKCE), então funciona em outro dispositivo, outro
+// navegador ou na WebView do app de e-mail.
+//
+// O template de email do Supabase aponta para:
 //   {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=magiclink&next=/chat
 
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
@@ -26,19 +30,19 @@ function safeNext(raw: string | null): string {
   return raw
 }
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = request.nextUrl
-  const tokenHash = searchParams.get('token_hash')
-  const type = searchParams.get('type') as EmailOtpType | null
-  const next = safeNext(searchParams.get('next') ?? searchParams.get('redirect'))
+export async function POST(request: NextRequest) {
+  const form = await request.formData()
+  const tokenHash = form.get('token_hash') as string | null
+  const type = form.get('type') as EmailOtpType | null
+  const next = safeNext(form.get('next') as string | null)
 
+  // 303: o navegador segue o redirect com GET, não reenvia o POST
+  const redirect = (path: string) => NextResponse.redirect(new URL(path, request.url), 303)
   const failure = (reason: string) =>
-    NextResponse.redirect(
-      new URL(`/auth?error=${reason}&redirect=${encodeURIComponent(next)}`, request.url)
-    )
+    redirect(`/auth?error=${reason}&redirect=${encodeURIComponent(next)}`)
 
   if (!tokenHash || !type) {
-    console.error('[auth/confirm] missing token_hash or type')
+    console.error('[auth/confirm/entrar] missing token_hash or type')
     return failure('no_auth_data')
   }
 
@@ -64,14 +68,14 @@ export async function GET(request: NextRequest) {
   const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type })
 
   if (error) {
-    console.error('[auth/confirm] verifyOtp failed:', error.message)
+    console.error('[auth/confirm/entrar] verifyOtp failed:', error.message)
     return failure('auth_failed')
   }
 
   const destination = type === 'recovery' ? '/reset-password' : next
-  console.log(`[auth/confirm] ✅ ${type} verificado, redirecionando para ${destination}`)
+  console.log(`[auth/confirm/entrar] ✅ ${type} verificado, redirecionando para ${destination}`)
 
-  const response = NextResponse.redirect(new URL(destination, request.url))
+  const response = redirect(destination)
   pendingCookies.forEach(({ name, value, options }) =>
     response.cookies.set(name, value, options)
   )
